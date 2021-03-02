@@ -29,7 +29,6 @@ public class Item {
     @ManyToOne
     private Category itemCategory;
 
-
     //private List<String> pictures; HAY QUE PENSAR ALTERNATIVA INT?????
 
     private String shortDescription;
