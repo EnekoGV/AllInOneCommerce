@@ -17,6 +17,6 @@ public class Cart {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    //@OneToMany
-    // private List<Item> items;
+    @OneToMany
+    private List<Item> items;
 }

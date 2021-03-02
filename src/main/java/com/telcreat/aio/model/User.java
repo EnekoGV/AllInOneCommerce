@@ -5,12 +5,10 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 
@@ -43,13 +41,13 @@ public class User {
     private String addressRegion;
 
     private boolean shopOwner;
-    // @ManyToOne
-    // private Shop shop
+    @ManyToOne
+    private Shop shop;
 
-    // @OneToMany
-    // private List<Shop> favouriteShops;
+    @OneToMany
+    private List<Shop> favouriteShops;
 
-    // @ManyToOne
-    // private Cart cart;
+    @ManyToOne
+    private Cart cart;
 
 }

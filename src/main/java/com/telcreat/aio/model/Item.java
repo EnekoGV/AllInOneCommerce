@@ -20,17 +20,17 @@ public class Item {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    //@ManyToOne
-    //private Shop shop;
+    @ManyToOne
+    private Shop shop;
 
-    //@OneToMany
-    //private List<Variant> variants;
+    @OneToMany
+    private List<Variant> variants;
 
-    //@ManyToOne
-    //private Category itemCategory;
+    @ManyToOne
+    private Category itemCategory;
 
-    //@OneToMany  PORQUEEEEEEEEEEEEEEE
-    //private List<String> pictures;
+
+    //private List<String> pictures; HAY QUE PENSAR ALTERNATIVA INT?????
 
     private String shortDescription;
     private String longDescription;

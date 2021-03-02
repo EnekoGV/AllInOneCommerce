@@ -17,7 +17,10 @@ public class Variant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
-    //private Item item;
+
+    @ManyToOne
+    private Item item;
+
     private String name;
     @OneToMany
     private List<Variant> subVariant;

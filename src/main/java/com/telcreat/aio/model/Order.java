@@ -21,11 +21,11 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    //@ManyToOne
-    //private Shop shop;
+    @ManyToOne
+    private Shop shop;
 
-    //@ManyToOne
-    //private User user;
+    @ManyToOne
+    private User user;
 
     @OneToMany
     private List<Item> items;
