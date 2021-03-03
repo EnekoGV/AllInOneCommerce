@@ -20,14 +20,15 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     private String alias;
     private String name;
     private String lastName;
     private LocalDate birthDay;
     private String email;
     private String password;
-
-    private String picture; // Client image directory
+    @OneToOne
+    private Pictures userPictures;
 
     private LocalDateTime registrationDateTime;
 

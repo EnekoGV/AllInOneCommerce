@@ -21,14 +21,16 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @OneToMany
+    private List<Category> shopCategories;
+
+    @OneToOne
+    private Pictures shopPicture;
+
     private String name;
     private String description;
     //add address information(Check on internet)
-    private String picture;
-    private String backgroundPicture;
     //add billing information(Check)
-    @OneToMany
-    private List<Category> shopCategories;
     private LocalDateTime registrationDate;
 
 }

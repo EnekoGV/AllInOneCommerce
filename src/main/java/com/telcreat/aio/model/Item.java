@@ -29,7 +29,8 @@ public class Item {
     @ManyToOne
     private Category itemCategory;
 
-    //private List<String> pictures; HAY QUE PENSAR ALTERNATIVA INT?????
+    @OneToMany
+    private List<Pictures> itemPictures;
 
     private String shortDescription;
     private String longDescription;
