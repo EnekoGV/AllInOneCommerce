@@ -27,8 +27,8 @@ public class User {
     private LocalDate birthDay;
     private String email;
     private String password;
-    @OneToOne
-    private Pictures userPictures;
+    @ManyToOne
+    private Picture picture;
 
     private LocalDateTime registrationDateTime;
 
@@ -38,14 +38,12 @@ public class User {
     private String addressDoor;
     private String addressCountry;
     private int postCode;
-    private String addressTown;
+    private String addressCity;
     private String addressRegion;
 
     private boolean shopOwner;
-    @ManyToOne
-    private Shop shop;
 
-    @OneToMany
+    @ManyToMany
     private List<Shop> favouriteShops;
 
     @ManyToOne

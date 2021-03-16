@@ -15,15 +15,12 @@ import javax.persistence.Id;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Pictures {
+public class Picture {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    private boolean userPicture; // Client image directory
-    private boolean userBackgroundPicture;
-    private boolean shopPicture;
-    private boolean itemPicture;
+    private String picture;
 
 }

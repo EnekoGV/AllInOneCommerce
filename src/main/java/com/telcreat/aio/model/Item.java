@@ -30,7 +30,7 @@ public class Item {
     private Category itemCategory;
 
     @OneToMany
-    private List<Pictures> itemPictures;
+    private List<Picture> itemPictures;
 
     private String shortDescription;
     private String longDescription;

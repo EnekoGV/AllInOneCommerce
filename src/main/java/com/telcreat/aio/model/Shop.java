@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.graalvm.compiler.replacements.amd64.AMD64StringUTF16CompressNode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -22,15 +21,36 @@ public class Shop {
     private int id;
 
     @OneToMany
-    private List<Category> shopCategories;
+    private List<Category> categories;
 
-    @OneToOne
-    private Pictures shopPicture;
+    @ManyToOne
+    private Picture picture;
+
+    @ManyToOne
+    private Picture backgroundPicture;
+
+    @ManyToOne
+    private User owner;
 
     private String name;
     private String description;
-    //add address information(Check on internet)
-    //add billing information(Check)
+
+    private String adressName;
+    private String adressSurname;
+    private String adressAddress; //calle + portal + piso
+    private String adressPostNumber;
+    private String adressCity;
+    private String adressCountry;
+    private String addressTelNumber;
+
+    private String billingName;
+    private String billingSurname;
+    private String billingAddress; //calle + portal + piso
+    private String billingPostNumber;
+    private String billingCity;
+    private String billingCountry;
+    private String billingTelNumber;
+
     private LocalDateTime registrationDate;
 
 }
