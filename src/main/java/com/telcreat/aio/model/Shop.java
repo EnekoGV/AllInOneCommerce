@@ -20,27 +20,27 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
-    @OneToMany
+    @ManyToMany
     private List<Category> categories;
 
-    @ManyToOne
+    @OneToOne
     private Picture picture;
 
-    @ManyToOne
+    @OneToOne
     private Picture backgroundPicture;
 
-    @ManyToOne
+    @OneToOne
     private User owner;
 
     private String name;
     private String description;
 
-    private String adressName;
-    private String adressSurname;
-    private String adressAddress; //calle + portal + piso
-    private String adressPostNumber;
-    private String adressCity;
-    private String adressCountry;
+    private String addressName;
+    private String addressSurname;
+    private String addressAddress; //calle + portal + piso
+    private String addressPostNumber;
+    private String addressCity;
+    private String addressCountry;
     private String addressTelNumber;
 
     private String billingName;

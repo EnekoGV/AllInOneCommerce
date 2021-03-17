@@ -23,19 +23,17 @@ public class Item {
     @ManyToOne
     private Shop shop;
 
-    @OneToMany
-    private List<Variant> variants;
-
     @ManyToOne
     private Category itemCategory;
 
     @OneToMany
-    private List<Picture> itemPictures;
+    private List<Picture> picture;
 
     private String shortDescription;
     private String longDescription;
     private Float price;
     private String name;
     private LocalDateTime creationDate;
+
 
 }

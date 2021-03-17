@@ -27,7 +27,8 @@ public class User {
     private LocalDate birthDay;
     private String email;
     private String password;
-    @ManyToOne
+
+    @OneToOne
     private Picture picture;
 
     private LocalDateTime registrationDateTime;
@@ -46,7 +47,7 @@ public class User {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-    @ManyToOne
+    @OneToOne
     private Cart cart;
 
 }

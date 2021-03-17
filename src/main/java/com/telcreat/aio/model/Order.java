@@ -26,9 +26,21 @@ public class Order {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @ManyToMany
     private List<Item> items;
 
     private LocalDateTime orderingDate;
-    private int status;
+
+    private enum Status{
+        DELIVERED,
+        ON_THE_WAY,
+        PREPARING,
+        READY_TO_DELIVER,
+        CANCELLED,
+        ACCEPTED,
+        PENDING
+    }
+
+    private float price;
+
 }
