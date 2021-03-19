@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class ShopOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
