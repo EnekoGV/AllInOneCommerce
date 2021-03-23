@@ -31,7 +31,7 @@ public class User {
     @OneToOne
     private Picture picture;
 
-    private LocalDateTime registrationDateTime;
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
 
     private String addressString;
     private String addressNumber;

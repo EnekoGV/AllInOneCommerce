@@ -29,7 +29,7 @@ public class ShopOrder {
     @ManyToMany
     private List<Item> items;
 
-    private LocalDateTime orderingDate;
+    private LocalDateTime orderingDateTime = LocalDateTime.now();
 
     private enum Status{
         DELIVERED,
@@ -41,6 +41,7 @@ public class ShopOrder {
         PENDING
     }
 
+    private Status status;
     private float price;
 
 }

@@ -33,7 +33,7 @@ public class Item {
     private String longDescription;
     private Float price;
     private String name;
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDateTime = LocalDateTime.now();
 
 
 }
