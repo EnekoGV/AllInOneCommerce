@@ -53,4 +53,11 @@ public class Shop {
 
     private LocalDateTime registrationDateTime = LocalDateTime.now();
 
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 }

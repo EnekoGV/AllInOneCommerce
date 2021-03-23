@@ -47,7 +47,11 @@ public class User {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-    @OneToOne
-    private Cart cart;
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 
 }

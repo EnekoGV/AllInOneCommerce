@@ -30,8 +30,9 @@ public class ShopOrder {
     private List<Item> items;
 
     private LocalDateTime orderingDateTime = LocalDateTime.now();
+    private float price;
 
-    private enum Status{
+    private enum ShopOrderStatus{
         DELIVERED,
         ON_THE_WAY,
         PREPARING,
@@ -41,7 +42,6 @@ public class ShopOrder {
         PENDING
     }
 
-    private Status status;
-    private float price;
+    private ShopOrderStatus shopOrderStatus;
 
 }
