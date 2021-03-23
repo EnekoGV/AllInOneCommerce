@@ -27,7 +27,7 @@ public class ShopOrder {
     private User user;
 
     @ManyToMany
-    private List<Item> items;
+    private List<Variant> variant;
 
     private LocalDateTime orderingDateTime = LocalDateTime.now();
     private float price;
