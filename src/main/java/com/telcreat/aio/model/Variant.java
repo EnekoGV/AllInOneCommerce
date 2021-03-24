@@ -22,6 +22,7 @@ public class Variant {
     private Item item;
 
     private String name;
+
     @OneToMany
     private List<Variant> subVariant;
 }

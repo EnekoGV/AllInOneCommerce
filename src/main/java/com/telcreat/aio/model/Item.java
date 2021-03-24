@@ -24,7 +24,7 @@ public class Item {
     private Shop shop;
 
     @OneToMany
-    private List<Variant> variants;
+    private List<Variant> variants; //Data-Base redundancy?? ManytoOne item in variant
 
     @ManyToOne
     private Category itemCategory;
