@@ -1,6 +1,7 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Cart;
+import com.telcreat.aio.model.Item;
 import com.telcreat.aio.repo.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,16 @@ public class CartService {
         this.cartRepo = cartRepo;
     }
 
+    // Basic method
     public List<Cart> findAllCart(){
         return cartRepo.findAll();
     }
 
-    public Cart findCartById(int id){
+    // Basic method
+    public Cart findCartById(int cartId){
+
         Cart cart = null;
-        Optional<Cart> opt=cartRepo.findById(id);
+        Optional<Cart> opt=cartRepo.findById(cartId);
         if(opt.isPresent()) {
             cart = opt.get();
             code = 0;
@@ -35,4 +39,31 @@ public class CartService {
         return cart;
     }
 
+    // Basic method - Create New Cart
+    public Cart createCart(Cart newCart){
+        Cart tempCart = null;
+        if (!cartRepo.existsById(newCart.getId())){
+            tempCart = cartRepo.save(newCart);
+        }
+        return tempCart;
+    }
+
+    // Basic method - Update Cart
+    public Cart updateCart(Cart cart){
+        Cart tempCart = null;
+        if (cartRepo.existsById(cart.getId())){
+            tempCart = cartRepo.save(cart);
+        }
+        return tempCart;
+    }
+
+    // Basic method - Delete Cart
+    public boolean deleteCartById(int cartId){
+        boolean control = false;
+        if (cartRepo.existsById(cartId)){
+            cartRepo.deleteById(cartId);
+            control = true;
+        }
+        return control;
+    }
 }
