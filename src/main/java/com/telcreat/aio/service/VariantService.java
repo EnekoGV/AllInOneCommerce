@@ -24,6 +24,14 @@ public class VariantService {
         return variantRepo.findAll();
     }
 
+    /*public Variant findVariantByItemId(int itemId){
+        Variant variantTemp = null;
+        Optional<Variant> foundVariant = variantRepo.;
+        if(foundVariant.isPresent())
+            variantTemp = foundVariant.get();
+        return variantTemp;
+    }*/
+
     //BASIC method findVariantById, returns de Variant or a null object if not found
     public Variant findVariantById(int id){
         Variant variantTemp = null;
@@ -42,7 +50,7 @@ public class VariantService {
     }
 
     //BASIC method updateVariant, returns updated variant if ok or null if not found
-    public Variant updateUser(Variant variant){
+    public Variant updateVariant(Variant variant){
         Variant variantTemp = null;
         if(variantRepo.existsById(variant.getId()))
             variantTemp = variantRepo.save(variant);
