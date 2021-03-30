@@ -20,6 +20,7 @@ public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+
     private String alias;
     private String name;
     private String lastName;
@@ -27,9 +28,10 @@ public class User {
     private String email;
     private String password;
 
-    private String picture; // Client image directory
+    @OneToOne
+    private Picture picture;
 
-    private LocalDateTime registrationDateTime;
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
 
     private String addressString;
     private String addressNumber;
@@ -37,17 +39,19 @@ public class User {
     private String addressDoor;
     private String addressCountry;
     private int postCode;
-    private String addressTown;
+    private String addressCity;
     private String addressRegion;
 
     private boolean shopOwner;
-    @ManyToOne
-    private Shop shop;
 
-    @OneToMany
+    @ManyToMany
     private List<Shop> favouriteShops;
 
-    @ManyToOne
-    private Cart cart;
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 
 }

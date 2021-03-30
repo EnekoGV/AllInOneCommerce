@@ -23,18 +23,23 @@ public class Item {
     @ManyToOne
     private Shop shop;
 
-    @OneToMany
-    private List<Variant> variants; //Data-Base redundancy?? ManytoOne item in variant
-
     @ManyToOne
     private Category itemCategory;
 
-    //private List<String> pictures; HAY QUE PENSAR ALTERNATIVA INT?????
+    @OneToMany
+    private List<Picture> picture; // Revisar la revisión dónde va
 
     private String shortDescription;
     private String longDescription;
     private Float price;
     private String name;
-    private LocalDateTime creationDate;
+    private LocalDateTime creationDateTime = LocalDateTime.now();
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 
 }

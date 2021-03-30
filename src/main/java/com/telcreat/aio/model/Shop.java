@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.graalvm.compiler.replacements.amd64.AMD64StringUTF16CompressNode;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -21,14 +20,44 @@ public class Shop {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
 
+    @ManyToMany
+    private List<Category> categories;
+
+    @OneToOne
+    private Picture picture;
+
+    @OneToOne
+    private Picture backgroundPicture;
+
+    @OneToOne
+    private User owner;
+
     private String name;
     private String description;
-    //add address information(Check on internet)
-    private String picture;
-    private String backgroundPicture;
-    //add billing information(Check)
-    @OneToMany
-    private List<Category> shopCategories;
-    private LocalDateTime registrationDate;
 
+    private String addressName;
+    private String addressSurname;
+    private String addressAddress; //calle + portal + piso
+    private String addressPostNumber;
+    private String addressCity;
+    private String addressCountry;
+    private String addressTelNumber;
+
+    private String billingName;
+    private String billingSurname;
+    private String billingAddress; //calle + portal + piso
+    private String billingPostNumber;
+    private String billingCity;
+    private String billingCountry;
+    private String billingTelNumber;
+
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
+
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 }

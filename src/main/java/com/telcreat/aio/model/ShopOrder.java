@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -15,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Order {
+public class ShopOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,9 +26,22 @@ public class Order {
     @ManyToOne
     private User user;
 
-    @OneToMany
+    @ManyToMany
     private List<Item> items;
 
-    private LocalDateTime orderingDate;
-    private int status;
+    private LocalDateTime orderingDateTime = LocalDateTime.now();
+    private float price;
+
+    private enum ShopOrderStatus{
+        DELIVERED,
+        ON_THE_WAY,
+        PREPARING,
+        READY_TO_DELIVER,
+        CANCELLED,
+        ACCEPTED,
+        PENDING
+    }
+
+    private ShopOrderStatus shopOrderStatus;
+
 }

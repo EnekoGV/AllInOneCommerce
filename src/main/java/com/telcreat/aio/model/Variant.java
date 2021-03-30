@@ -17,12 +17,21 @@ public class Variant {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
+    private String name;
 
     @ManyToOne
     private Item item;
 
-    private String name;
-
     @OneToMany
-    private List<Variant> subVariant;
+    private List<Variant> subVariants;
+
+
+    private int stock; // propiedad del último de nivel de subvariante.
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 }
