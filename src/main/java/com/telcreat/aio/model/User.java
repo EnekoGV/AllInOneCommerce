@@ -31,7 +31,7 @@ public class User {
     @OneToOne
     private Picture picture;
 
-    private LocalDateTime registrationDateTime;
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
 
     private String addressString;
     private String addressNumber;
@@ -47,7 +47,11 @@ public class User {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-    @OneToOne
-    private Cart cart;
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 
 }

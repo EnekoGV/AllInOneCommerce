@@ -51,6 +51,13 @@ public class Shop {
     private String billingCountry;
     private String billingTelNumber;
 
-    private LocalDateTime registrationDate;
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
 
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 }

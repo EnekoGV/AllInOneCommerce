@@ -27,4 +27,11 @@ public class Variant {
 
 
     private int stock; // propiedad del último de nivel de subvariante.
+
+    private enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
+    private Status status;
 }
