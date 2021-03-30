@@ -24,13 +24,9 @@ public class VariantService {
         return variantRepo.findAll();
     }
 
-    /*public Variant findVariantByItemId(int itemId){
-        Variant variantTemp = null;
-        Optional<Variant> foundVariant = variantRepo.;
-        if(foundVariant.isPresent())
-            variantTemp = foundVariant.get();
-        return variantTemp;
-    }*/
+    public List<Variant> findVariantByItemId(int itemId){
+        return variantRepo.findVariantsByItem_Id(itemId);
+    }
 
     //BASIC method findVariantById, returns de Variant or a null object if not found
     public Variant findVariantById(int id){
