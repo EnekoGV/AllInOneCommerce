@@ -35,7 +35,7 @@ public class Item {
     private String name;
     private LocalDateTime creationDateTime = LocalDateTime.now();
 
-    private enum Status{
+    public enum Status{
         ACTIVE,
         INACTIVE
     }
