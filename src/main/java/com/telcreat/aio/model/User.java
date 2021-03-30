@@ -47,7 +47,7 @@ public class User {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-    private enum Status{
+    public enum Status{
         ACTIVE,
         INACTIVE
     }
