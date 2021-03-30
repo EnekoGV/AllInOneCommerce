@@ -66,21 +66,14 @@ public class ItemService {
         }
         return control;
     }
-/*
+
     // Find Items By CategoryId and filtered
     public List<Item> getItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId){
 
         // orderCriteriaId = 0 -> PRECIO
         // orderCriteriaId = 1 -> DISTANCIA
         // itemCategoryId = 0 -> DUMMY VARIABLE SOLO EN FRONTEND. Primera categoría empieza por ID=1.
-        List<Item> items = null;
-        List<Item> itemsDB = itemRepo.findAll();
-        for(int i=0;i<itemsDB.size();i++){
-            Item item = itemsDB.get(i);
-            if(item.getItemCategory().getId()==itemCategoryId)
-                if(item.getName()==itemName)
-                    items.add(item);
-        }
+        List<Item> items = getItemsContainsName(itemName,itemCategoryId);
 
         if(orderCriteriaId==0){
 
@@ -101,19 +94,16 @@ public class ItemService {
         return items;
     }
 
-    // Find Items By Shop
+    public List<Item> getItemsContainsName(String itemName, int itemCategoryId){
+
+        return itemRepo.findItemsByItemCategory_IdAndName(itemCategoryId,itemName);
+
+    }
+
+
+        // Find Items By Shop
     public List<Item> getAllItemsByShop(int shopId){
-
-        List<Item> items = null;
-        List<Item> itemsDB = itemRepo.findAll();
-
-        for(int i=0;i<itemsDB.size();i++){
-            Item item = itemsDB.get(i);
-            if(item.getShop().getId()==shopId)
-                items.add(item);
-        }
-
-        return items;
-    }*/
+        return itemRepo.findItemsByShop_Id(shopId);
+    }
 
 }
