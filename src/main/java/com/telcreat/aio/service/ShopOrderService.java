@@ -106,18 +106,21 @@ public class ShopOrderService {
 
             for (Shop tempShop : uniqueShopList){
                 ArrayList<Variant> newVariantList = new ArrayList<>();
+                float orderPrice = 0;
                 ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<Variant>(), 0, ShopOrder.ShopOrderStatus.PENDING);
                 for(int i=0; i<cart.getVariants().size(); i++){
                     if (cart.getVariants().get(i).getItem().getShop() == tempShop){
+                        orderPrice = orderPrice + cart.getVariants().get(i).getItem().getPrice();
                         newVariantList.add(cart.getVariants().get(i));
                     }
                 }
+                tempShopOrder.setPrice(orderPrice);
                 tempShopOrder.setVariants(newVariantList);
                 shopOrders.add(tempShopOrder);
             }
 
             variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
-            shopOrderRepo.saveAll(shopOrders);
+            shopOrderRepo.saveAll(shopOrders); // Create an order for each shop from the Cart.
 
         }
 
