@@ -98,9 +98,6 @@ public class ShopOrderService {
 
         if (control){ // If there is enough stock of all variants
             shopOrders = new ArrayList<>();
-
-            variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
-
             for(int i=0; i<cart.getVariants().size(); i++){
                 tempVariantShops.add(cart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
             }
@@ -108,12 +105,19 @@ public class ShopOrderService {
             uniqueShopList = new ArrayList<>(new HashSet<>(tempVariantShops)); // Get unique Shops to create an order for each
 
             for (Shop tempShop : uniqueShopList){
+                ArrayList<Variant> newVariantList = new ArrayList<>();
                 ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<Variant>(), 0, ShopOrder.ShopOrderStatus.PENDING);
                 for(int i=0; i<cart.getVariants().size(); i++){
-
+                    if (cart.getVariants().get(i).getItem().getShop() == tempShop){
+                        newVariantList.add(cart.getVariants().get(i));
+                    }
                 }
+                tempShopOrder.setVariants(newVariantList);
                 shopOrders.add(tempShopOrder);
             }
+
+            variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
+            shopOrderRepo.saveAll(shopOrders);
 
         }
 
