@@ -99,7 +99,7 @@ public class ShopOrderService {
         if (control){ // If there is enough stock of all variants
             shopOrders = new ArrayList<>();
 
-            variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB
+            variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
 
             for(int i=0; i<cart.getVariants().size(); i++){
                 tempVariantShops.add(cart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
