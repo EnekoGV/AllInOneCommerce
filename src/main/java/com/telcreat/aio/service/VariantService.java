@@ -46,7 +46,7 @@ public class VariantService {
     }
 
     //BASIC method updateVariant, returns updated variant if ok or null if not found
-    public Variant updateVariant(Variant variant){
+    public Variant updateVariant(Variant variant){//Para cambiar el estado de STATUS usamos esta función.
         Variant variantTemp = null;
         if(variantRepo.existsById(variant.getId()))
             variantTemp = variantRepo.save(variant);
@@ -62,4 +62,8 @@ public class VariantService {
         }
         return deleted;
     }
+
+
+
+
 }
