@@ -51,10 +51,12 @@ public class Shop {
     private String billingCountry;
     private String billingTelNumber;
 
+    private String longitude;
+    private String latitude;
+
     private LocalDateTime registrationDateTime = LocalDateTime.now();
 
-
-    private enum Status{
+    public enum Status{ //Aqui manda mi polla
         ACTIVE,
         INACTIVE
     }

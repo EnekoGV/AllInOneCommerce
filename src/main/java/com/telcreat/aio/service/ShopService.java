@@ -1,5 +1,7 @@
 package com.telcreat.aio.service;
 
+//import com.telcreat.aio.service.ItemService;
+import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,6 +63,58 @@ public class ShopService {
         }
         return control;
     }
+
+    // ESPECIAL METHODS (EM)
+    // EM - findActiveShopById
+    public Shop findActiveShopById(int shopId){
+        Shop tempShop = null;
+        Optional<Shop> foundShop = shopRepo.findById(shopId);
+        if(foundShop.isPresent()){
+            if(foundShop.get().getStatus()== Shop.Status.ACTIVE){
+                tempShop = foundShop.get();
+            }
+        }
+        return tempShop;
+    }
+
+    //EM - Inactive the Shop
+    public boolean inactiveShopById(Shop shop){
+        Shop tempShop = null;
+        if(shopRepo.existsById(shop.getId())){
+            tempShop=shopRepo.save(shop);
+        }
+
+    }
+
+    // EM - Get shop by user Id
+    public Shop shopByUserId(int userId){
+        Shop tempShop = null;
+        if(shopRepo.existsByOwnerId(userId)){
+            tempShop = shopRepo.findShopsByOwnerId(userId);
+            if(tempShop.getStatus() == Shop.Status.INACTIVE){
+                tempShop = null;
+            }
+        }
+        return tempShop;
+    }
+
+    // EM - getShopsByItemContainsName
+   public List<Shop> getShopsByItemContainsName(){
+        List<Item> items = getItemsContainsName();
+        List<Shop> shops = null;
+        for(Item item:items){
+            if(!shops.contains(item.getShop())){
+                shops.add(item.getShop());
+            }
+        }
+        return shops;
+    }
+
+
+
+
+
+
 
 
 }
