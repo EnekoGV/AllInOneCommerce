@@ -1,8 +1,15 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.User;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+
+import javax.jws.WebParam;
 
 @Controller
 public class viewController {
@@ -25,5 +32,33 @@ public class viewController {
         this.variantService = variantService;
     }
 
+    //Página de registro y login
 
+    @RequestMapping(value = "/register" , method = RequestMethod.GET)
+    public String register(ModelMap modelMap){
+
+        User login = new User();
+        User signup = new User();
+        modelMap.addAttribute("login", login);
+        modelMap.addAttribute("signup", signup);
+
+        return "register";
+    }
+
+    @RequestMapping(value = "/register/send", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
+    public String recieveLogin(@ModelAttribute User user, ModelMap modelMap){
+        //función
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/register/register", method = RequestMethod.POST)
+    public String reciveRegister(@ModelAttribute User user, ModelMap modelMap){
+        if(userService.createUser(user) != null)
+            modelMap.clear();
+        else
+            return "redirect:/fail";
+        return "redirect:/";
+    }
+
+    //Página de nisupu
 }
