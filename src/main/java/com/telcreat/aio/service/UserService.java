@@ -10,6 +10,7 @@ import java.util.Optional;
 
 @Service
 public class UserService {
+
     private final UserRepo userRepo;
 
     @Autowired
@@ -19,12 +20,11 @@ public class UserService {
 
     //BASIC method findAllUsers, returns a List of all users
     public List<User> getAllUsers(){
-
         return userRepo.findAll();
     }
 
-    //BASIC method findUserById, returns de user or a null objetct if not found
-    public User getUserById(int id){
+    //BASIC method findUserById, returns de user or a null object if not found
+    public User findUserById(int id){
         User userTemp = null;
         Optional<User> foundUser = userRepo.findById(id);
         if(foundUser.isPresent())
@@ -35,7 +35,7 @@ public class UserService {
     //BASIC method createUser, returns new user if created or null if not
     public User createUser(User newUser){
         User userTemp = null;
-        Optional<User> foundUser = userRepo.findUserByEmailMatches(newUser.getEmail());
+        Optional<User> foundUser = userRepo.findUserByEmailIs(newUser.getEmail());
         if(!userRepo.existsById(newUser.getId()) && !foundUser.isPresent())
             userTemp = userRepo.save(newUser);
         return userTemp;
@@ -58,9 +58,5 @@ public class UserService {
         }
         return deleted;
     }
-
-
-
-
 
 }

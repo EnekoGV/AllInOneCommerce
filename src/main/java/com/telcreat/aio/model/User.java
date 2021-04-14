@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
 import java.time.LocalDate;
@@ -11,7 +12,6 @@ import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
-
 @Getter
 @Setter
 @AllArgsConstructor
@@ -24,6 +24,8 @@ public class User {
     private String alias;
     private String name;
     private String lastName;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
     private String email;
     private String password;
@@ -53,5 +55,6 @@ public class User {
     }
 
     private Status status;
+
 
 }

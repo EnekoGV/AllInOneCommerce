@@ -5,7 +5,6 @@ import com.telcreat.aio.repo.ItemRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,7 +22,7 @@ public class ItemService {
     }
 
     // Basic method - Find Item By Id
-    public Item getItemById(int itemId){
+    public Item findItemById(int itemId){
 
         Item item = null;
         Optional<Item> opt = itemRepo.findById(itemId);
@@ -68,12 +67,12 @@ public class ItemService {
     }
 
     // Find Items By CategoryId and filtered
-    public List<Item> getItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId){
+    public List<Item> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId){
 
         // orderCriteriaId = 0 -> PRECIO
         // orderCriteriaId = 1 -> DISTANCIA
         // itemCategoryId = 0 -> DUMMY VARIABLE SOLO EN FRONTEND. Primera categoría empieza por ID=1.
-        List<Item> items = getItemsContainsName(itemName,itemCategoryId);
+        List<Item> items = findItemsContainsName(itemName,itemCategoryId);
 
         if(orderCriteriaId==0){
 
@@ -94,15 +93,15 @@ public class ItemService {
         return items;
     }
 
-    public List<Item> getItemsContainsName(String itemName, int itemCategoryId){
+    public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
 
-        return itemRepo.findItemsByItemCategory_IdAndName(itemCategoryId,itemName);
+        return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
 
     }
 
 
         // Find Items By Shop
-    public List<Item> getAllItemsByShop(int shopId){
+    public List<Item> findAllItemsByShop(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
     }
 

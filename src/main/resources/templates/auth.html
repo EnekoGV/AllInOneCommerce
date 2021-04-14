@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><!--//injectamos una API de thymleaf que se usa con th:-->
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1>LOGIN</h1>
+<form th:action="@{./auth/send}" method="post" th:object="${login}"> <!--//todo lo que use th: con su simbolo dinamico-->
+    <label>
+        <input type="text" th:field="*{email}" placeholder="Type your email"> <br/>
+        <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
+    </label>
+    <button type="submit">Log In</button>
+</form>
+
+<h1>REGISTER</h1>
+<form th:action="@{./auth/register}" method="post" th:object="${signup}"> <!--//todo lo que use th: con su simbolo dinamico-->
+    <label>
+        <input type="text" th:field="*{alias}" placeholder="Type your alias"> <br/>
+        <input type="text" th:field="*{name}" placeholder="Type your name"> <br/>
+        <input type="text" th:field="*{lastName}" placeholder="Type your last name"> <br/>
+        <input type="date" th:field="*{birthDay}" placeholder="Birth Day"> <br/> <!--//Hay que mirar como recibir estos datos-->
+        <input type="text" th:field="*{email}" placeholder="Type your email address"> <br/>
+        <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
+    </label>
+    <button type="submit">Sign Up</button>
+
+</form>
+</body>
+</html>
+<!--
+//$ el objeto mismo
+//* como el punto en java, coger los atributos del objeto
+//@ genera links (URL) dinamicos
+-->
