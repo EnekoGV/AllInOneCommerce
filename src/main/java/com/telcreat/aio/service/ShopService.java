@@ -77,10 +77,20 @@ public class ShopService {
     }
 
     // EM - Get shop by user Id
-    public Shop shopByUserId(int userId){
+    public Shop findShopByUserId(int userId){
         Shop tempShop = null;
-        if(shopRepo.existsByOwnerId(userId)){
-            tempShop = shopRepo.findShopsByOwnerId(userId);
+        if(shopRepo.existsByOwnerId(userId)) {
+            Optional<Shop> foundShop = shopRepo.findShopsByOwnerId(userId);
+            if (foundShop.isPresent()){
+                tempShop = foundShop.get();
+            }
+        }
+        return tempShop;
+    }
+
+    public Shop findActiveShopByUserId(int userId){
+        Shop tempShop = findShopByUserId(userId);
+        if(tempShop != null){
             if(tempShop.getStatus() == Shop.Status.INACTIVE){
                 tempShop = null;
             }
@@ -97,8 +107,11 @@ public class ShopService {
                 shops.add(item.getShop());
             }
         }
+        //Falta ordenar en base a la localizacion del usuario.
         return shops;
     }
+
+    // Puede que en lugar de ordenar en la funcion anterior haya que ordenar en una funcion diferente. 
 
 
 
