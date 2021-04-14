@@ -67,23 +67,13 @@ public class ShopService {
     // ESPECIAL METHODS (EM)
     // EM - findActiveShopById
     public Shop findActiveShopById(int shopId){
-        Shop tempShop = null;
-        Optional<Shop> foundShop = shopRepo.findById(shopId);
-        if(foundShop.isPresent()){
-            if(foundShop.get().getStatus()== Shop.Status.ACTIVE){
-                tempShop = foundShop.get();
+        Shop tempShop = findShopById(shopId);
+        if(tempShop != null){
+            if(tempShop.getStatus() == Shop.Status.INACTIVE){
+                tempShop = null;
             }
         }
         return tempShop;
-    }
-
-    //EM - Inactive the Shop
-    public boolean inactiveShopById(Shop shop){
-        Shop tempShop = null;
-        if(shopRepo.existsById(shop.getId())){
-            tempShop=shopRepo.save(shop);
-        }
-
     }
 
     // EM - Get shop by user Id
