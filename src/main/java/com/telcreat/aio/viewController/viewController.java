@@ -8,8 +8,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-
-import javax.jws.WebParam;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class viewController {
@@ -20,19 +19,21 @@ public class viewController {
     private final ShopOrderService shopOrderService;
     private final UserService userService;
     private final VariantService variantService;
+    private final CategoryService categoryService;
 
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.shopOrderService = shopOrderService;
         this.userService = userService;
         this.variantService = variantService;
+        this.categoryService = categoryService;
     }
 
-    //Página de registro y login
+    //Register and Login page
 
     @RequestMapping(value = "/register" , method = RequestMethod.GET)
     public String register(ModelMap modelMap){
@@ -47,7 +48,7 @@ public class viewController {
 
     @RequestMapping(value = "/register/send", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
     public String recieveLogin(@ModelAttribute User user, ModelMap modelMap){
-        //función
+        //Login Service
         return "redirect:/";
     }
 
@@ -60,5 +61,22 @@ public class viewController {
         return "redirect:/";
     }
 
-    //Página de nisupu
+
+    // HomePage View
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String homePage(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+                           @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
+                           ModelMap modelMap){
+        // Debug
+        //modelMap.addAttribute("categoryId", categoryId);
+        //modelMap.addAttribute("itemName", itemName);
+
+        // Item Search - Item List based on Category and Name search
+        modelMap.addAttribute("itemSearch", itemService.getItemsContainsName(itemName, categoryId));
+        modelMap.addAttribute("categories", categoryService.findAllCategories());
+
+
+
+        return "index";
+    }
 }
