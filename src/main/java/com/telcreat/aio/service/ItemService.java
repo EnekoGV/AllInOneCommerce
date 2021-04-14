@@ -5,7 +5,6 @@ import com.telcreat.aio.repo.ItemRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -96,7 +95,7 @@ public class ItemService {
 
     public List<Item> getItemsContainsName(String itemName, int itemCategoryId){
 
-        return itemRepo.findItemsByItemCategory_IdAndName(itemCategoryId,itemName);
+        return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
 
     }
 
