@@ -1,21 +1,29 @@
 package com.telcreat.aio.service;
 
+import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.Optional;
 
 @Service
-public class UserService {
+public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
+    private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     @Autowired
     public UserService(UserRepo userRepo){
         this.userRepo = userRepo;
+        bCryptPasswordEncoder = new BCryptPasswordEncoder();
     }
 
     //BASIC method findAllUsers, returns a List of all users
@@ -58,5 +66,27 @@ public class UserService {
         }
         return deleted;
     }
+
+    @Override
+    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
+
+        final Optional<User> optionalUser = userRepo.findUserByEmailIs(email);
+
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        }
+        else {
+            throw new UsernameNotFoundException(MessageFormat.format("User with email {0} cannot be found.", email));
+        }
+    }
+
+    void signUpUser(User user) {
+
+        final String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
+        user.setPassword(encryptedPassword);
+        User savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), new Picture(), user.getAddressStreet(), user.getAddressNumber(), user.getAddressFlat(), user.getAddressDoor(), user.getAddressCountry(), user.getPostCode(), user.getAddressCity(), user.getAddressRegion(), user.getFavouriteShops(), user.getUserRole()));
+
+    }
+
 
 }
