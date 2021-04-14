@@ -22,7 +22,7 @@ public class Cart {
     private int id;
 
     @ManyToMany
-    private List<Item> items;
+    private List<Variant> variants;
 
     @OneToOne
     private User user;

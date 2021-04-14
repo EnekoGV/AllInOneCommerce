@@ -27,7 +27,7 @@ public class Item {
     private Category itemCategory;
 
     @OneToMany
-    private List<Picture> picture; // Revisar la revisión dónde va
+    private List<Picture> picture; // Revisar la relación dónde va
 
     private String shortDescription;
     private String longDescription;
@@ -35,7 +35,7 @@ public class Item {
     private String name;
     private LocalDateTime creationDateTime = LocalDateTime.now();
 
-    private enum Status{
+    public enum Status{
         ACTIVE,
         INACTIVE
     }

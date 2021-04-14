@@ -27,12 +27,12 @@ public class  ShopOrder {
     private User user;
 
     @ManyToMany
-    private List<Item> items;
+    private List<Variant> variants;
 
     private LocalDateTime orderingDateTime = LocalDateTime.now();
     private float price;
 
-    private enum ShopOrderStatus{
+    public enum ShopOrderStatus{
         DELIVERED,
         ON_THE_WAY,
         PREPARING,
@@ -44,4 +44,11 @@ public class  ShopOrder {
 
     private ShopOrderStatus shopOrderStatus;
 
+    public ShopOrder(Shop shop, User user, List<Variant> variants, float price, ShopOrderStatus shopOrderStatus) {
+        this.shop = shop;
+        this.user = user;
+        this.variants = variants;
+        this.price = price;
+        this.shopOrderStatus = shopOrderStatus;
+    }
 }
