@@ -35,25 +35,25 @@ public class viewController {
 
     //Register and Login page
 
-    @RequestMapping(value = "/register" , method = RequestMethod.GET)
-    public String register(ModelMap modelMap){
+    @RequestMapping(value = "/auth" , method = RequestMethod.GET)
+    public String registerView(ModelMap modelMap){
 
         User login = new User();
         User signup = new User();
         modelMap.addAttribute("login", login);
         modelMap.addAttribute("signup", signup);
 
-        return "register";
+        return "auth";
     }
 
-    @RequestMapping(value = "/register/send", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
-    public String recieveLogin(@ModelAttribute User user, ModelMap modelMap){
+    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
+    public String receiveLogin(@ModelAttribute User user, ModelMap modelMap){
         //Login Service
         return "redirect:/";
     }
 
-    @RequestMapping(value = "/register/register", method = RequestMethod.POST)
-    public String reciveRegister(@ModelAttribute User user, ModelMap modelMap){
+    @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
+    public String receiveRegister(@ModelAttribute User user, ModelMap modelMap){
         if(userService.createUser(user) != null)
             modelMap.clear();
         else
@@ -62,9 +62,10 @@ public class viewController {
     }
 
 
-    // HomePage View
+    // Search View
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String homePage(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+    public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+                           @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
                            @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
                            ModelMap modelMap){
         // Debug
@@ -72,12 +73,12 @@ public class viewController {
         //modelMap.addAttribute("itemName", itemName);
 
         // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("itemSearch", itemService.getItemsContainsName(itemName, categoryId));
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         // SHOP LIST IS PENDING
 
 
-        return "index"; // Return HomePage index.html view
+        return "search"; // Return Search search.html view
     }
 }
