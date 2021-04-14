@@ -24,7 +24,7 @@ public class UserService {
     }
 
     //BASIC method findUserById, returns de user or a null object if not found
-    public User getUserById(int id){
+    public User findUserById(int id){
         User userTemp = null;
         Optional<User> foundUser = userRepo.findById(id);
         if(foundUser.isPresent())
