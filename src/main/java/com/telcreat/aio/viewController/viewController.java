@@ -73,10 +73,11 @@ public class viewController {
 
         // Item Search - Item List based on Category and Name search
         modelMap.addAttribute("itemSearch", itemService.getItemsContainsName(itemName, categoryId));
-        modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+
+        // SHOP LIST IS PENDING
 
 
-
-        return "index";
+        return "index"; // Return HomePage index.html view
     }
 }
