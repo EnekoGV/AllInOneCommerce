@@ -70,8 +70,10 @@ public class viewController {
 
     @RequestMapping(value = "/auth/verification", method = RequestMethod.GET)
     public String tokenVerificationView(@RequestParam(name = "token") String token,
+                                    @RequestParam(name = "verificationError", required = false, defaultValue = "false") boolean verificationError,
                                     ModelMap modelMap){
         modelMap.addAttribute("token", token);
+        modelMap.addAttribute("verificationError", verificationError);
 
         return "verification";
     }
@@ -85,7 +87,7 @@ public class viewController {
             return "redirect:/auth?OK";
         }
         else{
-            return "redirect:/auth?ERROR";
+            return "redirect:/auth/verification?token=" + token + "&verificationError=true";
         }
     }
 
