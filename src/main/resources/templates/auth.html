@@ -16,7 +16,7 @@
 </form>
 
 <h1>REGISTER</h1>
-<form th:action="@{/auth/register}" method="post" th:object="${signup}"> <!--//todo lo que use th: con su simbolo dinamico-->
+<form th:action="@{/auth/register}" method="post" th:object="${signup}"> <!--// lo que use th: con su simbolo dinamico-->
     <label>
         <input type="text" th:field="*{alias}" placeholder="Type your alias"> <br/>
         <input type="text" th:field="*{name}" placeholder="Type your name"> <br/>
