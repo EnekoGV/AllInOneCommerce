@@ -36,14 +36,18 @@ public class viewController {
     //Register and Login page
 
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
-    public String registerView(@RequestParam(name = "error", required = false, defaultValue = "false") boolean loginError, // Control param for login error
+    public String registerView(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
+                               @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
                                ModelMap modelMap){
 
         User login = new User();
         User signup = new User();
         modelMap.addAttribute("login", login);
         modelMap.addAttribute("signup", signup);
+
+        // Error control params
         modelMap.addAttribute("loginError", loginError); // Control param to display error message
+        modelMap.addAttribute("registrationError", registrationError); // Control param to display error message
 
         return "auth";
     }
@@ -53,8 +57,8 @@ public class viewController {
         if(userService.signUpUser(user) != null)
             modelMap.clear();
         else
-            return "redirect:/auth/fail";
-        return "redirect:/auth/OK";
+            return "redirect:/auth?registrationError=true";
+        return "redirect:/auth";
     }
 
 
@@ -64,9 +68,6 @@ public class viewController {
                            @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
                            @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
                            ModelMap modelMap){
-        // Debug
-        //modelMap.addAttribute("categoryId", categoryId);
-        //modelMap.addAttribute("itemName", itemName);
 
         // Item Search - Item List based on Category and Name search
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));

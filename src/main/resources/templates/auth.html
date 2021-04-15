@@ -26,6 +26,8 @@
         <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
     </label>
     <button type="submit">Sign Up</button>
+    <p th:if="${registrationError}">Current email address already in use. Please try with another email address.</p>
+
 
 </form>
 </body>
