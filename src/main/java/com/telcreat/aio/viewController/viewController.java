@@ -1,5 +1,6 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,4 +81,24 @@ public class viewController {
 
         return "search"; // Return Search search.html view
     }
+
+    //Shop edit view
+
+   /* @RequestMapping(value = "/shop", method = RequestMethod.GET)
+    public String shopEditView(ModelMap modelMap){
+        User user =userService.getLoggedUser();
+        //Shop shop =shopService.findShopByUser_Id(user.getId())
+        //modelMap.addAttribute("shop", shop);
+        return "shop";
+    }*/
+
+    @RequestMapping(value = "/shop/edit", method = RequestMethod.POST)
+    public String receiveEditedShop(@ModelAttribute Shop shop, ModelMap modelMap){
+       /* if(shopService.updateShop != null)
+            modelMap.clear();
+        else
+            return "redirect:/shop/edit/fail";*/
+        return "redirect:/shop/edit/OK";
+    }
+
 }
