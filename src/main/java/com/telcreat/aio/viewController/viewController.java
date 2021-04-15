@@ -36,29 +36,25 @@ public class viewController {
     //Register and Login page
 
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
-    public String registerView(ModelMap modelMap){
+    public String registerView(@RequestParam(name = "error", required = false, defaultValue = "false") boolean loginError, // Control param for login error
+                               ModelMap modelMap){
 
         User login = new User();
         User signup = new User();
         modelMap.addAttribute("login", login);
         modelMap.addAttribute("signup", signup);
+        modelMap.addAttribute("loginError", loginError); // Control param to display error message
 
         return "auth";
     }
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
-    public String receiveLogin(@ModelAttribute User user, ModelMap modelMap){
-        //Login Service
-        return "redirect:/";
-    }
-
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
     public String receiveRegister(@ModelAttribute User user, ModelMap modelMap){
-        if(userService.createUser(user) != null)
+        if(userService.signUpUser(user) != null)
             modelMap.clear();
         else
-            return "redirect:/fail";
-        return "redirect:/";
+            return "redirect:/auth/fail";
+        return "redirect:/auth/OK";
     }
 
 
@@ -75,6 +71,9 @@ public class viewController {
         // Item Search - Item List based on Category and Name search
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+
+        // DISPLAY LOGGED IN USER'S NAME
+        modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
 
         // SHOP LIST IS PENDING
 

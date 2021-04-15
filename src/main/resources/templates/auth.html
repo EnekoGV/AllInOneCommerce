@@ -6,16 +6,17 @@
 </head>
 <body>
 <h1>LOGIN</h1>
-<form th:action="@{./auth/send}" method="post" th:object="${login}"> <!--//todo lo que use th: con su simbolo dinamico-->
+<form th:action="@{/auth}" method="post" th:object="${login}">
     <label>
         <input type="text" th:field="*{email}" placeholder="Type your email"> <br/>
         <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
     </label>
     <button type="submit">Log In</button>
+    <p th:if="${loginError}">Incorrect login credentials. Try again.</p>
 </form>
 
 <h1>REGISTER</h1>
-<form th:action="@{./auth/register}" method="post" th:object="${signup}"> <!--//todo lo que use th: con su simbolo dinamico-->
+<form th:action="@{/auth/register}" method="post" th:object="${signup}"> <!--//todo lo que use th: con su simbolo dinamico-->
     <label>
         <input type="text" th:field="*{alias}" placeholder="Type your alias"> <br/>
         <input type="text" th:field="*{name}" placeholder="Type your name"> <br/>

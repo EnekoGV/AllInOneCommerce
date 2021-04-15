@@ -19,7 +19,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-@Builder
 
 
 public class User implements UserDetails {
@@ -40,8 +39,6 @@ public class User implements UserDetails {
     @OneToOne
     private Picture picture;
 
-    private LocalDateTime registrationDateTime = LocalDateTime.now();
-
     private String addressStreet;
     private String addressNumber;
     private String addressFlat;
@@ -54,19 +51,39 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-    private UserRole userRole = UserRole.CLIENT;
 
     public enum UserRole{
         CLIENT,
         OWNER,
         ADMIN
-    };
+    }
 
+    // Default values in creation
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
     private boolean locked = false;
-
     private boolean enabled = true;
+    private UserRole userRole = UserRole.CLIENT;
 
 
+
+    public User(String alias, String name, String lastName, LocalDate birthDay, String email, String password, Picture picture, String addressStreet, String addressNumber, String addressFlat, String addressDoor, String addressCountry, int postCode, String addressCity, String addressRegion, List<Shop> favouriteShops) {
+        this.alias = alias;
+        this.name = name;
+        this.lastName = lastName;
+        this.birthDay = birthDay;
+        this.email = email;
+        this.password = password;
+        this.picture = picture;
+        this.addressStreet = addressStreet;
+        this.addressNumber = addressNumber;
+        this.addressFlat = addressFlat;
+        this.addressDoor = addressDoor;
+        this.addressCountry = addressCountry;
+        this.postCode = postCode;
+        this.addressCity = addressCity;
+        this.addressRegion = addressRegion;
+        this.favouriteShops = favouriteShops;
+    }
 
     ////////////////////////////
 
@@ -101,29 +118,4 @@ public class User implements UserDetails {
         return enabled;
     }
 
-    public enum Status{
-        ACTIVE,
-        INACTIVE
-    }
-
-
-    public User(String alias, String name, String lastName, LocalDate birthDay, String email, String password, Picture picture, String addressStreet, String addressNumber, String addressFlat, String addressDoor, String addressCountry, int postCode, String addressCity, String addressRegion, List<Shop> favouriteShops, UserRole userRole) {
-        this.alias = alias;
-        this.name = name;
-        this.lastName = lastName;
-        this.birthDay = birthDay;
-        this.email = email;
-        this.password = password;
-        this.picture = picture;
-        this.addressStreet = addressStreet;
-        this.addressNumber = addressNumber;
-        this.addressFlat = addressFlat;
-        this.addressDoor = addressDoor;
-        this.addressCountry = addressCountry;
-        this.postCode = postCode;
-        this.addressCity = addressCity;
-        this.addressRegion = addressRegion;
-        this.favouriteShops = favouriteShops;
-        this.userRole = userRole;
-    }
 }

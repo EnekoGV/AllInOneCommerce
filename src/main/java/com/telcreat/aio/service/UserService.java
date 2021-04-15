@@ -4,6 +4,9 @@ import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.AnonymousAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -43,7 +46,7 @@ public class UserService implements UserDetailsService {
     //BASIC method createUser, returns new user if created or null if not
     public User createUser(User newUser){
         User userTemp = null;
-        Optional<User> foundUser = userRepo.findUserByEmailIs(newUser.getEmail());
+        Optional<User> foundUser = userRepo.findUserByEmail(newUser.getEmail());
         if(!userRepo.existsById(newUser.getId()) && !foundUser.isPresent())
             userTemp = userRepo.save(newUser);
         return userTemp;
@@ -70,7 +73,7 @@ public class UserService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-        final Optional<User> optionalUser = userRepo.findUserByEmailIs(email);
+        final Optional<User> optionalUser = userRepo.findUserByEmail(email);
 
         if (optionalUser.isPresent()) {
             return optionalUser.get();
@@ -80,13 +83,31 @@ public class UserService implements UserDetailsService {
         }
     }
 
-    void signUpUser(User user) {
+    public User signUpUser(User user) {
+        User savedUser;
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
 
-        final String encryptedPassword = bCryptPasswordEncoder.encode(user.getPassword());
-        user.setPassword(encryptedPassword);
-        User savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), new Picture(), user.getAddressStreet(), user.getAddressNumber(), user.getAddressFlat(), user.getAddressDoor(), user.getAddressCountry(), user.getPostCode(), user.getAddressCity(), user.getAddressRegion(), user.getFavouriteShops(), user.getUserRole()));
-
+        return savedUser;
     }
 
+    public User getLoggedUser(){
+        User loggedUser = null;
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!(authentication instanceof AnonymousAuthenticationToken)) {
+            String currentUserName = authentication.getName();
+            loggedUser = findUserByEmail(currentUserName);
+        }
+        return loggedUser;
+    }
+
+    public User findUserByEmail(String email){
+        User tempUser = null;
+        Optional<User> foundUser = userRepo.findUserByEmail(email);
+        if(foundUser.isPresent()){
+            tempUser = foundUser.get();
+        }
+        return tempUser;
+    }
 
 }
