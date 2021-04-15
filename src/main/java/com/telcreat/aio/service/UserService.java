@@ -99,26 +99,23 @@ public class UserService implements UserDetailsService {
         savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
         if (savedUser!=null){
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
-            emailSender.send(savedUser.getEmail(), verificationToken.getVerificationCode());
+            emailSender.send(savedUser.getEmail(), verificationToken.getCode());
         }
         return savedUser;
     }
 
     public boolean validateUser(String token, String code){
         boolean control = false;
-        VerificationToken tempVerificationToken;
-        Optional<VerificationToken> foundVerificationToken = verificationTokenRepo.findById(token);
+        VerificationToken foundVerificationToken = verificationTokenService.findVerificationTokenById(token);
 
-        if (foundVerificationToken.isPresent()){
-            tempVerificationToken = foundVerificationToken.get();
-            if (tempVerificationToken.getToken().equals(token) && tempVerificationToken.getVerificationCode().equals(code)){
+        if (foundVerificationToken!=null){
+            if (foundVerificationToken.getToken().equals(token) && foundVerificationToken.getCode().equals(code)){
                 control = true;
-                User tempUser = tempVerificationToken.getUser();
+                User tempUser = foundVerificationToken.getUser();
                 tempUser.setEnabled(true);
                 userRepo.save(tempUser);
-                verificationTokenRepo.deleteById(token);
+                verificationTokenService.deleteVerificationToken(token);
             }
-
         }
 
         return control;

@@ -66,5 +66,14 @@ public class VerificationTokenService {
         return token;
     }
 
+    public VerificationToken findVerificationTokenById(String token){
+        VerificationToken tempVerificationToken = null;
+        Optional<VerificationToken> foundVerificationToken = verificationTokenRepo.findById(token);
+        if (foundVerificationToken.isPresent()){
+            tempVerificationToken = foundVerificationToken.get();
+        }
+        return tempVerificationToken;
+    }
+
 
 }
