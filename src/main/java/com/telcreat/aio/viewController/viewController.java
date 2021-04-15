@@ -35,8 +35,28 @@ public class viewController {
         this.verificationTokenService = verificationTokenService;
     }
 
-    //Register and Login page
 
+    // Search View
+    @RequestMapping(value = "/", method = RequestMethod.GET)
+    public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+                             @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
+                             @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
+                             ModelMap modelMap){
+
+        // Item Search - Item List based on Category and Name search
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
+        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+
+        // DISPLAY LOGGED IN USER'S NAME
+        modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
+
+        // SHOP LIST IS PENDING
+
+        return "search"; // Return Search search.html view
+    }
+
+
+    //Register and Login page
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
     public String registerView(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
                                @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
@@ -72,6 +92,7 @@ public class viewController {
     public String tokenVerificationView(@RequestParam(name = "token") String token,
                                     @RequestParam(name = "verificationError", required = false, defaultValue = "false") boolean verificationError,
                                     ModelMap modelMap){
+
         modelMap.addAttribute("token", token);
         modelMap.addAttribute("verificationError", verificationError);
 
@@ -82,6 +103,7 @@ public class viewController {
     public String receiveTokenVerification(@RequestParam(name = "token") String token,
                                            @RequestParam(name = "code") String code,
                                            ModelMap modelMap){
+
         boolean control = userService.validateUser(token, code);
         if (control){
             return "redirect:/auth?OK";
@@ -92,22 +114,27 @@ public class viewController {
     }
 
 
-    // Search View
-    @RequestMapping(value = "/", method = RequestMethod.GET)
-    public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
-                           @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
-                           @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
-                           ModelMap modelMap){
+    // View and edit profile
+    @RequestMapping(value = "/user", method = RequestMethod.GET)
+    public String viewAndEditProfile(@RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
+                                     @RequestParam(name = "userId") int userId,
+                                     @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                     ModelMap modelMap){
+        modelMap.clear();
 
-        // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
-        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
-
-        // DISPLAY LOGGED IN USER'S NAME
-        modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
-
-        // SHOP LIST IS PENDING
-
-        return "search"; // Return Search search.html view
+        if (userService.getLoggedUser().getId() == userId){
+            modelMap.addAttribute("user", userService.findUserById(userId));
+            modelMap.addAttribute("edit", edit);
+            modelMap.addAttribute("updateError", updateError);
+            return "editUser";
+        }else{
+            return "redirect:/";
+        }
     }
+
+/*    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public String updateProfile(ModelMap modelMap){
+
+    }*/
+
 }

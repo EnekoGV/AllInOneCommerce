@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+<h1>VIEW AND EDIT MY PROFILE</h1>
+
+<form th:action="@{/user}" method="get">
+    <input type="hidden" id="userId" name="userId" th:value="${user.id}">
+    <input type="hidden" id="edit" name="edit" th:value="${!edit}">
+    <button th:if="${!edit}" type="submit">Enable edition</button>
+    <button th:if="${edit}" type="submit">Disable edition</button>
+</form>
+
+<form th:object="${user}" method="post">
+    Alias: <input type="text" th:field="*{alias}" th:disabled="${edit == false}"><br/>
+    Name: <input type="text" th:field="*{name}" th:disabled="${edit == false}"><br/>
+    Last name: <input type="text" th:field="*{lastName}" th:disabled="${edit == false}"><br/>
+    Birthday: <input type="date" th:field="*{birthDay}" th:disabled="${edit == false}"><br/>
+    Email: <input type="email" th:field="*{email}" th:disabled="${edit == false}"><br/>
+    Password: <input type="password" th:field="*{password}" th:disabled="${edit == false}"><br/>
+
+    Street: <input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}"><br/>
+    Number: <input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}"><br/>
+    Floor: <input type="text" th:field="*{addressFlat}" th:disabled="${edit == false}"><br/>
+    Door: <input type="text" th:field="*{addressDoor}" th:disabled="${edit == false}"><br/>
+    City: <input type="text" th:field="*{addressCity}" th:disabled="${edit == false}"><br/>
+    Postcode: <input type="text" th:field="*{postCode}" th:disabled="${edit == false}"><br/>
+    Region: <input type="text" th:field="*{addressRegion}" th:disabled="${edit == false}"><br/>
+    Country: <input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}"><br/>
+
+</form>
+
+</body>
+</html>
