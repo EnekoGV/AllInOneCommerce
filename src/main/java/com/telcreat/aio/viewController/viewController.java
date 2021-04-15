@@ -20,10 +20,11 @@ public class viewController {
     private final UserService userService;
     private final VariantService variantService;
     private final CategoryService categoryService;
+    private final VerificationTokenService verificationTokenService;
 
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
@@ -31,34 +32,63 @@ public class viewController {
         this.userService = userService;
         this.variantService = variantService;
         this.categoryService = categoryService;
+        this.verificationTokenService = verificationTokenService;
     }
 
     //Register and Login page
 
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
-    public String registerView(ModelMap modelMap){
+    public String registerView(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
+                               @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
+                               ModelMap modelMap){
 
         User login = new User();
         User signup = new User();
         modelMap.addAttribute("login", login);
         modelMap.addAttribute("signup", signup);
 
-        return "auth";
-    }
+        // Error control params
+        modelMap.addAttribute("loginError", loginError); // Control param to display error message
+        modelMap.addAttribute("registrationError", registrationError); // Control param to display error message
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
-    public String receiveLogin(@ModelAttribute User user, ModelMap modelMap){
-        //Login Service
-        return "redirect:/";
+        return "auth";
     }
 
     @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
     public String receiveRegister(@ModelAttribute User user, ModelMap modelMap){
-        if(userService.createUser(user) != null)
+        User newUser = userService.signUpUser(user);
+        String token;
+        if(newUser != null) {
+            token = verificationTokenService.findTokenByUserId(newUser.getId());
             modelMap.clear();
-        else
-            return "redirect:/fail";
-        return "redirect:/";
+            return "redirect:/auth/verification?token=" + token;
+        }
+        else {
+            return "redirect:/auth?registrationError=true";
+        }
+    }
+
+    @RequestMapping(value = "/auth/verification", method = RequestMethod.GET)
+    public String tokenVerificationView(@RequestParam(name = "token") String token,
+                                    @RequestParam(name = "verificationError", required = false, defaultValue = "false") boolean verificationError,
+                                    ModelMap modelMap){
+        modelMap.addAttribute("token", token);
+        modelMap.addAttribute("verificationError", verificationError);
+
+        return "verification";
+    }
+
+    @RequestMapping(value = "/auth/verification", method = RequestMethod.POST)
+    public String receiveTokenVerification(@RequestParam(name = "token") String token,
+                                           @RequestParam(name = "code") String code,
+                                           ModelMap modelMap){
+        boolean control = userService.validateUser(token, code);
+        if (control){
+            return "redirect:/auth?OK";
+        }
+        else{
+            return "redirect:/auth/verification?token=" + token + "&verificationError=true";
+        }
     }
 
 
@@ -68,16 +98,15 @@ public class viewController {
                            @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
                            @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
                            ModelMap modelMap){
-        // Debug
-        //modelMap.addAttribute("categoryId", categoryId);
-        //modelMap.addAttribute("itemName", itemName);
 
         // Item Search - Item List based on Category and Name search
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
-        // SHOP LIST IS PENDING
+        // DISPLAY LOGGED IN USER'S NAME
+        modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
 
+        // SHOP LIST IS PENDING
 
         return "search"; // Return Search search.html view
     }
