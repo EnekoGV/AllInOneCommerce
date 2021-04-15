@@ -61,7 +61,7 @@ public class User implements UserDetails {
     // Default values in creation
     private LocalDateTime registrationDateTime = LocalDateTime.now();
     private boolean locked = false;
-    private boolean enabled = true;
+    private boolean enabled = false;
     private UserRole userRole = UserRole.CLIENT;
 
 

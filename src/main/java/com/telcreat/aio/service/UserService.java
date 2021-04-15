@@ -2,7 +2,9 @@ package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.repo.UserRepo;
+import com.telcreat.aio.repo.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,12 +23,19 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
+    private final VerificationTokenRepo verificationTokenRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final VerificationTokenService verificationTokenService;
+    private final SendEmail emailSender;
+
 
     @Autowired
-    public UserService(UserRepo userRepo){
+    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo){
         this.userRepo = userRepo;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.verificationTokenService = verificationTokenService;
+        emailSender = new SendEmail();
+        this.verificationTokenRepo = verificationTokenRepo;
     }
 
     //BASIC method findAllUsers, returns a List of all users
@@ -85,10 +94,34 @@ public class UserService implements UserDetailsService {
 
     public User signUpUser(User user) {
         User savedUser;
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
 
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
+        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
+        if (savedUser!=null){
+            VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
+            //emailSender.send(savedUser.getEmail(), verificationToken.getVerificationCode());
+        }
         return savedUser;
+    }
+
+    public boolean validateUser(String token, String code){
+        boolean control = false;
+        VerificationToken tempVerificationToken;
+        Optional<VerificationToken> foundVerificationToken = verificationTokenRepo.findById(token);
+
+        if (foundVerificationToken.isPresent()){
+            tempVerificationToken = foundVerificationToken.get();
+            if (tempVerificationToken.getToken().equals(token) && tempVerificationToken.getVerificationCode().equals(code)){
+                control = true;
+                User tempUser = tempVerificationToken.getUser();
+                tempUser.setEnabled(true);
+                userRepo.save(tempUser);
+                verificationTokenRepo.deleteById(token);
+            }
+
+        }
+
+        return control;
     }
 
     public User getLoggedUser(){

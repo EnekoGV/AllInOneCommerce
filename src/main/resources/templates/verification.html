@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+<form th:action="@{/auth/verification}" method="post">
+    <input type="hidden" name="token" th:value="${token}">
+    <input type="text" placeholder="Type your code" name="code" id="code">
+    <button type="submit">Verify my account!</button>
+</form>
+
+</body>
+</html>
