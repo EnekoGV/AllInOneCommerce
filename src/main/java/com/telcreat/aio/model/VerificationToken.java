@@ -19,7 +19,7 @@ public class VerificationToken {
     @Id
     private String token;
 
-    private String verificationCode;
+    private String code;
 
     @OneToOne
     private User user;
