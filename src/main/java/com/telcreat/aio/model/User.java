@@ -33,6 +33,7 @@ public class User implements UserDetails {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
 
+    @Column(unique = true)
     private String email;
     private String password;
 

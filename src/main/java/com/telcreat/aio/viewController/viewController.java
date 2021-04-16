@@ -1,14 +1,13 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.UserEditForm;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class viewController {
@@ -49,6 +48,7 @@ public class viewController {
 
         // DISPLAY LOGGED IN USER'S NAME
         modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
+        modelMap.addAttribute("loggedUserId", userService.getLoggedUser().getId());
 
         // SHOP LIST IS PENDING
 
@@ -120,21 +120,49 @@ public class viewController {
                                      @RequestParam(name = "userId") int userId,
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
-        modelMap.clear();
 
-        if (userService.getLoggedUser().getId() == userId){
-            modelMap.addAttribute("user", userService.findUserById(userId));
-            modelMap.addAttribute("edit", edit);
-            modelMap.addAttribute("updateError", updateError);
+        if (userService.getLoggedUser().getId() == userId){ // Allow editing only each user's profile.
+            User user = userService.findUserById(userId); // We don't send all the information to frontend.
+
+            modelMap.addAttribute("userForm", new UserEditForm(user.getId(), user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getAddressStreet(), user.getAddressNumber(), user.getAddressFlat(), user.getAddressDoor(), user.getAddressCountry(), user.getPostCode(), user.getAddressCity(), user.getAddressRegion()));
+
+            modelMap.addAttribute("edit", edit); // Error message variable
+            modelMap.addAttribute("updateError", updateError); // Error message variable
+
             return "editUser";
         }else{
             return "redirect:/";
         }
     }
 
-/*    @RequestMapping(value = "/user", method = RequestMethod.POST)
-    public String updateProfile(ModelMap modelMap){
+    @RequestMapping(value = "/user", method = RequestMethod.POST)
+    public String updateProfile(@ModelAttribute(name = "userForm") UserEditForm userForm,
+                                ModelMap modelMap){
+        modelMap.clear();
 
-    }*/
+        User user = userService.findUserById(userForm.getId());
+
+        user.setAlias(userForm.getAlias());
+        user.setName(userForm.getName());
+        user.setLastName(userForm.getLastName());
+        user.setBirthDay(userForm.getBirthDay());
+        user.setEmail(userForm.getEmail());
+        user.setAddressStreet(userForm.getAddressStreet());
+        user.setAddressNumber(userForm.getAddressNumber());
+        user.setAddressFlat(userForm.getAddressFlat());
+        user.setAddressDoor(userForm.getAddressDoor());
+        user.setAddressCountry(userForm.getAddressCountry());
+        user.setPostCode(userForm.getPostCode());
+        user.setAddressCity(userForm.getAddressCity());
+        user.setAddressRegion(userForm.getAddressRegion());
+
+
+        if (userForm.getId() == userService.getLoggedUser().getId() && userService.updateUser(user) != null){
+            return "redirect:/user?userId=" + Integer.toString(userService.getLoggedUser().getId());
+        }
+        else{
+            return "redirect:/user?userId=" + Integer.toString(userService.getLoggedUser().getId()) + "&updateError=true";
+        }
+    }
 
 }
