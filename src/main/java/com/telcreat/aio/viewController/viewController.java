@@ -113,6 +113,7 @@ public class viewController {
             return "redirect:/auth?OK";
         }
         else{
+            //noinspection SpringMVCViewInspection
             return "redirect:/auth/verification?token=" + token + "&verificationError=true";
         }
     }
@@ -180,10 +181,12 @@ public class viewController {
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
             }
         }
         else{
+            //noinspection SpringMVCViewInspection
             return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
         }
     }
