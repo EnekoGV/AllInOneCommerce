@@ -188,4 +188,31 @@ public class viewController {
         }
     }
 
+
+    @RequestMapping(value = "/user/uploadPicture", method = RequestMethod.POST)
+    public String uploadUserPicture(@RequestParam(name = "userPicture") MultipartFile file,
+                                    @RequestParam(name = "userId") Integer userId){
+
+        if (userService.getLoggedUser().getId() == userId){
+            String imagePath = fileUploaderService.uploadUserPicture(file,userId, "/user");
+            if(imagePath != null){
+                Picture newPicture = new Picture(imagePath); // Create Picture object
+                Picture savedPicture = pictureService.createPicture(newPicture); // Save picture object
+                User loggedUser = userService.getLoggedUser(); // Obtain Logged User
+                loggedUser.setPicture(savedPicture); // Set new Image to Logged User
+                userService.updateUser(loggedUser); // Update logged User in DB
+
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Return to User View
+            }
+            else{
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+            }
+
+        }
+        else{
+            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+        }
+
+    }
+
 }
