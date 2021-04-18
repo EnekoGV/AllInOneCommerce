@@ -1,7 +1,9 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Item;
+import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.ItemRepo;
+import com.telcreat.aio.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -47,7 +49,7 @@ public class ItemService {
 
     // Basic method - Update Item
     // Returns Updated Item if found and Null if not found
-    public Item updateUser(Item item){
+    public Item updateItem(Item item){
         Item tempItem = null;
         if (itemRepo.existsById(item.getId())){
             tempItem = itemRepo.save(item);
@@ -57,7 +59,7 @@ public class ItemService {
 
     // Basic method - Delete Item
     // Returns TRUE if deleted and FALSE if not
-    public boolean deleteUserById(int itemId){
+    public boolean deleteItemById(int itemId){
         boolean control = false;
         if (itemRepo.existsById(itemId)){
             itemRepo.deleteById(itemId);
@@ -98,11 +100,25 @@ public class ItemService {
         return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
 
     }
-
-
         // Find Items By Shop
     public List<Item> findAllItemsByShop(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
     }
 
+    public Item deactivateItem(Item item){
+        Item itemTemp = null;
+        if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
+            itemTemp=item;
+
+            VariantService variantService;
+            List<Variant> variants = variantService.findVariantByItemId(itemTemp.getId());
+            for (Variant variant:variants) {
+                variantService.deactivateVariant(variant);
+            }
+
+            itemTemp.setStatus(Item.Status.valueOf("INACTIVE"));
+            itemRepo.save(itemTemp);
+        }
+        return itemTemp;
+    }
 }
