@@ -35,5 +35,14 @@
     <button th:if="${edit == true}" type="submit">Update my profile!</button>
 </form>
 
+
+<img th:src="@{(${userAvatar})}">
+
+<form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">
+    <input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png">
+    <button type="submit">Update image!</button>
+</form>
+
 </body>
 </html>
