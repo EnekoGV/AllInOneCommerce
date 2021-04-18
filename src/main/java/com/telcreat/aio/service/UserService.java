@@ -27,15 +27,17 @@ public class UserService implements UserDetailsService {
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final VerificationTokenService verificationTokenService;
     private final SendEmail emailSender;
+    private final PictureService pictureService;
 
 
     @Autowired
-    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo){
+    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService){
         this.userRepo = userRepo;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.verificationTokenService = verificationTokenService;
         emailSender = new SendEmail();
         this.verificationTokenRepo = verificationTokenRepo;
+        this.pictureService = pictureService;
     }
 
     //BASIC method findAllUsers, returns a List of all users
@@ -96,7 +98,10 @@ public class UserService implements UserDetailsService {
         User savedUser;
 
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
-        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
+        Picture newPicture = new Picture("");
+        Picture savedPicture = pictureService.createPicture(newPicture);
+        user.setPicture(savedPicture);
+        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), user.getPicture(), "", "", "", "", "", 0, "", "", null));
         if (savedUser!=null){
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
             emailSender.send(savedUser.getEmail(), verificationToken.getCode());
