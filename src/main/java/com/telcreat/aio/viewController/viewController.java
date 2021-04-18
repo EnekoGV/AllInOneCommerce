@@ -1,5 +1,6 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.UserEditForm;
 import com.telcreat.aio.service.*;
@@ -8,6 +9,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 @Controller
 public class viewController {
@@ -20,10 +22,11 @@ public class viewController {
     private final VariantService variantService;
     private final CategoryService categoryService;
     private final VerificationTokenService verificationTokenService;
+    private final FileUploaderService fileUploaderService;
 
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
@@ -32,6 +35,7 @@ public class viewController {
         this.variantService = variantService;
         this.categoryService = categoryService;
         this.verificationTokenService = verificationTokenService;
+        this.fileUploaderService = fileUploaderService;
     }
 
 
@@ -124,7 +128,21 @@ public class viewController {
         if (userService.getLoggedUser().getId() == userId){ // Allow editing only each user's profile.
             User user = userService.findUserById(userId); // We don't send all the information to frontend.
 
-            modelMap.addAttribute("userForm", new UserEditForm(user.getId(), user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getAddressStreet(), user.getAddressNumber(), user.getAddressFlat(), user.getAddressDoor(), user.getAddressCountry(), user.getPostCode(), user.getAddressCity(), user.getAddressRegion()));
+            modelMap.addAttribute("userAvatar", user.getPicture().getPath());
+            modelMap.addAttribute("userForm", new UserEditForm(user.getId(),
+                    user.getAlias(),
+                    user.getName(),
+                    user.getLastName(),
+                    user.getBirthDay(),
+                    user.getEmail(),
+                    user.getAddressStreet(),
+                    user.getAddressNumber(),
+                    user.getAddressFlat(),
+                    user.getAddressDoor(),
+                    user.getAddressCountry(),
+                    user.getPostCode(),
+                    user.getAddressCity(),
+                    user.getAddressRegion()));
 
             modelMap.addAttribute("edit", edit); // Error message variable
             modelMap.addAttribute("updateError", updateError); // Error message variable
@@ -156,12 +174,17 @@ public class viewController {
         user.setAddressCity(userForm.getAddressCity());
         user.setAddressRegion(userForm.getAddressRegion());
 
-
-        if (userForm.getId() == userService.getLoggedUser().getId() && userService.updateUser(user) != null){
-            return "redirect:/user?userId=" + Integer.toString(userService.getLoggedUser().getId());
+        if (userForm.getId() == userService.getLoggedUser().getId()){
+            User tempUser = userService.updateUser(user);
+            if (tempUser != null){
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId();
+            }
+            else{
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+            }
         }
         else{
-            return "redirect:/user?userId=" + Integer.toString(userService.getLoggedUser().getId()) + "&updateError=true";
+            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
         }
     }
 
