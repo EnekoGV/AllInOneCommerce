@@ -3,14 +3,11 @@ package com.telcreat.aio.service;
 import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.ItemRepo;
-import com.telcreat.aio.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
-
-import static org.thymeleaf.util.StringUtils.length;
 
 @Service
 public class ItemService {
@@ -112,7 +109,7 @@ public class ItemService {
         if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
             itemTemp=item;
 
-            List<Variant> variants = variantService.findVariantByItemId(itemTemp.getId());
+            List<Variant> variants = variantService.findVariantsByItemId(itemTemp.getId());
             for (Variant variant:variants) {
                 variantService.deactivateVariant(variant);
             }

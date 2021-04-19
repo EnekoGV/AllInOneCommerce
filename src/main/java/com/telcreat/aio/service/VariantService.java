@@ -25,9 +25,9 @@ public class VariantService {
         return variantRepo.findAll();
     }
 
-    /*public List<Variant> findVariantByItemId(int itemId){
+    public List<Variant> findVariantsByItemId(int itemId){
         return variantRepo.findVariantsByItem_Id(itemId);
-    }*/
+    }
 
 
     public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
