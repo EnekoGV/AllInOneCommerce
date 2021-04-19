@@ -6,6 +6,7 @@ import com.telcreat.aio.repo.VariantRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -24,12 +25,18 @@ public class VariantService {
         return variantRepo.findAll();
     }
 
-    public List<Variant> findVariantByItemId(int itemId){
-        return variantRepo.findVariantsByItem_Id(itemId);
+    public List<Variant> findVariantByItemId(int itemId, String status){
+        List<Variant> arrived = variantRepo.findVariantsByItem_Id(itemId);
+        List<Variant> finala = new ArrayList<>();
+        for (int i=0; i<= arrived.size(); i++) {
+            if (arrived.get(i).getStatus().toString().equals(status))
+                finala.add(arrived.get(i));
+        }
+        return finala;
     }
 
     //BASIC method findVariantById, returns de Variant or a null object if not found
-    public Variant findVariantById(int id){
+    public Variant findVariantById(int id){ //cambiar la funcion para que pueda buscar en cuanto al parametro STaTUS
         Variant variantTemp = null;
         Optional<Variant> foundVariant = variantRepo.findById(id);
         if(foundVariant.isPresent())
@@ -62,4 +69,26 @@ public class VariantService {
         }
         return deleted;
     }
+
+    public Variant activateVariant(Variant variant){
+        Variant variantTemp = null;
+        if(variantRepo.existsById(variant.getId()) && variant.getStatus().toString().equals("INACTIVE")){
+            variantTemp=variant;
+            variantTemp.setStatus(Variant.Status.valueOf("ACTIVE"));
+            variantRepo.save(variantTemp);
+        }
+        return variantTemp;
+    }
+    public Variant deactivateVariant(Variant variant){
+        Variant variantTemp = null;
+        if(variantRepo.existsById(variant.getId()) && variant.getStatus().toString().equals("ACTIVE")){
+            variantTemp=variant;
+            variantTemp.setStatus(Variant.Status.valueOf("INACTIVE"));
+            variantRepo.save(variantTemp);
+        }
+        return variantTemp;
+    }
+
+
+
 }
