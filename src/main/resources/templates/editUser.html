@@ -35,6 +35,11 @@
     <button th:if="${edit == true}" type="submit">Update my profile!</button>
 </form>
 
+<form th:action="@{/user/changePassword}" method="get">
+    <input type="hidden" id="userIdPassword" name="userId" th:value="${userForm.id}">
+    <button type="submit">Change my password!</button>
+</form>
+
 
 <img th:src="@{(${userAvatar})}">
 
