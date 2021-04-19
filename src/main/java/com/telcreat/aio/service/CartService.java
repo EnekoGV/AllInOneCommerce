@@ -2,6 +2,7 @@ package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Cart;
 import com.telcreat.aio.model.Item;
+import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -66,4 +67,39 @@ public class CartService {
         }
         return control;
     }
+
+    public Cart addToCart(Cart cart, Variant variant){
+
+        List<Variant> variants = cart.getVariants();
+        if(checkStock(variant)){
+            variants.add(variant);
+        }
+        cart.setVariants(variants);
+        return cart;
+
+    }
+
+    public boolean checkStock(Variant variant){
+
+        boolean control = false;
+        if (variant.getStock()>0){
+            control = true;
+        }
+        return control;
+    }
+
+    // Devuelve false si no hay stock de algun item
+    public boolean checkOutCart(Cart cart){
+
+        boolean control = true;
+
+        List<Variant> variants = cart.getVariants();
+        for(Variant variant:variants){
+            if(!checkStock(variant)){
+                control = false;
+            }
+        }
+        return control;
+    }
+
 }
