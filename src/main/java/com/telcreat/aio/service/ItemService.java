@@ -24,7 +24,6 @@ public class ItemService {
 
     // Basic method - Find Item By Id
     public Item findItemById(int itemId){
-
         Item item = null;
         Optional<Item> opt = itemRepo.findById(itemId);
         if(opt.isPresent()){
@@ -95,16 +94,29 @@ public class ItemService {
     }
 
     public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
-
         return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
-
     }
         // Find Items By Shop
-    public List<Item> findAllItemsByShop(int shopId){
+    public List<Item> findItemsByShopId(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
     }
 
-    public Item deactivateItem(Item item){
+    public boolean deactivateItem(Item item){
+        boolean ctrl = false;
+        Item itemTemp = null;
+        if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
+            itemTemp = item;
+            List<Variant> variants = variantService.findVariantsByItemId(itemTemp.getId());
+            for (Variant variant:variants) {
+                variantService.deactivateVariant(variant);
+            }
+            itemTemp.setStatus(Item.Status.valueOf("INACTIVE"));
+            itemRepo.save(itemTemp);
+            ctrl = true;
+        }
+        return ctrl;
+    }
+    /*public Item deactivateItem(Item item){
         Item itemTemp = null;
         if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
             itemTemp=item;
@@ -118,5 +130,5 @@ public class ItemService {
             itemRepo.save(itemTemp);
         }
         return itemTemp;
-    }
+    }*/
 }

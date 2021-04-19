@@ -7,10 +7,11 @@ import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.telcreat.aio.service.RawDBDemoGeoIPLocationService;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Optional;
 
 import static java.lang.Double.parseDouble;
 
@@ -18,6 +19,8 @@ import static java.lang.Double.parseDouble;
 public class ShopService {
 
     private final ShopRepo shopRepo;
+
+    private ItemService itemService;
 
     @Autowired
     public ShopService (ShopRepo shopRepo){
@@ -110,10 +113,10 @@ public class ShopService {
             shop.setStatus(Shop.Status.INACTIVE);
             shopRepo.save(shop);
             ctrl = true;
-            List<Item> shopItems = findItemsByShopId(shop.getId());
+            List<Item> shopItems = itemService.findItemsByShopId(shop.getId());
             for (Item item:shopItems){
                 boolean itemDown = true;
-                itemDown = deactivateItem(item.getId());
+                itemDown = itemService.deactivateItem(item);
                 if (itemDown == false){
                     ctrl = itemDown;
                 }
@@ -123,15 +126,15 @@ public class ShopService {
     }
 
     // EM - Find shops by ItemContainsName an order them based on distance.
-    public List<Shop> orderedShopByItemContainsName(String name, String ip) throws IOException, GeoIp2Exception {
-        List<Shop> shops = findShopsByItemContainsName(name, );
+    public List<Shop> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
+        List<Shop> shops = findShopsByItemContainsName(searchName, itemCategoryId);
         List<Shop> orderedShops = orderShops(shops, ip);
         return orderedShops;
     }
 
     // EM - findShopsByItemContainsName
-    private List<Shop> findShopsByItemContainsName(String name, int itemCategoryId){
-        List<Item> items = findItemsContainsName(name, itemCategoryId);
+    private List<Shop> findShopsByItemContainsName(String serchName, int itemCategoryId){
+        List<Item> items = itemService.findItemsContainsName(serchName, itemCategoryId);
         List<Shop> shops = null;
         for(Item item:items) {
             if (!shops.contains(item.getShop())) {
