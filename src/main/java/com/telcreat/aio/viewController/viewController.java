@@ -1,6 +1,7 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.Picture;
+import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.UserEditForm;
 import com.telcreat.aio.service.*;
@@ -217,6 +218,25 @@ public class viewController {
             return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
         }
 
+    }
+
+    //Shop edit view
+
+   /* @RequestMapping(value = "/shop", method = RequestMethod.GET)
+    public String shopEditView(ModelMap modelMap){
+        User user =userService.getLoggedUser();
+        //Shop shop =shopService.findShopByUser_Id(user.getId())
+        //modelMap.addAttribute("shop", shop);
+        return "shop";
+    }*/
+
+    @RequestMapping(value = "/shop/edit", method = RequestMethod.POST)
+    public String receiveEditedShop(@ModelAttribute Shop shop, ModelMap modelMap){
+       /* if(shopService.updateShop != null)
+            modelMap.clear();
+        else
+            return "redirect:/shop/edit/fail";*/
+        return "redirect:/shop/edit/OK";
     }
 
 }
