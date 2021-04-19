@@ -1,6 +1,5 @@
 package com.telcreat.aio.service;
 
-//import com.telcreat.aio.service.ItemService;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.telcreat.aio.model.GeoIP;
 import com.telcreat.aio.model.Item;
@@ -9,7 +8,6 @@ import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import com.telcreat.aio.service.RawDBDemoGeoIPLocationService;
-import sun.security.util.Length;
 
 import java.io.IOException;
 import java.util.*;
@@ -126,14 +124,14 @@ public class ShopService {
 
     // EM - Find shops by ItemContainsName an order them based on distance.
     public List<Shop> orderedShopByItemContainsName(String name, String ip) throws IOException, GeoIp2Exception {
-        List<Shop> shops = findShopsByItemContainsName(name);
+        List<Shop> shops = findShopsByItemContainsName(name, );
         List<Shop> orderedShops = orderShops(shops, ip);
         return orderedShops;
     }
 
     // EM - findShopsByItemContainsName
-    private List<Shop> findShopsByItemContainsName(String name){
-        List<Item> items = findItemsContainsName(name);
+    private List<Shop> findShopsByItemContainsName(String name, int itemCategoryId){
+        List<Item> items = findItemsContainsName(name, itemCategoryId);
         List<Shop> shops = null;
         for(Item item:items) {
             if (!shops.contains(item.getShop())) {

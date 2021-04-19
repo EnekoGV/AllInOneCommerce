@@ -15,12 +15,14 @@ import static org.thymeleaf.util.StringUtils.length;
 @Service
 public class ItemService {
 
+    private final VariantService variantService;
     private final ItemRepo itemRepo;
     private int code = 23;
 
     @Autowired
-    public ItemService(ItemRepo itemRepo){
+    public ItemService(ItemRepo itemRepo, VariantService variantService){
         this.itemRepo = itemRepo;
+        this.variantService = variantService;
     }
 
     // Basic method - Find Item By Id
@@ -110,7 +112,6 @@ public class ItemService {
         if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
             itemTemp=item;
 
-            VariantService variantService;
             List<Variant> variants = variantService.findVariantByItemId(itemTemp.getId());
             for (Variant variant:variants) {
                 variantService.deactivateVariant(variant);
