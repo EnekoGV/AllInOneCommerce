@@ -1,14 +1,20 @@
 package com.telcreat.aio.service;
 
 //import com.telcreat.aio.service.ItemService;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.telcreat.aio.model.GeoIP;
 import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import com.telcreat.aio.service.RawDBDemoGeoIPLocationService;
+import sun.security.util.Length;
 
-import java.util.List;
-import java.util.Optional;
+import java.io.IOException;
+import java.util.*;
+
+import static java.lang.Double.parseDouble;
 
 @Service
 public class ShopService {
@@ -20,7 +26,7 @@ public class ShopService {
         this.shopRepo = shopRepo;
     }
 
-    // BASIC METHODS (BM)
+    // BASIC METHODS (BM)-----------------------------------------------------------------------------------------------
     // BM - Find All Shops
     public List<Shop> findAllShops(){
         return shopRepo.findAll();
@@ -64,7 +70,7 @@ public class ShopService {
         return control;
     }
 
-    // ESPECIAL METHODS (EM)
+    // ESPECIAL METHODS (EM)--------------------------------------------------------------------------------------------
     // EM - findActiveShopById
     public Shop findActiveShopById(int shopId){
         Shop tempShop = findShopById(shopId);
@@ -88,6 +94,7 @@ public class ShopService {
         return tempShop;
     }
 
+    // EM - Find active shop using userId
     public Shop findActiveShopByUserId(int userId){
         Shop tempShop = findShopByUserId(userId);
         if(tempShop != null){
@@ -98,26 +105,102 @@ public class ShopService {
         return tempShop;
     }
 
-    // EM - getShopsByItemContainsName
-   public List<Shop> getShopsByItemContainsName(){
-        List<Item> items = getItemsContainsName();
+    //EM - Deactivate a Shop and all the items on it.
+    public boolean deactivateShop(Shop shop){
+        boolean ctrl = false;
+        if(shopRepo.existsById(shop.getId())){
+            shop.setStatus(Shop.Status.INACTIVE);
+            shopRepo.save(shop);
+            ctrl = true;
+            List<Item> shopItems = findItemsByShopId(shop.getId());
+            for (Item item:shopItems){
+                boolean itemDown = true;
+                itemDown = deactivateItem(item.getId());
+                if (itemDown == false){
+                    ctrl = itemDown;
+                }
+            }
+        }
+        return ctrl;
+    }
+
+    // EM - Find shops by ItemContainsName an order them based on distance.
+    public List<Shop> orderedShopByItemContainsName(String name, String ip) throws IOException, GeoIp2Exception {
+        List<Shop> shops = findShopsByItemContainsName(name);
+        List<Shop> orderedShops = orderShops(shops, ip);
+        return orderedShops;
+    }
+
+    // EM - findShopsByItemContainsName
+    private List<Shop> findShopsByItemContainsName(String name){
+        List<Item> items = findItemsContainsName(name);
         List<Shop> shops = null;
-        for(Item item:items){
-            if(!shops.contains(item.getShop())){
+        for(Item item:items) {
+            if (!shops.contains(item.getShop())) {
                 shops.add(item.getShop());
             }
         }
-        //Falta ordenar en base a la localizacion del usuario.
         return shops;
     }
 
-    // Puede que en lugar de ordenar en la funcion anterior haya que ordenar en una funcion diferente. 
+    /*
+    public List<Shop> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+        List<Shop> tempshops = null;
+        RawDBDemoGeoIPLocationService locationService = new RawDBDemoGeoIPLocationService();
+        GeoIP location = locationService.getLocation(ip);
+        List<Double> distances = null;
+        for (Shop shop:shops){
+            distances.add(distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude())));
+            tempshops.add(shop);
+        }
+        Collections.sort(distances);
+        return tempshops;
+    }
+*/
+    private List<Shop> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+        List<Shop> tempshops = null;
+        RawDBDemoGeoIPLocationService locationService = new RawDBDemoGeoIPLocationService();
+        GeoIP location = locationService.getLocation(ip);
+        List<Double> distances = null;
+        for (Shop shop:shops){
+            double dist = distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
+            distances.add(dist);
+            Collections.sort(distances);
+
+            //ordenar las tiendas en funcion de la distancia, Hablar con aresti
+            tempshops.add(shop);
+        }
+        Collections.sort(distances);
+
+        return tempshops;
+    }
 
 
 
 
+    // Auxiliar methods used for calculating the distance between two latitude and longitude
+    //
+    private double distance(double lat1, double lon1, double lat2, double lon2) {
+        double theta = lon1 - lon2;
+        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
+        dist = Math.acos(dist);
+        dist = rad2deg(dist);
+        dist = dist * 60 * 1.1515;
+        dist = dist * 1.609344;
+        return (dist);
+    }
 
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*::  This function converts decimal degrees to radians             :*/
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    private double deg2rad(double deg) {
+        return (deg * Math.PI / 180.0);
+    }
 
-
-
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    /*::  This function converts radians to decimal degrees             :*/
+    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+    private double rad2deg(double rad) {
+        return (rad * 180.0 / Math.PI);
+    }
 }
