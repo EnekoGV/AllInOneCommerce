@@ -3,8 +3,10 @@ package com.telcreat.aio.viewController;
 import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.UserEditForm;
+import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -62,7 +64,7 @@ public class viewController {
 
     //Register and Login page
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
-    public String registerView(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
+    public String register(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
                                @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
                                ModelMap modelMap){
 
@@ -93,7 +95,7 @@ public class viewController {
     }
 
     @RequestMapping(value = "/auth/verification", method = RequestMethod.GET)
-    public String tokenVerificationView(@RequestParam(name = "token") String token,
+    public String tokenVerification(@RequestParam(name = "token") String token,
                                     @RequestParam(name = "verificationError", required = false, defaultValue = "false") boolean verificationError,
                                     ModelMap modelMap){
 
@@ -209,12 +211,52 @@ public class viewController {
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Return to User View
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
             }
 
         }
         else{
+            //noinspection SpringMVCViewInspection
             return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+        }
+
+    }
+
+    @RequestMapping(value = "/user/changePassword", method = RequestMethod.GET)
+    public String changeUserPassword(@RequestParam(name = "userId") int userId,
+                                     @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                     ModelMap modelMap){
+        User loggedUser = userService.getLoggedUser();
+        if (loggedUser.getId() == userId){
+            modelMap.addAttribute("userId", userId);
+            modelMap.addAttribute("updateError", updateError);
+            return "changePassword";
+        }
+        else{
+            return "redirect:/";
+        }
+    }
+
+    @RequestMapping(value = "/user/changePassword", method = RequestMethod.POST)
+    public String receiveChangePassword(@RequestParam(name = "userId") int userId,
+                                        @RequestParam(name = "newPassword") String newPassword,
+                                        @RequestParam(name = "repeatPassword") String repeatPassword,
+                                        ModelMap modelMap){
+        User loggedUser = userService.getLoggedUser();
+        if (loggedUser.getId() == userId && newPassword.equals(repeatPassword)){
+            BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+            SendEmail emailSender = new SendEmail();
+            loggedUser.setEnabled(false); // Disable user
+            loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
+            User savedUser = userService.updateUser(loggedUser);
+            VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
+            emailSender.send(savedUser.getEmail(), verificationToken.getCode());
+            return "redirect:/auth/verification?token=" + verificationToken.getToken();
+        }
+        else{
+            //noinspection SpringMVCViewInspection
+            return "redirect:/user/changePassword?userId=" + userId + "&updateError=true";
         }
 
     }
