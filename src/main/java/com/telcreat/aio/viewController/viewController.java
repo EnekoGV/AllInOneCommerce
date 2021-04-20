@@ -1,9 +1,7 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.model.UserEditForm;
-import com.telcreat.aio.model.VerificationToken;
+import com.telcreat.aio.model.*;
+import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -192,6 +190,7 @@ public class viewController {
         }
     }
 
+
     @RequestMapping(value = "/user/uploadPicture", method = RequestMethod.POST)
     public String uploadUserPicture(@RequestParam(name = "userPicture") MultipartFile file,
                                     @RequestParam(name = "userId") Integer userId,
@@ -205,6 +204,7 @@ public class viewController {
                 loggedUserPicture.setPath(imagePath); // Set new path
                 pictureService.updatePicture(loggedUserPicture); // Update Object
                 modelMap.clear();
+
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Return to User View
             }
             else{
@@ -301,6 +301,25 @@ public class viewController {
             //noinspection SpringMVCViewInspection
             return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true"; // Redirect to password recovery with error flag
         }
+    }
+
+    //Shop edit view
+
+   /* @RequestMapping(value = "/shop", method = RequestMethod.GET)
+    public String shopEditView(ModelMap modelMap){
+        User user =userService.getLoggedUser();
+        //Shop shop =shopService.findShopByUser_Id(user.getId())
+        //modelMap.addAttribute("shop", shop);
+        return "shop";
+    }*/
+
+    @RequestMapping(value = "/shop/edit", method = RequestMethod.POST)
+    public String receiveEditedShop(@ModelAttribute Shop shop, ModelMap modelMap){
+       /* if(shopService.updateShop != null)
+            modelMap.clear();
+        else
+            return "redirect:/shop/edit/fail";*/
+        return "redirect:/shop/edit/OK";
     }
 
 }
