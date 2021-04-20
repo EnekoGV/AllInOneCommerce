@@ -10,6 +10,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -31,8 +32,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
 
         http.authorizeRequests()
-                .antMatchers("/auth/**")
-                .permitAll()
+                .antMatchers("/auth/**").permitAll()
+                .antMatchers("/img/**").permitAll()
+                .antMatchers("/admin**").access("hasRole('ADMIN')")
                 .anyRequest()
                 .authenticated()
                 .and()
@@ -40,9 +42,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin()
                 .loginPage("/auth")
                 .defaultSuccessUrl("/")
-                .failureUrl("/auth?error=true")
+                .failureUrl("/auth?loginError=true")
                 .usernameParameter("email")
                 .passwordParameter("password")
+                .and()
+                .logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
+                .logoutSuccessUrl("/auth?logout=true").deleteCookies("JSESSIONID")
+                .invalidateHttpSession(true)
                 .permitAll();
     }
 

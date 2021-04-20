@@ -9,5 +9,7 @@
 KAIXO!
 <p th:text="${loggedUser}"></p>
 
+<a th:href="@{/user(userId=${loggedUserId})}" th:if="${loggedUser} != null">Edit my profile!</a>
+
 </body>
 </html>

@@ -2,7 +2,9 @@ package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.repo.UserRepo;
+import com.telcreat.aio.repo.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,12 +23,21 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
+    private final VerificationTokenRepo verificationTokenRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final VerificationTokenService verificationTokenService;
+    private final SendEmail emailSender;
+    private final PictureService pictureService;
+
 
     @Autowired
-    public UserService(UserRepo userRepo){
+    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService){
         this.userRepo = userRepo;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
+        this.verificationTokenService = verificationTokenService;
+        emailSender = new SendEmail();
+        this.verificationTokenRepo = verificationTokenRepo;
+        this.pictureService = pictureService;
     }
 
     //BASIC method findAllUsers, returns a List of all users
@@ -85,10 +96,34 @@ public class UserService implements UserDetailsService {
 
     public User signUpUser(User user) {
         User savedUser;
-        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
-        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), null, "", "", "", "", "", 0, "", "", null));
 
+        user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
+        Picture newPicture = new Picture("");
+        Picture savedPicture = pictureService.createPicture(newPicture);
+        user.setPicture(savedPicture);
+        savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), user.getPicture(), "", "", "", "", "", 0, "", "", null));
+        if (savedUser!=null){
+            VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
+            emailSender.send(savedUser.getEmail(), verificationToken);
+        }
         return savedUser;
+    }
+
+    public boolean validateUser(String token, String code){
+        boolean control = false;
+        VerificationToken foundVerificationToken = verificationTokenService.findVerificationTokenById(token);
+
+        if (foundVerificationToken!=null){
+            if (foundVerificationToken.getToken().equals(token) && foundVerificationToken.getCode().equals(code)){
+                control = true;
+                User tempUser = foundVerificationToken.getUser();
+                tempUser.setEnabled(true);
+                userRepo.save(tempUser);
+                verificationTokenService.deleteVerificationToken(token);
+            }
+        }
+
+        return control;
     }
 
     public User getLoggedUser(){

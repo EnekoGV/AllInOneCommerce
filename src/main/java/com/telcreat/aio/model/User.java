@@ -33,6 +33,7 @@ public class User implements UserDetails {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDate birthDay;
 
+    @Column(unique = true)
     private String email;
     private String password;
 
@@ -61,7 +62,7 @@ public class User implements UserDetails {
     // Default values in creation
     private LocalDateTime registrationDateTime = LocalDateTime.now();
     private boolean locked = false;
-    private boolean enabled = true;
+    private boolean enabled = false;
     private UserRole userRole = UserRole.CLIENT;
 
 
