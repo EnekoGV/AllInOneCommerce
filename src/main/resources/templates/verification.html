@@ -9,8 +9,8 @@
 <h1>Verification required!</h1>
 <p>We have recently sent you a verification code to yout email address. Please check your mailbox. </p>
 <form th:action="@{/auth/verification}" method="post">
-    <input type="hidden" name="token" th:value="${token}">
-    <input type="text" placeholder="Type your code" name="code" id="code">
+    <input type="hidden" name="token" th:value="${token}" required="required">
+    <input type="text" placeholder="Type your code" name="code" id="code" required="required">
     <button type="submit">Verify my account!</button>
     <p th:if="${verificationError}">Your code is not valid! Try again!</p>
 </form>
