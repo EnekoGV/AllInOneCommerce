@@ -104,7 +104,7 @@ public class UserService implements UserDetailsService {
         savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), user.getPicture(), "", "", "", "", "", 0, "", "", null));
         if (savedUser!=null){
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
-            emailSender.send(savedUser.getEmail(), verificationToken.getCode());
+            emailSender.send(savedUser.getEmail(), verificationToken);
         }
         return savedUser;
     }
