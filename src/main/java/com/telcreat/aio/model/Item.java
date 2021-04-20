@@ -26,8 +26,11 @@ public class Item {
     @ManyToOne
     private Category itemCategory;
 
+    @OneToOne
+    private Picture picture;
+
     @OneToMany
-    private List<Picture> picture; // Revisar la relación dónde va
+    private List<Variant> variants;
 
     private String shortDescription;
     private String longDescription;
@@ -41,5 +44,4 @@ public class Item {
     }
 
     private Status status;
-
 }
