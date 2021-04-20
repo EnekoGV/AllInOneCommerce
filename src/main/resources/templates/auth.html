@@ -8,8 +8,8 @@
 <h1>LOGIN</h1>
 <form th:action="@{/auth}" method="post" th:object="${login}">
     <label>
-        <input type="text" th:field="*{email}" placeholder="Type your email"> <br/>
-        <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
+        <input type="text" th:field="*{email}" placeholder="Type your email" required="required"> <br/>
+        <input type="password" th:field="*{password}" placeholder="Type your password" required="required"> <br/>
     </label>
     <button type="submit">Log In</button>
     <p th:if="${loginError}">Incorrect login credentials. Try again.</p>
@@ -18,12 +18,12 @@
 <h1>REGISTER</h1>
 <form th:action="@{/auth/register}" method="post" th:object="${signup}"> <!--// lo que use th: con su simbolo dinamico-->
     <label>
-        <input type="text" th:field="*{alias}" placeholder="Type your alias"> <br/>
-        <input type="text" th:field="*{name}" placeholder="Type your name"> <br/>
-        <input type="text" th:field="*{lastName}" placeholder="Type your last name"> <br/>
-        <input type="date" th:field="*{birthDay}" placeholder="Birth Day"> <br/> <!--//Hay que mirar como recibir estos datos-->
-        <input type="text" th:field="*{email}" placeholder="Type your email address"> <br/>
-        <input type="password" th:field="*{password}" placeholder="Type your password"> <br/>
+        <input type="text" th:field="*{alias}" placeholder="Type your alias" required="required"> <br/>
+        <input type="text" th:field="*{name}" placeholder="Type your name" required="required"> <br/>
+        <input type="text" th:field="*{lastName}" placeholder="Type your last name" required="required"> <br/>
+        <input type="date" th:field="*{birthDay}" placeholder="Birth Day" required="required"> <br/> <!--//Hay que mirar como recibir estos datos-->
+        <input type="text" th:field="*{email}" placeholder="Type your email address" required="required"> <br/>
+        <input type="password" th:field="*{password}" placeholder="Type your password" required="required"> <br/>
     </label>
     <button type="submit">Sign Up</button>
     <p th:if="${registrationError}">Current email address already in use. Please try with another email address.</p>
