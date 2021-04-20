@@ -40,12 +40,18 @@ public class UserService implements UserDetailsService {
         this.pictureService = pictureService;
     }
 
-    //BASIC method findAllUsers, returns a List of all users
-    public List<User> getAllUsers(){
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                             BASIC METHODS                               //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //BM - findAllUsers ---> Returns a List of all users
+    public List<User> findAllUsers(){
         return userRepo.findAll();
     }
 
-    //BASIC method findUserById, returns de user or a null object if not found
+        //BM - findUserById ---> Returns de user or a null object if not found
     public User findUserById(int id){
         User userTemp = null;
         Optional<User> foundUser = userRepo.findById(id);
@@ -54,7 +60,7 @@ public class UserService implements UserDetailsService {
         return userTemp;
     }
 
-    //BASIC method createUser, returns new user if created or null if not
+        //BM - createUser ---> Returns new user if created or null if not
     public User createUser(User newUser){
         User userTemp = null;
         Optional<User> foundUser = userRepo.findUserByEmail(newUser.getEmail());
@@ -63,7 +69,7 @@ public class UserService implements UserDetailsService {
         return userTemp;
     }
 
-    //BASIC method updateUser, returns updated user if ok or null if not found
+        //BM - updateUser ---> Returns updated user if ok or null if not found
     public User updateUser(User user){
         User userTemp = null;
         if(userRepo.existsById(user.getId()))
@@ -71,7 +77,7 @@ public class UserService implements UserDetailsService {
         return userTemp;
     }
 
-    //BASIC method deleteUser, returns TRUE if deleted or FALSE if not
+        //BM - deleteUserById ---> Returns TRUE if deleted or FALSE if not
     public boolean deleteUserById(int id){
         boolean deleted = false;
         if(userRepo.existsById(id)){
@@ -81,6 +87,30 @@ public class UserService implements UserDetailsService {
         return deleted;
     }
 
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                            ADVANCED METHODS                            //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //AM - deactivateUser --->
+
+
+        //ANADIR FUNCIONES DE GESTION DE TIENDA.
+
+
+
+        //AM - findUserByEmail ---> Returns user matching the email or null if not
+    public User findUserByEmail(String email){
+        User tempUser = null;
+        Optional<User> foundUser = userRepo.findUserByEmail(email);
+        if(foundUser.isPresent()){
+            tempUser = foundUser.get();
+        }
+        return tempUser;
+    }
+
+        //AM - loadUserByUsername ---> x
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
@@ -94,9 +124,9 @@ public class UserService implements UserDetailsService {
         }
     }
 
+        //AM - signUpUser ---> Returns user if signUp or null if not
     public User signUpUser(User user) {
         User savedUser;
-
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
         Picture newPicture = new Picture("");
         Picture savedPicture = pictureService.createPicture(newPicture);
@@ -109,6 +139,7 @@ public class UserService implements UserDetailsService {
         return savedUser;
     }
 
+        //AM - ValidateUser ---> Returns user if signUp or null if not
     public boolean validateUser(String token, String code){
         boolean control = false;
         VerificationToken foundVerificationToken = verificationTokenService.findVerificationTokenById(token);
@@ -122,10 +153,10 @@ public class UserService implements UserDetailsService {
                 verificationTokenService.deleteVerificationToken(token);
             }
         }
-
         return control;
     }
 
+        //AM - getLoggedUser ---> Returns user if Logged or null if not
     public User getLoggedUser(){
         User loggedUser = null;
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -135,14 +166,4 @@ public class UserService implements UserDetailsService {
         }
         return loggedUser;
     }
-
-    public User findUserByEmail(String email){
-        User tempUser = null;
-        Optional<User> foundUser = userRepo.findUserByEmail(email);
-        if(foundUser.isPresent()){
-            tempUser = foundUser.get();
-        }
-        return tempUser;
-    }
-
 }

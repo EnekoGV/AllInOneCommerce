@@ -3,20 +3,15 @@ package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.VerificationToken;
 
-import java.util.Properties;
-
-import javax.mail.Message;
-import javax.mail.MessagingException;
-import javax.mail.PasswordAuthentication;
-import javax.mail.Session;
-import javax.mail.Transport;
+import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+import java.util.Properties;
 
 public class SendEmail {
 
+        //send ---> Function used for sending mails.
     public void send(String email, VerificationToken verificationToken) {
-
         final String sender = "aio@telcreat.com";
         final String password = "Es8qYcGcpmvs";
 

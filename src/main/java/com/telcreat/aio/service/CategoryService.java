@@ -19,13 +19,18 @@ public class CategoryService {
         this.categoryRepo = categoryRepo;
     }
 
-    // Basic Methods (BM)
-    // BM - Find All Categories.
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                             BASIC METHODS                               //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //BM - findAllCategories ---> Returns a List of all Categories
     public List<Category> findAllCategories(){
         return categoryRepo.findAll();
     }
 
-    // BM - Find Categories by ID.
+        //BM - findCategoriesById ---> Returns the category or a null object if not found
     public Category findCategoryById(int categoryId){
         Category tempCategory = null;
         Optional<Category> foundCategory = categoryRepo.findById(categoryId);
@@ -35,7 +40,7 @@ public class CategoryService {
         return tempCategory;
     }
 
-    // BM - Create a new category
+        //BM - createCategory ---> Returns new Category if created or null if not
     public Category createCategory(Category newCategory){
         Category tempCategory = null;
         if(!categoryRepo.existsById(newCategory.getId())){
@@ -44,7 +49,7 @@ public class CategoryService {
         return tempCategory;
     }
 
-    // BM - Update a Category
+        //BM - updateCategory ---> Returns updated user if ok or null if not found
     public Category updateCategory (Category category){
         Category tempCategory = null;
         if(categoryRepo.existsById(category.getId())){
@@ -53,7 +58,7 @@ public class CategoryService {
         return tempCategory;
     }
 
-    // BM - Delete a Category
+        //BM - deleteCategoryById ---> Returns TRUE if deleted or FALSE if not
     public boolean deleteCategoryById(int categoryId){
         boolean control = false;
         if(categoryRepo.existsById(categoryId)){

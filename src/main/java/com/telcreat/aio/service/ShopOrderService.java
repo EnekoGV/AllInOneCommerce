@@ -23,12 +23,19 @@ public class ShopOrderService {
         this.variantRepo = variantRepo;
     }
 
-    // BASIC method
+
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                             BASIC METHODS                               //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //BM - findAllShopOrders --->
     public List<ShopOrder> findAllShopOrders (){
         return shopOrderRepo.findAll();
     }
 
-    // BASIC method
+        //BM - findShopOrderById --->
     public ShopOrder findShopOrderById (int shopOrderId){
         ShopOrder tempShopOrder = null;
         Optional<ShopOrder> foundShopOrder = shopOrderRepo.findById(shopOrderId);
@@ -38,7 +45,7 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-    // BASIC method -- This may not be a basic method
+        //BM - createShopOrder --->
     public ShopOrder createShopOrder (ShopOrder newShopOrder){
         ShopOrder tempShopOrder = null;
         if (!shopOrderRepo.existsById(newShopOrder.getId())){
@@ -47,17 +54,7 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-    // BASIC method
-    public boolean deleteShopOrderById (int shopOrderId){
-        boolean control = false;
-        if (shopOrderRepo.existsById(shopOrderId)){
-            shopOrderRepo.deleteById(shopOrderId);
-            control = true;
-        }
-        return control;
-    }
-
-    // BASIC method -- Be aware not no update orderingDateTime
+        //BM - updateShopOrder --->
     public ShopOrder updateShopOrder (ShopOrder updateShopOrder){
         ShopOrder tempShopOrder = null;
         Optional<ShopOrder> foundShopOrder = shopOrderRepo.findById(updateShopOrder.getId());
@@ -68,8 +65,23 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-    //
-    // ADVANCED method -- Create ShopOrder from incoming cart
+        //BM - deleteShopOrderById --->
+    public boolean deleteShopOrderById (int shopOrderId){
+        boolean control = false;
+        if (shopOrderRepo.existsById(shopOrderId)){
+            shopOrderRepo.deleteById(shopOrderId);
+            control = true;
+        }
+        return control;
+    }
+
+    //________________________________________________________________________________________________________________//
+                        /////////////////////////////////////////////////////////////////////////////
+                        //                            ADVANCED METHODS                            //
+                        ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //AM - createShopOrderFromCart ---> Create ShopOrder from incoming cart
     public List<ShopOrder> createShopOrderFromCart(Cart cart){
         ArrayList<Shop> tempVariantShops = new ArrayList<>();
         ArrayList<Variant> updateVariantList = new ArrayList<>();
@@ -93,13 +105,12 @@ public class ShopOrderService {
             } else {
                 control = false; // Exit if there is any incomplete condition.
             }
-
         }
 
         if (control){ // If there is enough stock of all variants
             shopOrders = new ArrayList<>();
             for(int i=0; i<cart.getVariants().size(); i++){
-                tempVariantShops.add(cart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
+                //tempVariantShops.add(cart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
             }
 
             uniqueShopList = new ArrayList<>(new HashSet<>(tempVariantShops)); // Get unique Shops to create an order for each
@@ -109,21 +120,18 @@ public class ShopOrderService {
                 float orderPrice = 0;
                 ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<Variant>(), 0, ShopOrder.ShopOrderStatus.PENDING);
                 for(int i=0; i<cart.getVariants().size(); i++){
-                    if (cart.getVariants().get(i).getItem().getShop() == tempShop){
+                    /*if (cart.getVariants().get(i).getItem().getShop() == tempShop){
                         orderPrice = orderPrice + cart.getVariants().get(i).getItem().getPrice();
                         newVariantList.add(cart.getVariants().get(i));
-                    }
+                    }*/
                 }
                 tempShopOrder.setPrice(orderPrice);
                 tempShopOrder.setVariants(newVariantList);
                 shopOrders.add(tempShopOrder);
             }
-
             variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
             shopOrderRepo.saveAll(shopOrders); // Create an order for each shop from the Cart.
-
         }
-
         return shopOrders;
     }
 }
