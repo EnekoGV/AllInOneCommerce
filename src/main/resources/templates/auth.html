@@ -8,7 +8,7 @@
 <h1>LOGIN</h1>
 <form th:action="@{/auth}" method="post" th:object="${login}">
     <label>
-        <input type="text" th:field="*{email}" placeholder="Type your email" required="required"> <br/>
+        <input type="email" th:field="*{email}" placeholder="Type your email" required="required"> <br/>
         <input type="password" th:field="*{password}" placeholder="Type your password" required="required"> <br/>
     </label>
     <button type="submit">Log In</button>
@@ -22,7 +22,7 @@
         <input type="text" th:field="*{name}" placeholder="Type your name" required="required"> <br/>
         <input type="text" th:field="*{lastName}" placeholder="Type your last name" required="required"> <br/>
         <input type="date" th:field="*{birthDay}" placeholder="Birth Day" required="required"> <br/> <!--//Hay que mirar como recibir estos datos-->
-        <input type="text" th:field="*{email}" placeholder="Type your email address" required="required"> <br/>
+        <input type="email" th:field="*{email}" placeholder="Type your email address" required="required"> <br/>
         <input type="password" th:field="*{password}" placeholder="Type your password" required="required"> <br/>
     </label>
     <button type="submit">Sign Up</button>
