@@ -17,11 +17,11 @@
 <form th:action="@{/user}" th:object="${userForm}" method="post">
 
     <input type="hidden" th:field="*{id}" th:value="${userForm.id}">
-    Alias: <input type="text" th:field="*{alias}" th:disabled="${edit == false}"><br/>
-    Name: <input type="text" th:field="*{name}" th:disabled="${edit == false}"><br/>
-    Last name: <input type="text" th:field="*{lastName}" th:disabled="${edit == false}"><br/>
-    Birthday: <input type="date" th:field="*{birthDay}" th:disabled="${edit == false}"><br/>
-    Email: <input type="email" th:field="*{email}" th:disabled="${edit == false}"><br/>
+    Alias: <input type="text" th:field="*{alias}" th:disabled="${edit == false}" required="required"><br/>
+    Name: <input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required"><br/>
+    Last name: <input type="text" th:field="*{lastName}" th:disabled="${edit == false}" required="required"><br/>
+    Birthday: <input type="date" th:field="*{birthDay}" th:disabled="${edit == false}" required="required"><br/>
+    Email: <input type="email" th:field="*{email}" th:disabled="${edit == false}" required="required"><br/>
 
     Street: <input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}"><br/>
     Number: <input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}"><br/>
