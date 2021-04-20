@@ -206,7 +206,6 @@ public class viewController {
                 loggedUserPicture.setPath(imagePath); // Set new path
                 pictureService.updatePicture(loggedUserPicture); // Update Object
                 modelMap.clear();
-
                 return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Return to User View
             }
             else{
@@ -233,7 +232,7 @@ public class viewController {
             return "changePassword";
         }
         else{
-            return "redirect:/";
+            return "redirect:/?updateError=true";
         }
     }
 
@@ -250,7 +249,8 @@ public class viewController {
             loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
             User savedUser = userService.updateUser(loggedUser);
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
-            emailSender.send(savedUser.getEmail(), verificationToken.getCode());
+            emailSender.send(savedUser.getEmail(), verificationToken);
+            modelMap.clear();
             return "redirect:/auth/verification?token=" + verificationToken.getToken();
         }
         else{
@@ -258,6 +258,56 @@ public class viewController {
             return "redirect:/user/changePassword?userId=" + userId + "&updateError=true";
         }
 
+    }
+
+    @RequestMapping(value = "/auth/recoverPassword", method = RequestMethod.GET)
+    public String recoverPassword(@RequestParam(name = "token") String token,
+                                  @RequestParam(name = "code") String code,
+                                  @RequestParam(name = "recoveryError", required = false, defaultValue = "false") boolean recoveryError,
+                                  ModelMap modelMap){
+
+        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token);
+        if (verificationToken != null && verificationToken.getCode().equals(code)){
+            modelMap.addAttribute("token", token);
+            modelMap.addAttribute("code", code);
+            modelMap.addAttribute("recoveryError", recoveryError);
+
+            return "recoverPassword";
+        }
+        else{
+            return "redirect:/";
+        }
+
+    }
+
+    @RequestMapping(value = "/auth/recoverPassword", method = RequestMethod.POST)
+    public String receiveRecoverPassword(@RequestParam(name = "token") String token,
+                                         @RequestParam(name = "code") String code,
+                                         @RequestParam(name = "newPassword") String newPassword,
+                                         @RequestParam(name = "repeatPassword") String repeatPassword,
+                                         ModelMap modelMap){
+
+        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token);
+
+        if (verificationToken != null && verificationToken.getCode().equals(code) && newPassword.equals(repeatPassword)){
+            User user = userService.findUserById(verificationToken.getUser().getId());
+            if (user != null){
+                BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
+                user.setPassword(bCryptPasswordEncoder.encode(newPassword));
+                user.setEnabled(true);
+                userService.updateUser(user);
+                verificationTokenService.deleteVerificationToken(token);
+                return "redirect:/auth";
+            }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true";
+            }
+        }
+        else{
+            //noinspection SpringMVCViewInspection
+            return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true";
+        }
     }
 
 }
