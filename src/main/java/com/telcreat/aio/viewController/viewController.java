@@ -3,6 +3,7 @@ package com.telcreat.aio.viewController;
 import com.telcreat.aio.model.*;
 import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +11,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
+@Data
 @Controller
 public class viewController {
 
@@ -22,10 +26,11 @@ public class viewController {
     private final CategoryService categoryService;
     private final VerificationTokenService verificationTokenService;
     private final FileUploaderService fileUploaderService;
+    private final ShopService shopService;
 
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
@@ -35,6 +40,7 @@ public class viewController {
         this.categoryService = categoryService;
         this.verificationTokenService = verificationTokenService;
         this.fileUploaderService = fileUploaderService;
+        this.shopService = shopService;
     }
 
 
@@ -320,6 +326,59 @@ public class viewController {
         else
             return "redirect:/shop/edit/fail";*/
         return "redirect:/shop/edit/OK";
+    }
+
+    // Shop Page View
+
+    @RequestMapping(value = "/shop", method = RequestMethod.GET)
+    public String viewShop(@RequestParam(name = "shopId") int shopId,
+                           ModelMap modelMap){
+
+        User loggedUser = userService.getLoggedUser(); // Obtain logged user
+        Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
+        boolean ownerLogged = false; // View-control variable
+
+        if (shop != null){ // If shop exists
+
+            if (loggedUser.getId() == shop.getOwner().getId()){
+                ownerLogged = true;
+            }
+
+            modelMap.addAttribute("shop", shop); // Send shop object
+            modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
+            modelMap.addAttribute("ownerLogged", ownerLogged); // Send view-control variable
+            return "shop";
+        }
+        else{
+            return "error/error-404";
+        }
+    }
+
+    // Shop Products View - Only accessible for owner
+    // WARNING - NOT FINISHED!
+
+    @RequestMapping(value = "/shop/products", method = RequestMethod.GET)
+    public String viewShopProducts(@RequestParam(name = "shopId") int shopId,
+                                   ModelMap modelMap){
+
+        User loggedUser = userService.getLoggedUser();
+        Shop shop = shopService.findActiveShopById(shopId);
+
+        if (loggedUser != null && shop != null && loggedUser.getId() == shop.getOwner().getId()){ // Security check
+            modelMap.addAttribute("shop", shop); // Send shop object
+            modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
+        }
+        else{
+            return "error/error-404";
+        }
+    }
+
+    // CheckOut View
+    // Comment: it's not necessary to obtain any cart Id
+
+    @RequestMapping(value = "/checkout", method = RequestMethod.GET)
+    public String viewCheckout(@RequestMapping() ModelMap modelMap){
+
     }
 
 }
