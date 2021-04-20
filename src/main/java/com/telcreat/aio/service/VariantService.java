@@ -76,7 +76,20 @@ public class VariantService {
         return variantRepo.findVariantsByItem_Id(itemId);
     }
 
-    //CAMBIAR LA FUNCION A findActiveVariantByItemId()
+        // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
+        // Shop is Active.
+    public List<Variant> findActiveVariantByItemId(int itemId){
+        List<Variant> variants = findVariantsByItemId(itemId);
+        List<Variant> activeVariants = null;
+        if(variants != null){
+            for (Variant variant:variants){
+                if(variant.getStatus() == Variant.Status.ACTIVE){
+                    activeVariants.add(variant);
+                }
+            }
+        }
+        return activeVariants;
+    }
 
         //AM - findVariantByItemIdAndStatus ---> Returns a List of variants based on ItemId and Status.
     public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {

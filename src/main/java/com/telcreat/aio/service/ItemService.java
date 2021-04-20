@@ -88,10 +88,16 @@ public class ItemService {
 
         //AM - findActiveItemsByShopId ---> Find Active Items By Shop ID
     public List<Item> findActiveItemsByShopId(int ShopId){
-        List<Item> items = null;
-
-        // HACER LA FUNCION.
-        return items;
+        List<Item> items = findItemsByShopId(ShopId);
+        List<Item> activeItems = null;
+        if (items != null){
+            for (Item item:items){
+                if(item.getStatus()== Item.Status.ACTIVE){
+                    activeItems.add(item);
+                }
+            }
+        }
+        return activeItems;
     }
 
         //AM - findItemsContainsNameOrdered ---> Returns the list of Item matching the searching
