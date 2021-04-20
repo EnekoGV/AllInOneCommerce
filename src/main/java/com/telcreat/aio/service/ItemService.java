@@ -1,6 +1,7 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Item;
+import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.ItemRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -8,22 +9,21 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static org.thymeleaf.util.StringUtils.length;
-
 @Service
 public class ItemService {
 
+    private final VariantService variantService;
     private final ItemRepo itemRepo;
     private int code = 23;
 
     @Autowired
-    public ItemService(ItemRepo itemRepo){
+    public ItemService(ItemRepo itemRepo, VariantService variantService){
         this.itemRepo = itemRepo;
+        this.variantService = variantService;
     }
 
     // Basic method - Find Item By Id
     public Item findItemById(int itemId){
-
         Item item = null;
         Optional<Item> opt = itemRepo.findById(itemId);
         if(opt.isPresent()){
@@ -47,7 +47,7 @@ public class ItemService {
 
     // Basic method - Update Item
     // Returns Updated Item if found and Null if not found
-    public Item updateUser(Item item){
+    public Item updateItem(Item item){
         Item tempItem = null;
         if (itemRepo.existsById(item.getId())){
             tempItem = itemRepo.save(item);
@@ -57,7 +57,7 @@ public class ItemService {
 
     // Basic method - Delete Item
     // Returns TRUE if deleted and FALSE if not
-    public boolean deleteUserById(int itemId){
+    public boolean deleteItemById(int itemId){
         boolean control = false;
         if (itemRepo.existsById(itemId)){
             itemRepo.deleteById(itemId);
@@ -94,15 +94,41 @@ public class ItemService {
     }
 
     public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
-
         return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
-
     }
-
-
         // Find Items By Shop
-    public List<Item> findAllItemsByShop(int shopId){
+    public List<Item> findItemsByShopId(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
     }
 
+    public boolean deactivateItem(Item item){
+        boolean ctrl = false;
+        Item itemTemp = null;
+        if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
+            itemTemp = item;
+            List<Variant> variants = variantService.findVariantsByItemId(itemTemp.getId());
+            for (Variant variant:variants) {
+                variantService.deactivateVariant(variant);
+            }
+            itemTemp.setStatus(Item.Status.valueOf("INACTIVE"));
+            itemRepo.save(itemTemp);
+            ctrl = true;
+        }
+        return ctrl;
+    }
+    /*public Item deactivateItem(Item item){
+        Item itemTemp = null;
+        if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
+            itemTemp=item;
+
+            List<Variant> variants = variantService.findVariantsByItemId(itemTemp.getId());
+            for (Variant variant:variants) {
+                variantService.deactivateVariant(variant);
+            }
+
+            itemTemp.setStatus(Item.Status.valueOf("INACTIVE"));
+            itemRepo.save(itemTemp);
+        }
+        return itemTemp;
+    }*/
 }
