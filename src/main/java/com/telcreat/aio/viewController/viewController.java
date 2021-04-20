@@ -275,7 +275,7 @@ public class viewController {
             return "recoverPassword";
         }
         else{
-            return "redirect:/";
+            return "redirect:/?linkExpired=true";
         }
 
     }
