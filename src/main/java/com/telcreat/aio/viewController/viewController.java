@@ -109,7 +109,7 @@ public class viewController {
                                            @RequestParam(name = "code") String code,
                                            ModelMap modelMap){
 
-        boolean control = userService.validateUser(token, code);
+        boolean control = userService.validateUser(token, code); // Security check - Token and code integrity
         if (control){
             return "redirect:/auth?OK";
         }
@@ -176,31 +176,30 @@ public class viewController {
         user.setAddressCity(userForm.getAddressCity());
         user.setAddressRegion(userForm.getAddressRegion());
 
-        if (userForm.getId() == userService.getLoggedUser().getId()){
-            User tempUser = userService.updateUser(user);
+        if (userForm.getId() == userService.getLoggedUser().getId()){ // Security check - Verify logged user
+            User tempUser = userService.updateUser(user); // Update user information in DB
             if (tempUser != null){
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId();
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Redirect to user profile
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect to user profile with error flag
             }
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";// Redirect to user profile with error flag
         }
     }
-
 
     @RequestMapping(value = "/user/uploadPicture", method = RequestMethod.POST)
     public String uploadUserPicture(@RequestParam(name = "userPicture") MultipartFile file,
                                     @RequestParam(name = "userId") Integer userId,
                                     ModelMap modelMap){
 
-        if (userService.getLoggedUser().getId() == userId){
-            String imagePath = fileUploaderService.uploadUserPicture(file,userId, "/user");
-            if(imagePath != null){
+        if (userService.getLoggedUser().getId() == userId){ // Security check - Verify logged user
+            String imagePath = fileUploaderService.uploadUserPicture(file,userId, "/user"); // Upload image to server filesystem
+            if(imagePath != null){ // Security check - Besides, will always be not null
                 User loggedUser = userService.getLoggedUser(); // Obtain Logged User
                 Picture loggedUserPicture = loggedUser.getPicture(); // Obtain Picture object
                 loggedUserPicture.setPath(imagePath); // Set new path
@@ -210,13 +209,13 @@ public class viewController {
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect if imagePath is null
             }
 
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";
+            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect if not allowed
         }
 
     }
@@ -225,14 +224,14 @@ public class viewController {
     public String changeUserPassword(@RequestParam(name = "userId") int userId,
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
-        User loggedUser = userService.getLoggedUser();
-        if (loggedUser.getId() == userId){
+        User loggedUser = userService.getLoggedUser(); // Get logged user
+        if (loggedUser.getId() == userId){ // Security check - Verify logged user
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);
-            return "changePassword";
+            return "changePassword"; // Server view
         }
         else{
-            return "redirect:/?updateError=true";
+            return "redirect:/?updateError=true"; // Redirect to homepage if not allowed
         }
     }
 
@@ -241,21 +240,21 @@ public class viewController {
                                         @RequestParam(name = "newPassword") String newPassword,
                                         @RequestParam(name = "repeatPassword") String repeatPassword,
                                         ModelMap modelMap){
-        User loggedUser = userService.getLoggedUser();
-        if (loggedUser.getId() == userId && newPassword.equals(repeatPassword)){
+        User loggedUser = userService.getLoggedUser(); // Get logged user
+        if (loggedUser.getId() == userId && newPassword.equals(repeatPassword)){ // Security check - Logged User and Password validation
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             SendEmail emailSender = new SendEmail();
             loggedUser.setEnabled(false); // Disable user
-            loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword));
-            User savedUser = userService.updateUser(loggedUser);
-            VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
-            emailSender.send(savedUser.getEmail(), verificationToken);
-            modelMap.clear();
-            return "redirect:/auth/verification?token=" + verificationToken.getToken();
+            loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword)); // Encode new password
+            User savedUser = userService.updateUser(loggedUser); // Update user information in DB
+            VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser); // Create verification code pair
+            emailSender.send(savedUser.getEmail(), verificationToken); // Send verification email
+            modelMap.clear(); // Clear view
+            return "redirect:/auth/verification?token=" + verificationToken.getToken(); // Redirect to verification page
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/user/changePassword?userId=" + userId + "&updateError=true";
+            return "redirect:/user/changePassword?userId=" + userId + "&updateError=true"; // Return to password change page
         }
 
     }
@@ -266,16 +265,16 @@ public class viewController {
                                   @RequestParam(name = "recoveryError", required = false, defaultValue = "false") boolean recoveryError,
                                   ModelMap modelMap){
 
-        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token);
-        if (verificationToken != null && verificationToken.getCode().equals(code)){
+        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token); // Obtain code pair (token and code) from token
+        if (verificationToken != null && verificationToken.getCode().equals(code)){ // Security check - Token and code integrity
             modelMap.addAttribute("token", token);
             modelMap.addAttribute("code", code);
             modelMap.addAttribute("recoveryError", recoveryError);
 
-            return "recoverPassword";
+            return "recoverPassword"; // Serve view
         }
         else{
-            return "redirect:/?linkExpired=true";
+            return "redirect:/?linkExpired=true"; // Redirect to homepage if not allowed
         }
 
     }
@@ -287,26 +286,20 @@ public class viewController {
                                          @RequestParam(name = "repeatPassword") String repeatPassword,
                                          ModelMap modelMap){
 
-        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token);
+        VerificationToken verificationToken = verificationTokenService.findVerificationTokenById(token); // Obtain code pair (code and token) from token
+        User user = userService.findUserById(verificationToken.getUser().getId()); // Obtain user related to token
 
-        if (verificationToken != null && verificationToken.getCode().equals(code) && newPassword.equals(repeatPassword)){
-            User user = userService.findUserById(verificationToken.getUser().getId());
-            if (user != null){
+        if (user != null && verificationToken.getCode().equals(code) && newPassword.equals(repeatPassword)){ // Security check - Token and code integrity
                 BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
-                user.setPassword(bCryptPasswordEncoder.encode(newPassword));
-                user.setEnabled(true);
-                userService.updateUser(user);
-                verificationTokenService.deleteVerificationToken(token);
-                return "redirect:/auth";
-            }
-            else{
-                //noinspection SpringMVCViewInspection
-                return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true";
-            }
+                user.setPassword(bCryptPasswordEncoder.encode(newPassword)); // Encode new password
+                user.setEnabled(true); // Enable user
+                userService.updateUser(user); // Update user information in DB
+                verificationTokenService.deleteVerificationToken(token); // Delete verification code pair (token and code)
+                return "redirect:/auth"; // Redirect to login page
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true";
+            return "redirect:/auth/recoverPassword?token=" + token + "&code=" + code + "&recoveryError=true"; // Redirect to password recovery with error flag
         }
     }
 
