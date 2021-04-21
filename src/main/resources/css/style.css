@@ -69,6 +69,10 @@ h1, h2, h3, h4, h5, h6, figure {
   margin: 0 0 20px 0;
 }
 
+.menosesp{
+  margin-top: -70px;
+}
+
 ::-webkit-selection {
   color: #fff;
   background: #d1c286;
@@ -380,6 +384,25 @@ h1, h2, h3, h4, h5, h6, figure {
   position: relative;
 }
 
+#fh5co-header .icon {
+  width: 60px;
+  height: 60px;
+  text-align: center;
+  background: #d1c286;
+  -webkit-box-shadow: 0px 14px 30px -15px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 14px 30px -15px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 14px 30px -15px rgba(0, 0, 0, 0.75);
+}
+#fh5co-header .icon i {
+  height: 60px;
+  color: #fff;
+}
+#fh5co-header .icon i:before {
+  display: block;
+  text-align: center;
+  margin-left: 0px;
+}
+
 .fh5co-bg {
   background-size: cover;
   background-position: center center;
@@ -460,6 +483,28 @@ h1, h2, h3, h4, h5, h6, figure {
     height: 600px;
   }
 }
+
+.fh5co-cover.fh5co-cover-sm2 {
+  height: 300px;
+}
+@media screen and (max-width: 768px) {
+  .fh5co-cover.fh5co-cover-sm2 {
+    height: 300px;
+  }
+}
+.fh5co-cover.fh5co-cover-sm2 .display-t,
+.fh5co-cover.fh5co-cover-sm2 .display-tc {
+  height: 300px;
+  display: table;
+  width: 100%;
+}
+@media screen and (max-width: 768px) {
+  .fh5co-cover.fh5co-cover-sm2 .display-t,
+  .fh5co-cover.fh5co-cover-sm2 .display-tc {
+    height: 300px;
+  }
+}
+
 .fh5co-cover.fh5co-cover-sm {
   height: 600px;
 }
@@ -497,6 +542,16 @@ h1, h2, h3, h4, h5, h6, figure {
   margin-bottom: 30px;
 }
 
+.shopimg{
+  width: 200px;
+  height: 200px;
+  margin-bottom: 20px;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  -ms-border-radius: 50%;
+  border-radius: 50%;
+}
+
 .fh5co-staff img {
   width: 170px;
   margin-bottom: 20px;
@@ -505,6 +560,7 @@ h1, h2, h3, h4, h5, h6, figure {
   -ms-border-radius: 50%;
   border-radius: 50%;
 }
+
 .fh5co-staff h3 {
   font-size: 24px;
   margin-bottom: 5px;
@@ -790,7 +846,8 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .product {
-  margin-bottom: 40px;
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 .product .product-grid {
   background-size: cover;
@@ -798,11 +855,79 @@ h1, h2, h3, h4, h5, h6, figure {
   background-repeat: no-repeat;
   position: relative;
   height: 350px;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
   -webkit-transition: 0.3s;
   -o-transition: 0.3s;
   transition: 0.3s;
 }
+.product .product-grid2 {
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  position: relative;
+  height: 100px;
+  width: 100px;
+  margin-bottom: 10px;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+.product .product-grid3 {
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  position: relative;
+  height: 170px;
+  width: 170px;
+  margin-bottom: 10px;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+#triangle-topleft {
+  position: absolute;
+  top: 0px;
+  left: 205px;
+  width: 0;
+  height: 0;
+  border-top: 100px solid #d1c286;
+  border-right: 100px solid transparent;
+  }
+
+.text-block {
+  color: white;
+  position: relative;
+  top: -70px;
+  left: 10px;
+  font-weight: bold;
+  padding:5px;
+  transform: rotate(-45deg);
+}
+
+.product .product-grid3 .sale {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 10px;
+  width: 0;
+  height: 0;
+  border-top: 80px solid #d1c286;
+  border-right: 80px solid transparent;
+}
+
+.product .product-grid3 .sale .girau {
+  position: absolute;
+  background: transparent;
+  font-weight: bold;
+  top: -70px;
+  left: 0px;
+  padding: 10px;
+  color: white;
+  transform: rotate(-45deg);
+}
+
+
 .product .product-grid .sale {
   position: absolute;
   top: 10px;
@@ -816,6 +941,7 @@ h1, h2, h3, h4, h5, h6, figure {
   -ms-border-radius: 50%;
   border-radius: 50%;
 }
+
 .product .product-grid .inner {
   display: table;
   height: 350px;
@@ -1008,7 +1134,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .fh5co-heading {
-  margin-bottom: 5em;
+  margin-bottom: 3em;
 }
 .fh5co-heading.fh5co-heading-sm {
   margin-bottom: 2em;
