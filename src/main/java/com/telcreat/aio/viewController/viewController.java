@@ -1,7 +1,6 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.*;
-import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -159,6 +158,7 @@ public class viewController {
         }
     }
 
+
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String updateProfile(@ModelAttribute(name = "userForm") UserEditForm userForm,
                                 ModelMap modelMap){
@@ -309,23 +309,79 @@ public class viewController {
         }
     }
 
-    //Shop edit view
 
-   /* @RequestMapping(value = "/shop", method = RequestMethod.GET)
-    public String shopEditView(ModelMap modelMap){
-        User user =userService.getLoggedUser();
-        //Shop shop =shopService.findShopByUser_Id(user.getId())
-        //modelMap.addAttribute("shop", shop);
-        return "shop";
-    }*/
+    //View and edit Shop
+    @RequestMapping(value ="/shop", method = RequestMethod.GET)
+    public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false")boolean edit,
+                                  @RequestParam(name = "shopId") int shopId,
+                                  @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                  ModelMap modelMap){
+        Shop shop = shopService.findActiveShopById(shopId);
+        if(userService.getLoggedUser().getId() == shop.getOwner().getId()){
+            modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
+            shop.getPicture(),
+            shop.getBackgroundPicture(),
+            shop.getName(),
+            shop.getDescription(),
+            shop.getAddressName(),
+            shop.getAddressSurname(),
+            shop.getAddressAddress(),
+            shop.getAddressPostNumber(),
+            shop.getAddressCity(),
+            shop.getAddressCountry(),
+            shop.getAddressTelNumber(),
+            shop.getBillingName(),
+            shop.getBillingSurname(),
+            shop.getBillingAddress(),
+            shop.getBillingPostNumber(),
+            shop.getBillingCity(),
+            shop.getBillingCountry(),
+            shop.getBillingTelNumber()));
 
-    @RequestMapping(value = "/shop/edit", method = RequestMethod.POST)
-    public String receiveEditedShop(@ModelAttribute Shop shop, ModelMap modelMap){
-       /* if(shopService.updateShop != null)
-            modelMap.clear();
-        else
-            return "redirect:/shop/edit/fail";*/
-        return "redirect:/shop/edit/OK";
+            modelMap.addAttribute("edit", edit);
+            modelMap.addAttribute("updateError", updateError);
+            return "editShop";
+        }else
+            return "redirect:/";
+
+    }
+
+    @RequestMapping(value ="/shop", method = RequestMethod.POST)
+    public String updateShopProfile(@ModelAttribute(name = "shopForm") ShopEditForm shopEditForm,
+                                    ModelMap modelMap){
+
+        modelMap.clear();
+        Shop shop = shopService.findActiveShopById(shopEditForm.getId());
+        shop.setAddressCity(shopEditForm.getAddressCity());
+        shop.setAddressCountry(shopEditForm.getAddressCountry());
+        shop.setAddressAddress(shopEditForm.getAddressAddress());
+        shop.setAddressName(shopEditForm.getAddressName());
+        shop.setAddressSurname(shopEditForm.getAddressSurname());
+        shop.setAddressPostNumber(shopEditForm.getAddressPostNumber());
+        shop.setAddressTelNumber(shopEditForm.getAddressTelNumber());
+        shop.setBillingAddress(shopEditForm.getBillingAddress());
+        shop.setName(shopEditForm.getName());
+        shop.setPicture(shopEditForm.getPicture());
+        shop.setBackgroundPicture(shopEditForm.getBackgroundPicture());
+        shop.setBillingCity(shopEditForm.getBillingCity());
+        shop.setBillingCountry(shopEditForm.getBillingCountry());
+        shop.setBillingName(shopEditForm.getBillingName());
+        shop.setBillingPostNumber(shopEditForm.getBillingPostNumber());
+        shop.setBillingAddress(shopEditForm.getBillingAddress());
+        shop.setBillingSurname(shopEditForm.getBillingSurname());
+        shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
+        shop.setDescription(shopEditForm.getDescription());
+
+        if(shop.getOwner().getId() == userService.getLoggedUser().getId()){
+            Shop tempShop = shopService.updateShop(shop);
+            if(tempShop != null)
+                return "redirect:/shop?shopId=" + shop.getId();
+            else
+                //noinspection SpringMVCViewInspection
+                return "redirect:/shop?shopId=" + shop.getId() + "&updateError=true";
+        }else
+            //noinspection SpringMVCViewInspection
+            return "redirect:/shop?shopId=" + shop.getId() + "&updateError=true";
     }
 
     // Shop Page View
