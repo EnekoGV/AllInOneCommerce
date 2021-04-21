@@ -10,8 +10,6 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.List;
-import java.util.Objects;
 
 @Data
 @Controller
@@ -440,7 +438,7 @@ public class viewController {
 
     @RequestMapping(value = "/checkout", method = RequestMethod.GET)
     public String viewCheckout(@RequestParam() ModelMap modelMap){
-        return "test";
+        return "checkout";
     }
 
 }
