@@ -13,6 +13,7 @@ import java.nio.file.StandardCopyOption;
 @Service
 public class FileUploaderService {
 
+        //uploadUserPicture ---> Returns uploaded file complete path
     public String uploadUserPicture(MultipartFile file, int id, String directory){
         // check if file is empty
         if (file.isEmpty()) {
@@ -34,6 +35,6 @@ public class FileUploaderService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return fileName; // Return uploaded file complete path
+        return fileName; //Returns uploaded file complete path
     }
 }

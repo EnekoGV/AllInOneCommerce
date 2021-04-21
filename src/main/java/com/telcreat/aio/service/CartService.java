@@ -1,7 +1,6 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Cart;
-import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +15,7 @@ public class CartService {
     private final CartRepo cartRepo;
     private int code = 23;
 
-    @Autowired//Para que lo cree solo, culpas a aresti
+    @Autowired
     public CartService(CartRepo cartRepo) {
         this.cartRepo = cartRepo;
     }

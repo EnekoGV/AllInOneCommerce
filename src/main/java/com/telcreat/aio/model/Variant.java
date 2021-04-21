@@ -6,7 +6,6 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import javax.persistence.*;
-import java.util.List;
 
 @Entity
 @Getter
@@ -14,19 +13,16 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Variant {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
     private String name;
 
-    @ManyToOne
-    private Item item;
+    private int stock; // Propiedad de la subvariante
 
-    @OneToMany
-    private List<Variant> subVariants;
-
-
-    private int stock; // propiedad del último de nivel de subvariante.
+    @OneToOne
+    private Picture picture;
 
     public enum Status{
         ACTIVE,

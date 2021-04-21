@@ -1,6 +1,5 @@
 package com.telcreat.aio.model;
 
-
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,7 +12,6 @@ import javax.persistence.OneToOne;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-
 public class VerificationToken {
 
     @Id
@@ -23,6 +21,4 @@ public class VerificationToken {
 
     @OneToOne
     private User user;
-
-
 }

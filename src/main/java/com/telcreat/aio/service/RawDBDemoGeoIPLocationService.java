@@ -15,11 +15,13 @@ public class RawDBDemoGeoIPLocationService {
 
     private DatabaseReader dbReader;
 
+        //RawDBDemoGeoIPLocationService ---> Constructor
     public RawDBDemoGeoIPLocationService() throws IOException {
         File database = new File("src/main/resources/GeoLite2-City.mmdb");
         dbReader = new DatabaseReader.Builder(database).build();
     }
 
+        //getLocation ---> Returns a GeoIP object containing user location based on its IP address.
     public GeoIP getLocation(String ip) throws IOException, GeoIp2Exception {
         InetAddress ipAddress = InetAddress.getByName(ip);
         CityResponse response = dbReader.city(ipAddress);
@@ -29,6 +31,4 @@ public class RawDBDemoGeoIPLocationService {
         String longitude = response.getLocation().getLongitude().toString();
         return new GeoIP(ip, cityName, latitude, longitude);
     }
-
-
 }

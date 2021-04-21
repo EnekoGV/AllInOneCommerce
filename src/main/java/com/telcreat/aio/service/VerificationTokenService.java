@@ -74,6 +74,4 @@ public class VerificationTokenService {
         }
         return tempVerificationToken;
     }
-
-
 }

@@ -19,7 +19,6 @@ import static java.lang.Double.parseDouble;
 public class ShopService {
 
     private final ShopRepo shopRepo;
-
     private ItemService itemService;
 
     @Autowired
@@ -27,13 +26,18 @@ public class ShopService {
         this.shopRepo = shopRepo;
     }
 
-    // BASIC METHODS (BM)-----------------------------------------------------------------------------------------------
-    // BM - Find All Shops
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                             BASIC METHODS                               //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        // BM - Find All Shops ---> Returns a list of all the shops of the DataBase.
     public List<Shop> findAllShops(){
         return shopRepo.findAll();
     }
 
-    // BM - Find Shops by Id
+        // BM - Find Shops by Id ---> Returns the Shop Object according to the specified ShopId.
     public Shop findShopById(int shopId){
         Shop tempShop = null;
         Optional<Shop> foundShop = shopRepo.findById(shopId);
@@ -43,7 +47,7 @@ public class ShopService {
         return tempShop;
     }
 
-    // BM - Create a new shop
+        // BM - Create a new shop ---> Returns the Shop Object according to the specified ShopId.
     public Shop createShop(Shop newShop){
         Shop tempShop = null;
         if(!shopRepo.existsById(newShop.getId())){
@@ -52,7 +56,7 @@ public class ShopService {
         return tempShop;
     }
 
-    // BM - Update a Shop
+        // BM - Update a Shop ---> Returns the Shop Object that has been updated.
     public Shop updateShop(Shop shop){
         Shop tempShop = null;
         if(shopRepo.existsById(shop.getId())){
@@ -61,7 +65,7 @@ public class ShopService {
         return tempShop;
     }
 
-    //BM - Delete Shop by ID
+        // BM - Delete Shop by ID ---> Returns a true if the object has been deleted successfully.
     public boolean deleteShopById(int shopId){
         boolean control = false;
         if(shopRepo.existsById(shopId)){
@@ -70,9 +74,13 @@ public class ShopService {
         }
         return control;
     }
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                            ADVANCED METHODS                            //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
 
-    // ESPECIAL METHODS (EM)--------------------------------------------------------------------------------------------
-    // EM - findActiveShopById
+        // AM - findActiveShopById ---> Returns the Shop Object according to the specified ShopId if the Shop is Active.
     public Shop findActiveShopById(int shopId){
         Shop tempShop = findShopById(shopId);
         if(tempShop != null){
@@ -83,8 +91,8 @@ public class ShopService {
         return tempShop;
     }
 
-    // EM - Get shop by user Id
-    public Shop findShopByUserId(int userId){
+        // AM - findShopByOwnerId ---> Returns the Shop Object according to the specified UserId.
+    public Shop findShopByOwnerId(int userId){
         Shop tempShop = null;
         if(shopRepo.existsByOwnerId(userId)) {
             Optional<Shop> foundShop = shopRepo.findShopsByOwnerId(userId);
@@ -95,9 +103,10 @@ public class ShopService {
         return tempShop;
     }
 
-    // EM - Find active shop using userId
-    public Shop findActiveShopByUserId(int userId){
-        Shop tempShop = findShopByUserId(userId);
+        // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
+        // Shop is Active.
+    public Shop findActiveShopByOwnerId(int userId){
+        Shop tempShop = findShopByOwnerId(userId);
         if(tempShop != null){
             if(tempShop.getStatus() == Shop.Status.INACTIVE){
                 tempShop = null;
@@ -106,14 +115,17 @@ public class ShopService {
         return tempShop;
     }
 
-    //EM - Deactivate a Shop and all the items on it.
-    public boolean deactivateShop(Shop shop){
+        //AM - deactivateShop ---> Returns a true boolean if the shop is been deactivated successfully.
+    public boolean deactivateShop(int shopId){
         boolean ctrl = false;
-        if(shopRepo.existsById(shop.getId())){
-            shop.setStatus(Shop.Status.INACTIVE);
-            shopRepo.save(shop);
-            ctrl = true;
-            List<Item> shopItems = itemService.findItemsByShopId(shop.getId());
+        Shop tempShop = null;
+        if(shopRepo.existsById(shopId)){
+            tempShop = findShopById(shopId);
+            tempShop.setStatus(Shop.Status.INACTIVE);
+            if (shopRepo.save(tempShop) != null) {
+                ctrl = true;
+            }
+            List<Item> shopItems = itemService.findItemsByShopId(shopId);
             for (Item item:shopItems){
                 boolean itemDown = true;
                 itemDown = itemService.deactivateItem(item);
@@ -125,14 +137,15 @@ public class ShopService {
         return ctrl;
     }
 
-    // EM - Find shops by ItemContainsName an order them based on distance.
+        // AM - orderedShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user
+        // and ordered base on the distance.
     public List<Shop> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
         List<Shop> shops = findShopsByItemContainsName(searchName, itemCategoryId);
-        List<Shop> orderedShops = orderShops(shops, ip);
-        return orderedShops;
+        List<Shop> orderShops = orderShops(shops, ip);
+        return orderShops;
     }
 
-    // EM - findShopsByItemContainsName
+        // AM - findShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user.
     private List<Shop> findShopsByItemContainsName(String serchName, int itemCategoryId){
         List<Item> items = itemService.findItemsContainsName(serchName, itemCategoryId);
         List<Shop> shops = null;
@@ -144,25 +157,12 @@ public class ShopService {
         return shops;
     }
 
-    /*
-    public List<Shop> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
-        List<Shop> tempshops = null;
-        RawDBDemoGeoIPLocationService locationService = new RawDBDemoGeoIPLocationService();
-        GeoIP location = locationService.getLocation(ip);
-        List<Double> distances = null;
-        for (Shop shop:shops){
-            distances.add(distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude())));
-            tempshops.add(shop);
-        }
-        Collections.sort(distances);
-        return tempshops;
-    }
-*/
+        // AM - orderShops ---> Returns a list of Shops ordered based on the distance.
     private List<Shop> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
-        List<Shop> tempshops = null;
         RawDBDemoGeoIPLocationService locationService = new RawDBDemoGeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
         List<Double> distances = null;
+        List<Shop> tempshops = null;
         for (Shop shop:shops){
             double dist = distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
             distances.add(dist);
@@ -176,11 +176,7 @@ public class ShopService {
         return tempshops;
     }
 
-
-
-
-    // Auxiliar methods used for calculating the distance between two latitude and longitude
-    //
+        // AM - orderShops ---> Auxiliar methods used for calculating the distance between two latitude and longitude
     private double distance(double lat1, double lon1, double lat2, double lon2) {
         double theta = lon1 - lon2;
         double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
@@ -191,16 +187,12 @@ public class ShopService {
         return (dist);
     }
 
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts decimal degrees to radians             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        // AM - orderShops ---> This function converts decimal degrees to radians
     private double deg2rad(double deg) {
         return (deg * Math.PI / 180.0);
     }
 
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
-    /*::  This function converts radians to decimal degrees             :*/
-    /*:::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::*/
+        // AM - orderShops ---> This function converts radians to decimal degrees
     private double rad2deg(double rad) {
         return (rad * 180.0 / Math.PI);
     }

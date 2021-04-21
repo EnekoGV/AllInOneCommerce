@@ -19,9 +19,8 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @EqualsAndHashCode
-
-
 public class User implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private int id;
@@ -52,7 +51,6 @@ public class User implements UserDetails {
     @ManyToMany
     private List<Shop> favouriteShops;
 
-
     public enum UserRole{
         CLIENT,
         OWNER,
@@ -64,8 +62,6 @@ public class User implements UserDetails {
     private boolean locked = false;
     private boolean enabled = false;
     private UserRole userRole = UserRole.CLIENT;
-
-
 
     public User(String alias, String name, String lastName, LocalDate birthDay, String email, String password, Picture picture, String addressStreet, String addressNumber, String addressFlat, String addressDoor, String addressCountry, int postCode, String addressCity, String addressRegion, List<Shop> favouriteShops) {
         this.alias = alias;
@@ -118,5 +114,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return enabled;
     }
-
 }
