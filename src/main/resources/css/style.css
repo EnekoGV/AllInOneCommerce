@@ -952,6 +952,17 @@ h1, h2, h3, h4, h5, h6, figure {
   -o-transition: 0.3s;
   transition: 0.3s;
 }
+
+.product .product-grid .inner2 {
+  display: table;
+  height: 350px;
+  width: 100%;
+  opacity: 1;
+  background: rgba(0, 0, 0, 0.3);
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
 @media screen and (max-width: 768px) {
   .product .product-grid .inner {
     opacity: 1;
@@ -967,10 +978,27 @@ h1, h2, h3, h4, h5, h6, figure {
   color: #fff;
   background: #d1c286;
 }
+
 .product .product-grid .inner p .icon:hover, .product .product-grid .inner p .icon:focus {
   color: #d1c286;
   background: #fff;
 }
+
+.product .product-grid .inner2 p {
+  display: table-cell;
+  vertical-align: middle;
+}
+
+.product .product-grid .inner2 p .icon {
+  padding: 7px 10px;
+  color: #fff;
+  background: #d1c286;
+}
+.product .product-grid .inner2 p .icon:hover, .product .product-grid .inner2 p .icon:focus {
+  color: #d1c286;
+  background: #fff;
+}
+
 .product .desc h3 {
   font-size: 14px;
   letter-spacing: 1px;
