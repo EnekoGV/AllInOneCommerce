@@ -72,13 +72,13 @@ public class VariantService {
     //________________________________________________________________________________________________________________//
 
         //AM - findVariantsByItemId ---> Returns a List of variants based on ItemId.
-    public List<Variant> findVariantsByItemId(int itemId){
+    /*public List<Variant> findVariantsByItemId(int itemId){
         return variantRepo.findVariantsByItem_Id(itemId);
-    }
+    }*/
 
         // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
         // Shop is Active.
-    public List<Variant> findActiveVariantByItemId(int itemId){
+    /*public List<Variant> findActiveVariantByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
         List<Variant> activeVariants = null;
         if(variants != null){
@@ -89,10 +89,10 @@ public class VariantService {
             }
         }
         return activeVariants;
-    }
+    }*/
 
         //AM - findVariantByItemIdAndStatus ---> Returns a List of variants based on ItemId and Status.
-    public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
+    /*public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
         List<Variant> arrived = variantRepo.findVariantsByItem_Id(itemId);
         List<Variant> finala = new ArrayList<>();
         for (int i = 0; i <= arrived.size(); i++) {
@@ -100,7 +100,7 @@ public class VariantService {
                 finala.add(arrived.get(i));
         }
         return finala;
-    }
+    }*/
 
         //AM - deactivateVariant --->
     public Variant deactivateVariant(Variant variant) {
