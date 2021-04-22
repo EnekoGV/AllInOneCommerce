@@ -1,8 +1,8 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.*;
-import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -10,6 +10,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+
+@Data
 @Controller
 public class viewController {
 
@@ -22,10 +24,11 @@ public class viewController {
     private final CategoryService categoryService;
     private final VerificationTokenService verificationTokenService;
     private final FileUploaderService fileUploaderService;
+    private final ShopService shopService;
 
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
@@ -35,6 +38,7 @@ public class viewController {
         this.categoryService = categoryService;
         this.verificationTokenService = verificationTokenService;
         this.fileUploaderService = fileUploaderService;
+        this.shopService = shopService;
     }
 
 
@@ -125,24 +129,24 @@ public class viewController {
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
 
-        if (userService.getLoggedUser().getId() == userId){ // Allow editing only each user's profile.
-            User user = userService.findUserById(userId); // We don't send all the information to frontend.
+        User loggedUser = userService.getLoggedUser();
+        if (loggedUser != null && loggedUser.getId() == userId){ // Allow editing only each user's profile.
 
-            modelMap.addAttribute("userAvatar", user.getPicture().getPath());
-            modelMap.addAttribute("userForm", new UserEditForm(user.getId(),
-                    user.getAlias(),
-                    user.getName(),
-                    user.getLastName(),
-                    user.getBirthDay(),
-                    user.getEmail(),
-                    user.getAddressStreet(),
-                    user.getAddressNumber(),
-                    user.getAddressFlat(),
-                    user.getAddressDoor(),
-                    user.getAddressCountry(),
-                    user.getPostCode(),
-                    user.getAddressCity(),
-                    user.getAddressRegion()));
+            modelMap.addAttribute("userAvatar", loggedUser.getPicture().getPath());
+            modelMap.addAttribute("userForm", new UserEditForm(loggedUser.getId(),
+                    loggedUser.getAlias(),
+                    loggedUser.getName(),
+                    loggedUser.getLastName(),
+                    loggedUser.getBirthDay(),
+                    loggedUser.getEmail(),
+                    loggedUser.getAddressStreet(),
+                    loggedUser.getAddressNumber(),
+                    loggedUser.getAddressFlat(),
+                    loggedUser.getAddressDoor(),
+                    loggedUser.getAddressCountry(),
+                    loggedUser.getPostCode(),
+                    loggedUser.getAddressCity(),
+                    loggedUser.getAddressRegion()));
 
             modelMap.addAttribute("edit", edit); // Error message variable
             modelMap.addAttribute("updateError", updateError); // Error message variable
@@ -153,40 +157,41 @@ public class viewController {
         }
     }
 
+
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String updateProfile(@ModelAttribute(name = "userForm") UserEditForm userForm,
                                 ModelMap modelMap){
         modelMap.clear();
 
-        User user = userService.findUserById(userForm.getId());
+        User loggedUser = userService.getLoggedUser();
 
-        user.setAlias(userForm.getAlias());
-        user.setName(userForm.getName());
-        user.setLastName(userForm.getLastName());
-        user.setBirthDay(userForm.getBirthDay());
-        user.setEmail(userForm.getEmail());
-        user.setAddressStreet(userForm.getAddressStreet());
-        user.setAddressNumber(userForm.getAddressNumber());
-        user.setAddressFlat(userForm.getAddressFlat());
-        user.setAddressDoor(userForm.getAddressDoor());
-        user.setAddressCountry(userForm.getAddressCountry());
-        user.setPostCode(userForm.getPostCode());
-        user.setAddressCity(userForm.getAddressCity());
-        user.setAddressRegion(userForm.getAddressRegion());
+        if (loggedUser != null && userForm.getId() == loggedUser.getId()){ // Security check - Verify logged user
+            loggedUser.setAlias(userForm.getAlias());
+            loggedUser.setName(userForm.getName());
+            loggedUser.setLastName(userForm.getLastName());
+            loggedUser.setBirthDay(userForm.getBirthDay());
+            loggedUser.setEmail(userForm.getEmail());
+            loggedUser.setAddressStreet(userForm.getAddressStreet());
+            loggedUser.setAddressNumber(userForm.getAddressNumber());
+            loggedUser.setAddressFlat(userForm.getAddressFlat());
+            loggedUser.setAddressDoor(userForm.getAddressDoor());
+            loggedUser.setAddressCountry(userForm.getAddressCountry());
+            loggedUser.setPostCode(userForm.getPostCode());
+            loggedUser.setAddressCity(userForm.getAddressCity());
+            loggedUser.setAddressRegion(userForm.getAddressRegion());
 
-        if (userForm.getId() == userService.getLoggedUser().getId()){ // Security check - Verify logged user
-            User tempUser = userService.updateUser(user); // Update user information in DB
+            User tempUser = userService.updateUser(loggedUser); // Update user information in DB
             if (tempUser != null){
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Redirect to user profile
+                return "redirect:/user?userId=" + loggedUser.getId(); // Redirect to user profile
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect to user profile with error flag
+                return "redirect:/user?userId=" + loggedUser.getId() + "&updateError=true"; // Redirect to user profile with error flag
             }
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true";// Redirect to user profile with error flag
+            return "redirect:/user?userId=" + userForm.getId() + "&updateError=true";// Redirect to user profile with error flag
         }
     }
 
@@ -196,26 +201,27 @@ public class viewController {
                                     @RequestParam(name = "userId") Integer userId,
                                     ModelMap modelMap){
 
-        if (userService.getLoggedUser().getId() == userId){ // Security check - Verify logged user
+        User loggedUser = userService.getLoggedUser();
+
+        if (loggedUser != null && loggedUser.getId() == userId){ // Security check - Verify logged user
             String imagePath = fileUploaderService.uploadUserPicture(file,userId, "/user"); // Upload image to server filesystem
             if(imagePath != null){ // Security check - Besides, will always be not null
-                User loggedUser = userService.getLoggedUser(); // Obtain Logged User
                 Picture loggedUserPicture = loggedUser.getPicture(); // Obtain Picture object
                 loggedUserPicture.setPath(imagePath); // Set new path
                 pictureService.updatePicture(loggedUserPicture); // Update Object
                 modelMap.clear();
 
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId(); // Return to User View
+                return "redirect:/user?userId=" + loggedUser.getId(); // Return to User View
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect if imagePath is null
+                return "redirect:/user?userId=" + loggedUser.getId() + "&updateError=true"; // Redirect if imagePath is null
             }
 
         }
         else{
             //noinspection SpringMVCViewInspection
-            return "redirect:/user?userId=" + userService.getLoggedUser().getId() + "&updateError=true"; // Redirect if not allowed
+            return "redirect:/user?userId=" + userId + "&updateError=true"; // Redirect if not allowed
         }
 
     }
@@ -225,7 +231,7 @@ public class viewController {
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
         User loggedUser = userService.getLoggedUser(); // Get logged user
-        if (loggedUser.getId() == userId){ // Security check - Verify logged user
+        if (loggedUser != null && loggedUser.getId() == userId){ // Security check - Verify logged user
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);
             return "changePassword"; // Server view
@@ -241,7 +247,7 @@ public class viewController {
                                         @RequestParam(name = "repeatPassword") String repeatPassword,
                                         ModelMap modelMap){
         User loggedUser = userService.getLoggedUser(); // Get logged user
-        if (loggedUser.getId() == userId && newPassword.equals(repeatPassword)){ // Security check - Logged User and Password validation
+        if (loggedUser != null && loggedUser.getId() == userId && newPassword.equals(repeatPassword)){ // Security check - Logged User and Password validation
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             SendEmail emailSender = new SendEmail();
             loggedUser.setEnabled(false); // Disable user
@@ -303,23 +309,136 @@ public class viewController {
         }
     }
 
-    //Shop edit view
 
-   /* @RequestMapping(value = "/shop", method = RequestMethod.GET)
-    public String shopEditView(ModelMap modelMap){
-        User user =userService.getLoggedUser();
-        //Shop shop =shopService.findShopByUser_Id(user.getId())
-        //modelMap.addAttribute("shop", shop);
-        return "shop";
-    }*/
+    //View and edit Shop
+    @RequestMapping(value ="/shop/edit", method = RequestMethod.GET)
+    public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false")boolean edit,
+                                  @RequestParam(name = "shopId") int shopId,
+                                  @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                  ModelMap modelMap){
+        Shop shop = shopService.findActiveShopById(shopId);
+        if(userService.getLoggedUser().getId() == shop.getOwner().getId()){
+            modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
+            shop.getPicture(),
+            shop.getBackgroundPicture(),
+            shop.getName(),
+            shop.getDescription(),
+            shop.getAddressName(),
+            shop.getAddressSurname(),
+            shop.getAddressAddress(),
+            shop.getAddressPostNumber(),
+            shop.getAddressCity(),
+            shop.getAddressCountry(),
+            shop.getAddressTelNumber(),
+            shop.getBillingName(),
+            shop.getBillingSurname(),
+            shop.getBillingAddress(),
+            shop.getBillingPostNumber(),
+            shop.getBillingCity(),
+            shop.getBillingCountry(),
+            shop.getBillingTelNumber()));
 
-    @RequestMapping(value = "/shop/edit", method = RequestMethod.POST)
-    public String receiveEditedShop(@ModelAttribute Shop shop, ModelMap modelMap){
-       /* if(shopService.updateShop != null)
-            modelMap.clear();
-        else
-            return "redirect:/shop/edit/fail";*/
-        return "redirect:/shop/edit/OK";
+            modelMap.addAttribute("edit", edit);
+            modelMap.addAttribute("updateError", updateError);
+            return "editShop";
+        }else
+            return "redirect:/";
+
+    }
+
+    @RequestMapping(value ="/shop/edit", method = RequestMethod.POST)
+    public String updateShopProfile(@ModelAttribute(name = "shopForm") ShopEditForm shopEditForm,
+                                    ModelMap modelMap){
+
+        modelMap.clear();
+        Shop shop = shopService.findActiveShopById(shopEditForm.getId());
+
+        if(shop.getOwner().getId() == userService.getLoggedUser().getId()){
+
+            shop.setAddressCity(shopEditForm.getAddressCity());
+            shop.setAddressCountry(shopEditForm.getAddressCountry());
+            shop.setAddressAddress(shopEditForm.getAddressAddress());
+            shop.setAddressName(shopEditForm.getAddressName());
+            shop.setAddressSurname(shopEditForm.getAddressSurname());
+            shop.setAddressPostNumber(shopEditForm.getAddressPostNumber());
+            shop.setAddressTelNumber(shopEditForm.getAddressTelNumber());
+            shop.setBillingAddress(shopEditForm.getBillingAddress());
+            shop.setName(shopEditForm.getName());
+            shop.setPicture(shopEditForm.getPicture());
+            shop.setBackgroundPicture(shopEditForm.getBackgroundPicture());
+            shop.setBillingCity(shopEditForm.getBillingCity());
+            shop.setBillingCountry(shopEditForm.getBillingCountry());
+            shop.setBillingName(shopEditForm.getBillingName());
+            shop.setBillingPostNumber(shopEditForm.getBillingPostNumber());
+            shop.setBillingAddress(shopEditForm.getBillingAddress());
+            shop.setBillingSurname(shopEditForm.getBillingSurname());
+            shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
+            shop.setDescription(shopEditForm.getDescription());
+
+            Shop savedShop = shopService.updateShop(shop);
+
+            if(savedShop != null)
+                return "redirect:/shop/?shopId=" + shop.getId();
+            else
+                //noinspection SpringMVCViewInspection
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&updateError=true";
+        }else
+            //noinspection SpringMVCViewInspection
+            return "redirect:/shop?shopId=" + shop.getId() + "&updateError=true";
+    }
+
+    // Shop Page View
+
+    @RequestMapping(value = "/shop", method = RequestMethod.GET)
+    public String viewShop(@RequestParam(name = "shopId") int shopId,
+                           ModelMap modelMap){
+
+        User loggedUser = userService.getLoggedUser(); // Obtain logged user
+        Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
+        boolean ownerLogged = false; // View-control variable
+
+        if (shop != null){ // If shop exists
+
+            if (loggedUser.getId() == shop.getOwner().getId()){
+                ownerLogged = true;
+            }
+
+            modelMap.addAttribute("shop", shop); // Send shop object
+            modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
+            modelMap.addAttribute("ownerLogged", ownerLogged); // Send view-control variable
+            return "shop";
+        }
+        else{
+            return "error/error-404";
+        }
+    }
+
+    // Shop Products View - Only accessible for owner
+    // WARNING - NOT FINISHED!
+
+    @RequestMapping(value = "/shop/products", method = RequestMethod.GET)
+    public String viewShopProducts(@RequestParam(name = "shopId") int shopId,
+                                   ModelMap modelMap){
+
+        User loggedUser = userService.getLoggedUser();
+        Shop shop = shopService.findActiveShopById(shopId);
+
+        if (loggedUser != null && shop != null && loggedUser.getId() == shop.getOwner().getId()){ // Security check
+            modelMap.addAttribute("shop", shop); // Send shop object
+            modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
+            return "shopProducts";
+        }
+        else{
+            return "error/error-404";
+        }
+    }
+
+    // CheckOut View
+    // Comment: it's not necessary to obtain any cart Id
+
+    @RequestMapping(value = "/checkout", method = RequestMethod.GET)
+    public String viewCheckout(@RequestParam() ModelMap modelMap){
+        return "checkout";
     }
 
 }

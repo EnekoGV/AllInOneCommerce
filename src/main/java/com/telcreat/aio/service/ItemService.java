@@ -132,18 +132,19 @@ public class ItemService {
 
         //AM - deactivateItem --->
     public boolean deactivateItem(Item item){
-        boolean ctrl = false;
-        Item itemTemp = null;
-        if(itemRepo.existsById(item.getId()) && item.getStatus().toString().equals("ACTIVE")){
-            itemTemp = item;
-            List<Variant> variants = variantService.findVariantsByItemId(itemTemp.getId());
+        boolean control = false; // Control variable
+        Item tempItem; // Temp variable
+        Optional<Item> foundItem = itemRepo.findById(item.getId());
+        if(foundItem.isPresent() && foundItem.get().getStatus() == Item.Status.ACTIVE){ // Check if Item exists in DB and is ACTIVE
+            tempItem = foundItem.get();
+            List<Variant> variants = tempItem.getVariants();
             for (Variant variant:variants) {
                 variantService.deactivateVariant(variant);
             }
-            itemTemp.setStatus(Item.Status.valueOf("INACTIVE"));
-            itemRepo.save(itemTemp);
-            ctrl = true;
+            tempItem.setStatus(Item.Status.INACTIVE);
+            itemRepo.save(tempItem);
+            control = true;
         }
-        return ctrl;
+        return control;
     }
 }
