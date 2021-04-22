@@ -4,12 +4,14 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.telcreat.aio.model.GeoIP;
 import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Shop;
+import com.telcreat.aio.model.shopDistance;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
@@ -137,9 +139,10 @@ public class ShopService {
 
         // AM - orderedShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user
         // and ordered base on the distance.
-    public List<Shop> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
+    public List<shopDistance> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
         List<Shop> shops = findShopsByItemContainsName(searchName, itemCategoryId);
-        List<Shop> orderShops = orderShops(shops, ip);
+        List<shopDistance> orderShops = getShopDistance(shops,ip);
+        orderShops.sort(Comparator.comparing(shopDistance::getDistance));
         return orderShops;
     }
 
@@ -156,42 +159,23 @@ public class ShopService {
     }
 
         // AM - orderShops ---> Returns a list of Shops ordered based on the distance.
-    private List<Shop> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
-        RawDBDemoGeoIPLocationService locationService = new RawDBDemoGeoIPLocationService();
+    /*private List<shopDistance> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+        List<shopDistance> orderShops = getShopDistance(shops,ip);
+        orderShops.sort(Comparator.comparing(shopDistance::getDistance));
+        return orderShops;
+    }*/
+
+    private List<shopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+        GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
-        List<Double> distances = null;
-        List<Shop> tempshops = null;
+        shopDistance shopDistance = null;
+        List<shopDistance> shopsDistances = null;
         for (Shop shop:shops){
-            double dist = distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
-            distances.add(dist);
-            Collections.sort(distances);
-
-            //ordenar las tiendas en funcion de la distancia, Hablar con aresti
-            tempshops.add(shop);
+            double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
+            shopDistance.setShop(shop);
+            shopDistance.setDistance(dist);
+            shopsDistances.add(shopDistance);
         }
-        Collections.sort(distances);
-
-        return tempshops;
-    }
-
-        // AM - orderShops ---> Auxiliar methods used for calculating the distance between two latitude and longitude
-    private double distance(double lat1, double lon1, double lat2, double lon2) {
-        double theta = lon1 - lon2;
-        double dist = Math.sin(deg2rad(lat1)) * Math.sin(deg2rad(lat2)) + Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * Math.cos(deg2rad(theta));
-        dist = Math.acos(dist);
-        dist = rad2deg(dist);
-        dist = dist * 60 * 1.1515;
-        dist = dist * 1.609344;
-        return (dist);
-    }
-
-        // AM - orderShops ---> This function converts decimal degrees to radians
-    private double deg2rad(double deg) {
-        return (deg * Math.PI / 180.0);
-    }
-
-        // AM - orderShops ---> This function converts radians to decimal degrees
-    private double rad2deg(double rad) {
-        return (rad * 180.0 / Math.PI);
+        return shopsDistances;
     }
 }
