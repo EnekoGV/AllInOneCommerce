@@ -97,16 +97,16 @@ public class UserService implements UserDetailsService {
     //________________________________________________________________________________________________________________//
 
         //AM - deactivateUser --->
-    public boolean deactivateUser(User user){
+    public boolean deactivateUser(int userId){
         boolean control = false;
         User tempUser;
         Shop shop;
-        Optional<User> foundUser = userRepo.findById(user.getId());
+        Optional<User> foundUser = userRepo.findById(userId);
         if (foundUser.isPresent() && foundUser.get().getStatus() == User.Status.ACTIVE){
             tempUser = foundUser.get();
             if (tempUser.getUserRole() == User.UserRole.OWNER){
                 shop = shopService.findShopByOwnerId(tempUser.getId());
-                shopService.deactivateShop(shop);
+                shopService.deactivateShop(shop.getId());
             }
             tempUser.setStatus(User.Status.INACTIVE);
             userRepo.save(tempUser);

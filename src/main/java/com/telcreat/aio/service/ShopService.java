@@ -118,15 +118,15 @@ public class ShopService {
     }
 
         //AM - deactivateShop ---> Returns a true boolean if the shop is been deactivated successfully.
-    public boolean deactivateShop(Shop shop){
+    public boolean deactivateShop(int shopId){
         boolean control = false;
         Shop tempShop;
-        Optional<Shop> foundShop = shopRepo.findById(shop.getId());
+        Optional<Shop> foundShop = shopRepo.findById(shopId);
         if(foundShop.isPresent() && foundShop.get().getStatus() == Shop.Status.ACTIVE){
             tempShop = foundShop.get();
             List<Item> shopItems = itemService.findItemsByShopId(tempShop.getId());
             for (Item item:shopItems){
-                itemService.deactivateItem(item);
+                itemService.deactivateItem(item.getId());
             }
             tempShop.setStatus(Shop.Status.INACTIVE);
             shopRepo.save(tempShop);
