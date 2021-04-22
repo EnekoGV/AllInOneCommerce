@@ -97,7 +97,7 @@ public class ShopService {
     public Shop findShopByOwnerId(int userId){
         Shop tempShop = null;
         if(shopRepo.existsByOwnerId(userId)) {
-            Optional<Shop> foundShop = shopRepo.findShopsByOwnerId(userId);
+            Optional<Shop> foundShop = shopRepo.findShopByOwnerId(userId);
             if (foundShop.isPresent()){
                 tempShop = foundShop.get();
             }
@@ -118,25 +118,21 @@ public class ShopService {
     }
 
         //AM - deactivateShop ---> Returns a true boolean if the shop is been deactivated successfully.
-    public boolean deactivateShop(int shopId){
-        boolean ctrl = false;
-        Shop tempShop = null;
-        if(shopRepo.existsById(shopId)){
-            tempShop = findShopById(shopId);
-            tempShop.setStatus(Shop.Status.INACTIVE);
-            if (shopRepo.save(tempShop) != null) {
-                ctrl = true;
-            }
-            List<Item> shopItems = itemService.findItemsByShopId(shopId);
+    public boolean deactivateShop(Shop shop){
+        boolean control = false;
+        Shop tempShop;
+        Optional<Shop> foundShop = shopRepo.findById(shop.getId());
+        if(foundShop.isPresent() && foundShop.get().getStatus() == Shop.Status.ACTIVE){
+            tempShop = foundShop.get();
+            List<Item> shopItems = itemService.findItemsByShopId(tempShop.getId());
             for (Item item:shopItems){
-                boolean itemDown = true;
-                itemDown = itemService.deactivateItem(item);
-                if (itemDown == false){
-                    ctrl = itemDown;
-                }
+                itemService.deactivateItem(item);
             }
+            tempShop.setStatus(Shop.Status.INACTIVE);
+            shopRepo.save(tempShop);
+            control = true;
         }
-        return ctrl;
+        return control;
     }
 
         // AM - orderedShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user

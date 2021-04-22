@@ -1,6 +1,7 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Picture;
+import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.repo.UserRepo;
@@ -28,16 +29,18 @@ public class UserService implements UserDetailsService {
     private final VerificationTokenService verificationTokenService;
     private final SendEmail emailSender;
     private final PictureService pictureService;
+    private final ShopService shopService;
 
 
     @Autowired
-    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService){
+    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService, ShopService shopService){
         this.userRepo = userRepo;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.verificationTokenService = verificationTokenService;
         emailSender = new SendEmail();
         this.verificationTokenRepo = verificationTokenRepo;
         this.pictureService = pictureService;
+        this.shopService = shopService;
     }
 
     //________________________________________________________________________________________________________________//
@@ -94,6 +97,24 @@ public class UserService implements UserDetailsService {
     //________________________________________________________________________________________________________________//
 
         //AM - deactivateUser --->
+    public boolean deactivateUser(User user){
+        boolean control = false;
+        User tempUser;
+        Shop shop;
+        Optional<User> foundUser = userRepo.findById(user.getId());
+        if (foundUser.isPresent() && foundUser.get().getStatus() == User.Status.ACTIVE){
+            tempUser = foundUser.get();
+            if (tempUser.getUserRole() == User.UserRole.OWNER){
+                shop = shopService.findShopByOwnerId(tempUser.getId());
+                shopService.deactivateShop(shop);
+            }
+            tempUser.setStatus(User.Status.INACTIVE);
+            userRepo.save(tempUser);
+            control = true;
+        }
+
+        return control;
+    }
 
 
         //ANADIR FUNCIONES DE GESTION DE TIENDA.

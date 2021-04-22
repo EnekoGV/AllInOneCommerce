@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Shop</title>
+</head>
+<body>
+<h1>VIEW AND EDIT MY Shop</h1>
+
+<form th:action="@{/shop}" method="get">
+    <input type="hidden" id="shopId" name="shopId" th:value="${shopForm.id}">
+    <input type="hidden" id="edit" name="edit" th:value="${!edit}">
+    <button th:if="${!edit}" type="submit">Enable edition</button>
+    <button th:if="${edit}" type="submit">Disable edition</button>
+</form>
+
+<form th:action="@{/shop}" th:object="${shopForm}" method="post">
+
+    <input type="hidden" th:field="*{id}" th:value="${shopForm.id}">
+    Name: <input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required"><br/>
+    Description: <input type="text" th:field="*{description}" th:disabled="${edit == false}" required="required"><br/>
+
+    <h2>Shop information</h2>
+    Address: <input type="date" th:field="*{addressAddress}" th:disabled="${edit == false}" required="required"><br/>
+    Post-Code: <input type="email" th:field="*{addressPostNumber}" th:disabled="${edit == false}" required="required"><br/>
+    City: <input type="text" th:field="*{addressCity}" th:disabled="${edit == false}"><br/>
+    Country: <input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}"><br/>
+    Telephone Number: <input type="text" th:field="*{addressTelNumber}" th:disabled="${edit == false}"><br/>
+    Owner's Name: <input type="text" th:field="*{addressName}" th:disabled="${edit == false}"><br/>
+    Owner's Surname: <input type="text" th:field="*{addressSurname}" th:disabled="${edit == false}"><br/>
+
+
+    <h2>Billing information</h2>
+    Address: <input type="date" th:field="*{billingAddress}" th:disabled="${edit == false}" required="required"><br/>
+    Post-Code: <input type="email" th:field="*{billingPostNumber}" th:disabled="${edit == false}" required="required"><br/>
+    City: <input type="text" th:field="*{billingCity}" th:disabled="${edit == false}"><br/>
+    Country: <input type="text" th:field="*{billingCountry}" th:disabled="${edit == false}"><br/>
+    Telephone Number: <input type="text" th:field="*{billingTelNumber}" th:disabled="${edit == false}"><br/>
+    Owner's Name: <input type="text" th:field="*{billingName}" th:disabled="${edit == false}"><br/>
+    Owner's Surname: <input type="text" th:field="*{billingSurname}" th:disabled="${edit == false}"><br/>
+    private Picture picture;
+    private Picture backgroundPicture;
+    <img th:src="@{(*{picture})}">
+    <img th:src="@{(*{backgroundPicture})}">
+    <button th:if="${edit == true}" type="submit">Update my shop's profile!</button>
+</form>
+
+
+</body>
+</html>
