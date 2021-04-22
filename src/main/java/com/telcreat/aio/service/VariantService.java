@@ -72,13 +72,13 @@ public class VariantService {
     //________________________________________________________________________________________________________________//
 
         //AM - findVariantsByItemId ---> Returns a List of variants based on ItemId.
-    public List<Variant> findVariantsByItemId(int itemId){
+    /*public List<Variant> findVariantsByItemId(int itemId){
         return variantRepo.findVariantsByItem_Id(itemId);
-    }
+    }*/
 
         // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
         // Shop is Active.
-    public List<Variant> findActiveVariantByItemId(int itemId){
+    /*public List<Variant> findActiveVariantByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
         List<Variant> activeVariants = null;
         if(variants != null){
@@ -89,10 +89,10 @@ public class VariantService {
             }
         }
         return activeVariants;
-    }
+    }*/
 
         //AM - findVariantByItemIdAndStatus ---> Returns a List of variants based on ItemId and Status.
-    public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
+    /*public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
         List<Variant> arrived = variantRepo.findVariantsByItem_Id(itemId);
         List<Variant> finala = new ArrayList<>();
         for (int i = 0; i <= arrived.size(); i++) {
@@ -100,17 +100,20 @@ public class VariantService {
                 finala.add(arrived.get(i));
         }
         return finala;
-    }
+    }*/
 
         //AM - deactivateVariant --->
-    public Variant deactivateVariant(Variant variant) {
-        Variant variantTemp = null;
-        if (variantRepo.existsById(variant.getId()) && variant.getStatus().toString().equals("ACTIVE")) {
-            variantTemp = variant;
-            variantTemp.setStatus(Variant.Status.valueOf("INACTIVE"));
-            variantRepo.save(variantTemp);
+    public boolean deactivateVariant(Variant variant) {
+        boolean control = false;
+        Variant tempVariant;
+        Optional<Variant> foundVariant = variantRepo.findById(variant.getId());
+        if (foundVariant.isPresent() && foundVariant.get().getStatus() == Variant.Status.ACTIVE) {
+            tempVariant = foundVariant.get();
+            tempVariant.setStatus(Variant.Status.INACTIVE);
+            variantRepo.save(tempVariant);
+            control = true;
         }
-        return variantTemp;
+        return control;
     }
 }
 

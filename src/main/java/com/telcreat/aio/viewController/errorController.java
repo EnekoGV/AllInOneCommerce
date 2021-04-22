@@ -27,6 +27,9 @@ public class errorController implements ErrorController {
             else if(statusCode == HttpStatus.BAD_REQUEST.value()){
                 return "error/error-400";
             }
+            else if(statusCode == HttpStatus.FORBIDDEN.value()){
+                return "error/error-403";
+            }
         }
         return "error/error-404";
     }
