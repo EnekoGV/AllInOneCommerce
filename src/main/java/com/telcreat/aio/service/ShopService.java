@@ -95,7 +95,7 @@ public class ShopService {
     public Shop findShopByOwnerId(int userId){
         Shop tempShop = null;
         if(shopRepo.existsByOwnerId(userId)) {
-            Optional<Shop> foundShop = shopRepo.findShopsByOwnerId(userId);
+            Optional<Shop> foundShop = shopRepo.findShopByOwnerId(userId);
             if (foundShop.isPresent()){
                 tempShop = foundShop.get();
             }
@@ -128,7 +128,7 @@ public class ShopService {
             }
             tempShop.setStatus(Shop.Status.INACTIVE);
             shopRepo.save(tempShop);
-            control = true; 
+            control = true;
         }
         return control;
     }
