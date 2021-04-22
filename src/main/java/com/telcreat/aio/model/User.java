@@ -57,11 +57,17 @@ public class User implements UserDetails {
         ADMIN
     }
 
+    public enum Status{
+        ACTIVE,
+        INACTIVE
+    }
+
     // Default values in creation
     private LocalDateTime registrationDateTime = LocalDateTime.now();
     private boolean locked = false;
     private boolean enabled = false;
     private UserRole userRole = UserRole.CLIENT;
+    private Status status;
 
     public User(String alias, String name, String lastName, LocalDate birthDay, String email, String password, Picture picture, String addressStreet, String addressNumber, String addressFlat, String addressDoor, String addressCountry, int postCode, String addressCity, String addressRegion, List<Shop> favouriteShops) {
         this.alias = alias;
