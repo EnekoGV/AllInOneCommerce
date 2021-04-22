@@ -10,6 +10,9 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.xml.ws.RequestWrapper;
+import java.util.ArrayList;
+
 
 @Data
 @Controller
@@ -56,7 +59,10 @@ public class viewController {
         // DISPLAY LOGGED IN USER'S NAME
         modelMap.addAttribute("loggedUser", userService.getLoggedUser().getName());
         modelMap.addAttribute("loggedUserId", userService.getLoggedUser().getId());
-
+        if(userService.getLoggedUser().getUserRole() == User.UserRole.OWNER)
+            modelMap.addAttribute("owner",true);
+        else
+            modelMap.addAttribute("owner",false);
         // SHOP LIST IS PENDING
 
         return "search"; // Return Search search.html view
@@ -310,7 +316,28 @@ public class viewController {
     }
 
 
-    //View and edit Shop
+    //Create, view and edit Shop
+
+    @RequestMapping(value = "/shop/create", method = RequestMethod.GET)
+    public String createShop(ModelMap modelMap){
+        User loggedUser = userService.getLoggedUser();
+        Shop newShop = null;
+        boolean edit = false;
+        if(loggedUser != null && loggedUser.getUserRole() == User.UserRole.CLIENT){
+            Picture shopPicture = new Picture("");
+            shopPicture = pictureService.createPicture(shopPicture);
+            Picture shopBackPicture = new Picture("");
+            shopBackPicture = pictureService.createPicture(shopBackPicture);
+            newShop = new Shop(null, shopPicture, shopBackPicture, loggedUser, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
+            newShop = shopService.createShop(newShop);
+            modelMap.addAttribute("shop", newShop);//Se mandan a la siguiente vista siendo redirect??
+            loggedUser.setUserRole(User.UserRole.OWNER);
+            userService.updateUser(loggedUser);
+            edit = true;
+            return "redirect:/shop/edit?shopId="+newShop.getId();
+        }else
+            return "redirect:/?createShopError";
+    }
     @RequestMapping(value ="/shop/edit", method = RequestMethod.GET)
     public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false")boolean edit,
                                   @RequestParam(name = "shopId") int shopId,

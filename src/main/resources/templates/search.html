@@ -10,6 +10,7 @@ KAIXO!
 <p th:text="${loggedUser}"></p>
 
 <a th:href="@{/user(userId=${loggedUserId})}" th:if="${loggedUser} != null">Edit my profile!</a>
-
+<a th:href="@{/shop/create}" th:if="${!owner}">Create my Shop</a>
+<a th:href="@{/shop/edit}" th:if="${owner}">Edit my Shop</a>
 </body>
 </html>
