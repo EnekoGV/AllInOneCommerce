@@ -103,14 +103,17 @@ public class VariantService {
     }*/
 
         //AM - deactivateVariant --->
-    public Variant deactivateVariant(Variant variant) {
-        Variant variantTemp = null;
-        if (variantRepo.existsById(variant.getId()) && variant.getStatus().toString().equals("ACTIVE")) {
-            variantTemp = variant;
-            variantTemp.setStatus(Variant.Status.valueOf("INACTIVE"));
-            variantRepo.save(variantTemp);
+    public boolean deactivateVariant(Variant variant) {
+        boolean control = false;
+        Variant tempVariant;
+        Optional<Variant> foundVariant = variantRepo.findById(variant.getId());
+        if (foundVariant.isPresent() && foundVariant.get().getStatus() == Variant.Status.ACTIVE) {
+            tempVariant = foundVariant.get();
+            tempVariant.setStatus(Variant.Status.INACTIVE);
+            variantRepo.save(tempVariant);
+            control = true;
         }
-        return variantTemp;
+        return control;
     }
 }
 
