@@ -70,7 +70,7 @@ public class VariantService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //AM - deactivateVariant --->
+        //AM - deactivateVariant ---> Returns TRUE if the variant is been deactivated and FALSE if not.
     public boolean deactivateVariant(int variantId) {
         boolean control = false;
         Variant tempVariant;
