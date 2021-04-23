@@ -49,7 +49,7 @@ public class CategoryService {
         return tempCategory;
     }
 
-        //BM - updateCategory ---> Returns updated user if ok or null if not found
+        //BM - updateCategory ---> Returns updated category if ok or null if not found
     public Category updateCategory (Category category){
         Category tempCategory = null;
         if(categoryRepo.existsById(category.getId())){
