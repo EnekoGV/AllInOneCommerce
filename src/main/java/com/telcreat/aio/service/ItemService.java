@@ -20,7 +20,6 @@ public class ItemService {
     private final VariantService variantService;
     private final ItemRepo itemRepo;
     private final GeoIPLocationService locationService;
-    private int code = 23;
 
     @Autowired
     public ItemService(ItemRepo itemRepo, VariantService variantService, GeoIPLocationService locationService){
@@ -40,16 +39,12 @@ public class ItemService {
         return itemRepo.findAll();
     }
 
-
         //BM - findItemById ---> Returns the Item or a null object if not found
     public Item findItemById(int itemId){
         Item item = null;
-        Optional<Item> opt = itemRepo.findById(itemId);
-        if(opt.isPresent()){
-            item = opt.get();
-            code = 0;
-        }else{
-            code = 1;
+        Optional<Item> foundItem = itemRepo.findById(itemId);
+        if(foundItem.isPresent()){
+            item = foundItem.get();
         }
         return item;
     }
@@ -88,12 +83,12 @@ public class ItemService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //AM - findItemsByShopId --->
+        //AM - findItemsByShopId ---> Returns a List of Items that matches the Shop ID
     public List<Item> findItemsByShopId(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
     }
 
-        //AM - findActiveItemsByShopId ---> Find Active Items By Shop ID
+        //AM - findActiveItemsByShopId ---> Returns a List of Active Items that matches the ShopId
     public List<Item> findActiveItemsByShopId(int ShopId){
         List<Item> items = findItemsByShopId(ShopId);
         List<Item> activeItems = null;
@@ -109,12 +104,11 @@ public class ItemService {
 
         //AM - findItemsContainsNameOrdered ---> Returns the list of Item matching the searching
         //criteria (words, order and category)
-            // orderCriteriaId = 0 -> PRECIO
-            // orderCriteriaId = 1 -> DISTANCIA
-            // itemCategoryId = 0 -> DUMMY VARIABLE SOLO EN FRONTEND. Primera categoría empieza por ID=1.
+            // orderCriteriaId = 0) Price 1) Distance
+            // itemCategoryId = 0) Dummy 1)... and next are real categories.
     public List<itemDistance> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
         List<Item> items = findItemsContainsName(itemName,itemCategoryId);
-        List<itemDistance> orderedItems = null;
+        List<itemDistance> orderedItems;
         if(orderCriteriaId==0){
             items.sort(Comparator.comparingDouble(Item::getPrice));
             orderedItems = getItemDistance(items,ip);
@@ -134,8 +128,8 @@ public class ItemService {
         return orderedItems;
     }
 
+        //PRIVATE AM - getItemDistance ---> Returns a List of itemDistance which came with the item object and its distance.
     private List<itemDistance> getItemDistance(List<Item> items, String ip) throws IOException, GeoIp2Exception {
-        //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
         itemDistance itemDistance = null;
         List<itemDistance> itemsDistances = null;
@@ -148,12 +142,12 @@ public class ItemService {
         return itemsDistances;
     }
 
-        //AM - findItemsContainsName --->
+        //AM - findItemsContainsName ---> Returns a List of items that matches the searching criteria.
     public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
         return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
     }
 
-        //AM - deactivateItem --->
+        //AM - deactivateItem ---> Returns a TRUE if the item is been deactivated and a FALSE if not.
     public boolean deactivateItem(int itemId){
         boolean control = false; // Control variable
         Item tempItem; // Temp variable
