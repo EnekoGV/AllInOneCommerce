@@ -29,7 +29,7 @@ public class PictureService {
         return pictureRepo.findAll();
     }
 
-        //BM - findPictureById --->
+        //BM - findPictureById ---> Returns the Picture or a null object if not found
     public Picture findPictureById (int pictureId){
         Picture tempPicture = null;
         Optional<Picture> foundPicture = pictureRepo.findById(pictureId);
