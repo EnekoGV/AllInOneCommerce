@@ -1,25 +1,32 @@
 package com.telcreat.aio.service;
 
-import com.telcreat.aio.model.Item;
-import com.telcreat.aio.model.Variant;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.repo.ItemRepo;
+import com.telcreat.aio.model.itemDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
+
+import static java.lang.Double.parseDouble;
 
 @Service
 public class ItemService {
 
     private final VariantService variantService;
     private final ItemRepo itemRepo;
+    private final GeoIPLocationService locationService;
     private int code = 23;
 
     @Autowired
-    public ItemService(ItemRepo itemRepo, VariantService variantService){
+    public ItemService(ItemRepo itemRepo, VariantService variantService, GeoIPLocationService locationService){
         this.itemRepo = itemRepo;
         this.variantService = variantService;
+        this.locationService = locationService;
     }
 
     //________________________________________________________________________________________________________________//
@@ -105,10 +112,13 @@ public class ItemService {
             // orderCriteriaId = 0 -> PRECIO
             // orderCriteriaId = 1 -> DISTANCIA
             // itemCategoryId = 0 -> DUMMY VARIABLE SOLO EN FRONTEND. Primera categoría empieza por ID=1.
-    public List<Item> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId){
+    public List<itemDistance> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
         List<Item> items = findItemsContainsName(itemName,itemCategoryId);
+        List<itemDistance> orderedItems = null;
         if(orderCriteriaId==0){
-            for(int i=0;i<(items.size()-1);i++){
+            items.sort(Comparator.comparingDouble(Item::getPrice));
+            orderedItems = getItemDistance(items,ip);
+            /*for(int i=0;i<(items.size()-1);i++){
                 for(int j=i+1;j<items.size();j++){
                     if(items.get(i).getPrice()>items.get(j).getPrice()){
                         float aux=items.get(i).getPrice();
@@ -116,13 +126,26 @@ public class ItemService {
                         items.get(j).setPrice(aux);
                     }
                 }
-            }
+            }*/
         }else{
-
-            /// ORDENAR PRODUCTOS POR DISTANCIA
-
+            orderedItems = getItemDistance(items,ip);
+            orderedItems.sort(Comparator.comparingDouble(itemDistance::getDistance));
         }
-        return items;
+        return orderedItems;
+    }
+
+    private List<itemDistance> getItemDistance(List<Item> items, String ip) throws IOException, GeoIp2Exception {
+        //GeoIPLocationService locationService = new GeoIPLocationService();
+        GeoIP location = locationService.getLocation(ip);
+        itemDistance itemDistance = null;
+        List<itemDistance> itemsDistances = null;
+        for (Item item:items){
+            double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(item.getShop().getLatitude()), parseDouble(item.getShop().getLongitude()));
+            itemDistance.setItem(item);
+            itemDistance.setDistance(dist);
+            itemsDistances.add(itemDistance);
+        }
+        return itemsDistances;
     }
 
         //AM - findItemsContainsName --->

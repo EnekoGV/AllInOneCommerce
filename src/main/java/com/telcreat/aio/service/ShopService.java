@@ -21,11 +21,14 @@ import static java.lang.Double.parseDouble;
 public class ShopService {
 
     private final ShopRepo shopRepo;
+    private final GeoIPLocationService locationService;
     private ItemService itemService;
 
     @Autowired
-    public ShopService (ShopRepo shopRepo){
+    public ShopService (ShopRepo shopRepo, GeoIPLocationService locationService, ItemService itemService){
         this.shopRepo = shopRepo;
+        this.locationService = locationService;
+        this.itemService = itemService;
     }
 
     //Comentaio de prueba.
@@ -166,7 +169,7 @@ public class ShopService {
     }*/
 
     private List<shopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
-        GeoIPLocationService locationService = new GeoIPLocationService();
+        //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
         shopDistance shopDistance = null;
         List<shopDistance> shopsDistances = null;
