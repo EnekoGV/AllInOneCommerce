@@ -30,12 +30,12 @@ public class ShopOrderService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //BM - findAllShopOrders --->
+        //BM - findAllShopOrders ---> Returns a List of ShopOrders
     public List<ShopOrder> findAllShopOrders (){
         return shopOrderRepo.findAll();
     }
 
-        //BM - findShopOrderById --->
+        //BM - findShopOrderById ---> Returns the ShopOrder or a null object if not found
     public ShopOrder findShopOrderById (int shopOrderId){
         ShopOrder tempShopOrder = null;
         Optional<ShopOrder> foundShopOrder = shopOrderRepo.findById(shopOrderId);
@@ -45,7 +45,7 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-        //BM - createShopOrder --->
+        //BM - createShopOrder ---> Returns New ShopOrder if found and Null if not found
     public ShopOrder createShopOrder (ShopOrder newShopOrder){
         ShopOrder tempShopOrder = null;
         if (!shopOrderRepo.existsById(newShopOrder.getId())){
@@ -54,7 +54,7 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-        //BM - updateShopOrder --->
+        //BM - updateShopOrder ---> Returns Updated ShopOrder if found and Null if not found
     public ShopOrder updateShopOrder (ShopOrder updateShopOrder){
         ShopOrder tempShopOrder = null;
         Optional<ShopOrder> foundShopOrder = shopOrderRepo.findById(updateShopOrder.getId());
@@ -65,7 +65,7 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
-        //BM - deleteShopOrderById --->
+        //BM - deleteShopOrderById ---> Returns TRUE if deleted and FALSE if not
     public boolean deleteShopOrderById (int shopOrderId){
         boolean control = false;
         if (shopOrderRepo.existsById(shopOrderId)){
@@ -81,12 +81,11 @@ public class ShopOrderService {
                         ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //AM - createShopOrderFromCart ---> Create ShopOrder from incoming cart
-    public List<ShopOrder> createShopOrderFromCart(Cart cart){
+        //AM - createShopOrderFromCart ---> Returns a List of ShopOrder build from incoming cart
+    /*public List<ShopOrder> createShopOrderFromCart(Cart cart){
         ArrayList<Shop> tempVariantShops = new ArrayList<>();
         ArrayList<Variant> updateVariantList = new ArrayList<>();
         Variant tempVariant;
-
         boolean control = true; // Control variable
         int queryStock; // Dummy Variable for each Variant Stock
         ArrayList<ShopOrder> shopOrders = null;
@@ -111,6 +110,7 @@ public class ShopOrderService {
             shopOrders = new ArrayList<>();
             for(int i=0; i<cart.getVariants().size(); i++){
                 //tempVariantShops.add(cart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
+                tempVariantShops.add(findItemcart.getVariants().get(i).getItem().getShop()); // Get Shops from VariantList
             }
 
             uniqueShopList = new ArrayList<>(new HashSet<>(tempVariantShops)); // Get unique Shops to create an order for each
@@ -123,7 +123,7 @@ public class ShopOrderService {
                     /*if (cart.getVariants().get(i).getItem().getShop() == tempShop){
                         orderPrice = orderPrice + cart.getVariants().get(i).getItem().getPrice();
                         newVariantList.add(cart.getVariants().get(i));
-                    }*/
+                    }*//*
                 }
                 tempShopOrder.setPrice(orderPrice);
                 tempShopOrder.setVariants(newVariantList);
@@ -133,5 +133,5 @@ public class ShopOrderService {
             shopOrderRepo.saveAll(shopOrders); // Create an order for each shop from the Cart.
         }
         return shopOrders;
-    }
+    }*/
 }
