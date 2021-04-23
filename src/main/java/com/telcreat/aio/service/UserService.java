@@ -96,7 +96,7 @@ public class UserService implements UserDetailsService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //AM - deactivateUser --->
+        //AM - deactivateUser ---> Returns TRUE if the user is been Deactivated and FALSE if not.
     public boolean deactivateUser(int userId){
         boolean control = false;
         User tempUser;
@@ -112,7 +112,6 @@ public class UserService implements UserDetailsService {
             userRepo.save(tempUser);
             control = true;
         }
-
         return control;
     }
 
