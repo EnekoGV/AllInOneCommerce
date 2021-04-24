@@ -154,7 +154,7 @@ public class ItemService {
         Optional<Item> foundItem = itemRepo.findById(itemId);
         if(foundItem.isPresent() && foundItem.get().getStatus() == Item.Status.ACTIVE){ // Check if Item exists in DB and is ACTIVE
             tempItem = foundItem.get();
-            List<Variant> variants = tempItem.getVariants();
+            List<Variant> variants = variantService.findActiveVariantByItemId(tempItem.getId());
             for (Variant variant:variants) {
                 variantService.deactivateVariant(variant.getId());
             }
