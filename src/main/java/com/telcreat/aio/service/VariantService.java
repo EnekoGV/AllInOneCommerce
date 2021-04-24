@@ -5,6 +5,7 @@ import com.telcreat.aio.repo.VariantRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -85,15 +86,15 @@ public class VariantService {
     }
 
         //AM - findVariantsByItemId ---> Returns a List of variants based on ItemId.
-    /*public List<Variant> findVariantsByItemId(int itemId){
+    public List<Variant> findVariantsByItemId(int itemId) {
         return variantRepo.findVariantsByItem_Id(itemId);
-    }*/
+    }
 
         // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
         // Shop is Active.
-    /*public List<Variant> findActiveVariantByItemId(int itemId){
+    public List<Variant> findActiveVariantByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
-        List<Variant> activeVariants = null;
+        List<Variant> activeVariants = new ArrayList<>();
         if(variants != null){
             for (Variant variant:variants){
                 if(variant.getStatus() == Variant.Status.ACTIVE){
@@ -102,7 +103,7 @@ public class VariantService {
             }
         }
         return activeVariants;
-    }*/
+    }
 
         //AM - findVariantByItemIdAndStatus ---> Returns a List of variants based on ItemId and Status.
     /*public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
