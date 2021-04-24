@@ -1,5 +1,6 @@
 package com.telcreat.aio.viewController;
 
+import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
@@ -11,6 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 
 
 @Data
@@ -53,14 +55,14 @@ public class viewController {
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
                              @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
                              @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
-                             ModelMap modelMap){
+                             ModelMap modelMap) throws IOException, GeoIp2Exception {
 
         // Get remote IP debug
         modelMap.addAttribute("clientIP", request.getRemoteAddr());
         // FIND CLIENTS IP ADDRESS
 
         // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, request.getRemoteAddr()));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         // DISPLAY LOGGED IN USER'S NAME
