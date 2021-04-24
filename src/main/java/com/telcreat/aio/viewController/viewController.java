@@ -74,7 +74,7 @@ public class viewController {
             modelMap.addAttribute("owner",false);
         // SHOP LIST IS PENDING
 
-        return "search"; // Return Search search.html view
+        return "index"; // Return Search search.html view
     }
 
 
