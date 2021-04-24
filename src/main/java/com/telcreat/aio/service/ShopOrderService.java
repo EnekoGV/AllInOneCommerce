@@ -118,7 +118,7 @@ public class ShopOrderService {
             for (Shop tempShop : uniqueShopList){
                 ArrayList<Variant> shopVariantList = new ArrayList<>();
                 float orderPrice = 0;
-                ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<Variant>(), 0, ShopOrder.ShopOrderStatus.PENDING);
+                ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<>(), 0, ShopOrder.ShopOrderStatus.PENDING);
                 for(int i=0; i<cart.getVariants().size(); i++){
                     if (cart.getVariants().get(i).getItem().getShop() == tempShop){ // Does current Variant belong to current Shop?
                         orderPrice = orderPrice + cart.getVariants().get(i).getItem().getPrice(); // Update order price locally
