@@ -62,7 +62,7 @@ public class viewController {
         // FIND CLIENTS IP ADDRESS
 
         // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, request.getRemoteAddr()));
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         // DISPLAY LOGGED IN USER'S NAME
