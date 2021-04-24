@@ -56,7 +56,7 @@ public class ShopService {
     public Shop createShop(Shop newShop){
         Shop tempShop = null;
         if(!shopRepo.existsById(newShop.getId())){
-            tempShop = newShop;
+            tempShop = shopRepo.save(newShop);
         }
         return tempShop;
     }
