@@ -8,5 +8,5 @@ import java.util.List;
 
 @Repository
 public interface VariantRepo extends JpaRepository<Variant,Integer> {
-    // List<Variant> findVariantsByItem_Id(int itemId);
+    List<Variant> findVariantsByItem_Id(int itemId);
 }
