@@ -5,7 +5,6 @@ import com.telcreat.aio.repo.VariantRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -71,6 +70,20 @@ public class VariantService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+        //AM - deactivateVariant ---> Returns TRUE if the variant is been deactivated and FALSE if not.
+    public boolean deactivateVariant(int variantId) {
+        boolean control = false;
+        Variant tempVariant;
+        Optional<Variant> foundVariant = variantRepo.findById(variantId);
+        if (foundVariant.isPresent() && foundVariant.get().getStatus() == Variant.Status.ACTIVE) {
+            tempVariant = foundVariant.get();
+            tempVariant.setStatus(Variant.Status.INACTIVE);
+            variantRepo.save(tempVariant);
+            control = true;
+        }
+        return control;
+    }
+
         //AM - findVariantsByItemId ---> Returns a List of variants based on ItemId.
     /*public List<Variant> findVariantsByItemId(int itemId){
         return variantRepo.findVariantsByItem_Id(itemId);
@@ -100,7 +113,7 @@ public class VariantService {
                 finala.add(arrived.get(i));
         }
         return finala;
-    }*/
+    }
 
         //AM - deactivateVariant --->
     public boolean deactivateVariant(Variant variant) {
@@ -114,7 +127,7 @@ public class VariantService {
             control = true;
         }
         return control;
-    }
+    }*/
 }
 
 
