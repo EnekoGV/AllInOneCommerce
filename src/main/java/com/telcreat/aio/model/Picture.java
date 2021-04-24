@@ -20,4 +20,7 @@ public class Picture {
 
     private String path;
 
+    public Picture(String path) {
+        this.path = path;
+    }
 }

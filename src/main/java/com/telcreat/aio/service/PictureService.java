@@ -18,12 +18,18 @@ public class PictureService {
         this.pictureRepo = pictureRepo;
     }
 
-    // BASIC method
+    //________________________________________________________________________________________________________________//
+                /////////////////////////////////////////////////////////////////////////////
+                //                             BASIC METHODS                               //
+                ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //BM - findAllPictures ---> Returns a List of all pictures
     public List<Picture> findAllPictures (){
         return pictureRepo.findAll();
     }
 
-    // BASIC method
+        //BM - findPictureById ---> Returns the Picture or a null object if not found
     public Picture findPictureById (int pictureId){
         Picture tempPicture = null;
         Optional<Picture> foundPicture = pictureRepo.findById(pictureId);
@@ -33,7 +39,7 @@ public class PictureService {
         return tempPicture;
     }
 
-    // BASIC method
+        //BM - createPicture ---> Returns new picture if created or null if not
     public Picture createPicture (Picture newPicture){
         Picture tempPicture = null;
         if (!pictureRepo.existsById(newPicture.getId())){
@@ -42,7 +48,16 @@ public class PictureService {
         return tempPicture;
     }
 
-    // BASIC method
+        //BM - updatePicture ---> Returns updated picture if ok or null if not found
+    public Picture updatePicture (Picture updatePicture){
+        Picture tempPicture = null;
+        if (pictureRepo.existsById(updatePicture.getId())){
+            tempPicture = pictureRepo.save(updatePicture);
+        }
+        return tempPicture;
+    }
+
+        //BM - deletePictureById ---> Returns TRUE if deleted or FALSE if not
     public boolean deletePictureById (int pictureId){
         boolean control = false;
         if (pictureRepo.existsById(pictureId)){
@@ -50,14 +65,5 @@ public class PictureService {
             control = true;
         }
         return control;
-    }
-
-    // BASIC method
-    public Picture updatePicture (Picture updatePicture){
-        Picture tempPicture = null;
-        if (pictureRepo.existsById(updatePicture.getId())){
-            tempPicture = pictureRepo.save(updatePicture);
-        }
-        return tempPicture;
     }
 }

@@ -1,7 +1,7 @@
 package com.telcreat.aio.service;
 
 import com.telcreat.aio.model.Cart;
-import com.telcreat.aio.model.Item;
+import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.repo.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -13,33 +13,35 @@ import java.util.Optional;
 public class CartService {
 
     private final CartRepo cartRepo;
-    private int code = 23;
 
-    @Autowired//Para que lo cree solo, culpas a aresti
+    @Autowired
     public CartService(CartRepo cartRepo) {
         this.cartRepo = cartRepo;
     }
 
-    // Basic method
-    public List<Cart> findAllCart(){
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                             BASIC METHODS                               //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+
+        //BM - findAllCarts ---> Returns a List of all Carts
+    public List<Cart> findAllCarts(){
         return cartRepo.findAll();
     }
 
-    // Basic method
+        //BM - findCartById ---> Returns a cart object or a null object if not found
     public Cart findCartById(int cartId){
-
         Cart cart = null;
-        Optional<Cart> opt=cartRepo.findById(cartId);
-        if(opt.isPresent()) {
-            cart = opt.get();
-            code = 0;
-        }else{
-            code = 1;
+        Optional<Cart> foundcart = cartRepo.findById(cartId);
+        if(foundcart.isPresent()) {
+            cart = foundcart.get();
         }
         return cart;
     }
 
-    // Basic method - Create New Cart
+        //BM - createCart ---> Returns new Cart if created or null if not
     public Cart createCart(Cart newCart){
         Cart tempCart = null;
         if (!cartRepo.existsById(newCart.getId())){
@@ -48,7 +50,7 @@ public class CartService {
         return tempCart;
     }
 
-    // Basic method - Update Cart
+        //BM - updateCart ---> Returns updated Cart if ok or null if not found
     public Cart updateCart(Cart cart){
         Cart tempCart = null;
         if (cartRepo.existsById(cart.getId())){
@@ -57,12 +59,45 @@ public class CartService {
         return tempCart;
     }
 
-    // Basic method - Delete Cart
+        //BM - deleteCartById ---> Returns TRUE if deleted or FALSE if not
     public boolean deleteCartById(int cartId){
         boolean control = false;
         if (cartRepo.existsById(cartId)){
             cartRepo.deleteById(cartId);
             control = true;
+        }
+        return control;
+    }
+
+    //________________________________________________________________________________________________________________//
+                    /////////////////////////////////////////////////////////////////////////////
+                    //                            ADVANCED METHODS                            //
+                    ////////////////////////////////////////////////////////////////////////////
+    //________________________________________________________________________________________________________________//
+
+        //AM - addToCart ---> Returns the Cart object updated.
+    public Cart addToCart(Cart cart, Variant variant){
+        List<Variant> variants = cart.getVariants();
+        if(checkStock(variant)){
+            variants.add(variant);
+        }
+        cart.setVariants(variants);
+        return cart;
+    }
+
+        //AM - checkStock ---> Returns TRUE if there is enough stock for a concrete variant and FALSE if not.
+    public boolean checkStock(Variant variant){
+        return variant.getStock() > 0;
+    }
+
+        //AM - checkOutCart ---> Returns TRUE if there is enough stock in all variants and FALSE if not.
+    public boolean checkOutCart(Cart cart){
+        boolean control = true;
+        List<Variant> variants = cart.getVariants();
+        for(Variant variant:variants){
+            if(!checkStock(variant)){
+                control = false;
+            }
         }
         return control;
     }

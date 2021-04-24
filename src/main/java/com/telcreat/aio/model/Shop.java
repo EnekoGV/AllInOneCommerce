@@ -51,8 +51,10 @@ public class Shop {
     private String billingCountry;
     private String billingTelNumber;
 
-    private LocalDateTime registrationDateTime = LocalDateTime.now();
+    private String longitude;
+    private String latitude;
 
+    private LocalDateTime registrationDateTime = LocalDateTime.now();
 
     public enum Status{
         ACTIVE,
@@ -60,4 +62,30 @@ public class Shop {
     }
 
     private Status status;
+
+    public Shop(List<Category> categories, Picture picture, Picture backgroundPicture, User owner, String name, String description, String addressName, String addressSurname, String addressAddress, String addressPostNumber, String addressCity, String addressCountry, String addressTelNumber, String billingName, String billingSurname, String billingAddress, String billingPostNumber, String billingCity, String billingCountry, String billingTelNumber, String longitude, String latitude, Status status) {
+        this.categories = categories;
+        this.picture = picture;
+        this.backgroundPicture = backgroundPicture;
+        this.owner = owner;
+        this.name = name;
+        this.description = description;
+        this.addressName = addressName;
+        this.addressSurname = addressSurname;
+        this.addressAddress = addressAddress;
+        this.addressPostNumber = addressPostNumber;
+        this.addressCity = addressCity;
+        this.addressCountry = addressCountry;
+        this.addressTelNumber = addressTelNumber;
+        this.billingName = billingName;
+        this.billingSurname = billingSurname;
+        this.billingAddress = billingAddress;
+        this.billingPostNumber = billingPostNumber;
+        this.billingCity = billingCity;
+        this.billingCountry = billingCountry;
+        this.billingTelNumber = billingTelNumber;
+        this.longitude = longitude;
+        this.latitude = latitude;
+        this.status = status;
+    }
 }
