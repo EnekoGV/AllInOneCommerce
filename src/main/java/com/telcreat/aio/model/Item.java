@@ -29,9 +29,6 @@ public class Item {
     @OneToOne
     private Picture picture;
 
-    @OneToMany
-    private List<Variant> variants;
-
     private String shortDescription;
     private String longDescription;
     private Float price;

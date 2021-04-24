@@ -71,16 +71,30 @@ public class VariantService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+        //AM - deactivateVariant ---> Returns TRUE if the variant is been deactivated and FALSE if not.
+    public boolean deactivateVariant(int variantId) {
+        boolean control = false;
+        Variant tempVariant;
+        Optional<Variant> foundVariant = variantRepo.findById(variantId);
+        if (foundVariant.isPresent() && foundVariant.get().getStatus() == Variant.Status.ACTIVE) {
+            tempVariant = foundVariant.get();
+            tempVariant.setStatus(Variant.Status.INACTIVE);
+            variantRepo.save(tempVariant);
+            control = true;
+        }
+        return control;
+    }
+
         //AM - findVariantsByItemId ---> Returns a List of variants based on ItemId.
-    /*public List<Variant> findVariantsByItemId(int itemId){
+    public List<Variant> findVariantsByItemId(int itemId) {
         return variantRepo.findVariantsByItem_Id(itemId);
-    }*/
+    }
 
         // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
         // Shop is Active.
-    /*public List<Variant> findActiveVariantByItemId(int itemId){
+    public List<Variant> findActiveVariantByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
-        List<Variant> activeVariants = null;
+        List<Variant> activeVariants = new ArrayList<>();
         if(variants != null){
             for (Variant variant:variants){
                 if(variant.getStatus() == Variant.Status.ACTIVE){
@@ -89,7 +103,7 @@ public class VariantService {
             }
         }
         return activeVariants;
-    }*/
+    }
 
         //AM - findVariantByItemIdAndStatus ---> Returns a List of variants based on ItemId and Status.
     /*public List<Variant> findVariantByItemIdAndStatus(int itemId, String status) {
@@ -100,7 +114,7 @@ public class VariantService {
                 finala.add(arrived.get(i));
         }
         return finala;
-    }*/
+    }
 
         //AM - deactivateVariant --->
     public boolean deactivateVariant(Variant variant) {
@@ -114,7 +128,7 @@ public class VariantService {
             control = true;
         }
         return control;
-    }
+    }*/
 }
 
 

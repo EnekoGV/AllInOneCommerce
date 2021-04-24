@@ -29,5 +29,8 @@ public class Variant {
         INACTIVE
     }
 
+    @ManyToOne
+    private Item item;
+
     private Status status;
 }

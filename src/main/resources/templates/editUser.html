@@ -41,7 +41,7 @@
 </form>
 
 
-<img th:src="@{(${userAvatar})}">
+<img th:src="${userAvatar}">
 
 <form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
     <input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">

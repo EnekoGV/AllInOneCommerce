@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 import java.util.Optional;
 import java.util.Random;
 
-
 @Service
 public class VerificationTokenService {
 
@@ -20,6 +19,7 @@ public class VerificationTokenService {
         this.verificationTokenRepo = verificationTokenRepo;
     }
 
+        //deleteVerificationToken --->
     public boolean deleteVerificationToken(String verificationToken){
         boolean control = false;
         if(verificationTokenRepo.existsById(verificationToken)){
@@ -29,6 +29,7 @@ public class VerificationTokenService {
         return control;
     }
 
+        //createVerificationToken --->
     public VerificationToken createVerificationToken(User user){
         int leftLimit = 97; // letter 'a'
         int rightLimit = 122; // letter 'z'
@@ -57,6 +58,7 @@ public class VerificationTokenService {
         return tempVerificationToken;
     }
 
+        //findTokenByUserId --->
     public String findTokenByUserId(int userId){
         String token = null;
         Optional<VerificationToken> foundVerificationToken = verificationTokenRepo.findVerificationTokenByUser_id(userId);
@@ -66,6 +68,7 @@ public class VerificationTokenService {
         return token;
     }
 
+        //findVerificationTokenById --->
     public VerificationToken findVerificationTokenById(String token){
         VerificationToken tempVerificationToken = null;
         Optional<VerificationToken> foundVerificationToken = verificationTokenRepo.findById(token);

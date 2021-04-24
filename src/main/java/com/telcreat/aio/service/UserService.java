@@ -24,7 +24,6 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
-    private final VerificationTokenRepo verificationTokenRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final VerificationTokenService verificationTokenService;
     private final SendEmail emailSender;
@@ -38,7 +37,6 @@ public class UserService implements UserDetailsService {
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.verificationTokenService = verificationTokenService;
         emailSender = new SendEmail();
-        this.verificationTokenRepo = verificationTokenRepo;
         this.pictureService = pictureService;
         this.shopService = shopService;
     }
@@ -96,23 +94,22 @@ public class UserService implements UserDetailsService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-        //AM - deactivateUser --->
-    public boolean deactivateUser(User user){
+        //AM - deactivateUser ---> Returns TRUE if the user is been Deactivated and FALSE if not.
+    public boolean deactivateUser(int userId){
         boolean control = false;
         User tempUser;
         Shop shop;
-        Optional<User> foundUser = userRepo.findById(user.getId());
+        Optional<User> foundUser = userRepo.findById(userId);
         if (foundUser.isPresent() && foundUser.get().getStatus() == User.Status.ACTIVE){
             tempUser = foundUser.get();
             if (tempUser.getUserRole() == User.UserRole.OWNER){
                 shop = shopService.findShopByOwnerId(tempUser.getId());
-                shopService.deactivateShop(shop);
+                shopService.deactivateShop(shop.getId());
             }
             tempUser.setStatus(User.Status.INACTIVE);
             userRepo.save(tempUser);
             control = true;
         }
-
         return control;
     }
 
@@ -134,9 +131,7 @@ public class UserService implements UserDetailsService {
         //AM - loadUserByUsername ---> x
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         final Optional<User> optionalUser = userRepo.findUserByEmail(email);
-
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
