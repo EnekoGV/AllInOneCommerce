@@ -24,7 +24,6 @@ import java.util.Optional;
 public class UserService implements UserDetailsService {
 
     private final UserRepo userRepo;
-    private final VerificationTokenRepo verificationTokenRepo;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final VerificationTokenService verificationTokenService;
     private final SendEmail emailSender;
@@ -38,7 +37,6 @@ public class UserService implements UserDetailsService {
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.verificationTokenService = verificationTokenService;
         emailSender = new SendEmail();
-        this.verificationTokenRepo = verificationTokenRepo;
         this.pictureService = pictureService;
         this.shopService = shopService;
     }
@@ -133,9 +131,7 @@ public class UserService implements UserDetailsService {
         //AM - loadUserByUsername ---> x
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-
         final Optional<User> optionalUser = userRepo.findUserByEmail(email);
-
         if (optionalUser.isPresent()) {
             return optionalUser.get();
         }
