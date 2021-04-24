@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class itemDistance {
+public class ItemDistance {
     private Item item;
     private double distance;
 }
