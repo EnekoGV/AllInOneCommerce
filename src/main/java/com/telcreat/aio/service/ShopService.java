@@ -4,16 +4,13 @@ import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.telcreat.aio.model.GeoIP;
 import com.telcreat.aio.model.Item;
 import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.shopDistance;
+import com.telcreat.aio.model.ShopDistance;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Double.parseDouble;
 
@@ -22,7 +19,7 @@ public class ShopService {
 
     private final ShopRepo shopRepo;
     private final GeoIPLocationService locationService;
-    private ItemService itemService;
+    private final ItemService itemService;
 
     @Autowired
     public ShopService (ShopRepo shopRepo, GeoIPLocationService locationService, ItemService itemService){
@@ -140,17 +137,17 @@ public class ShopService {
 
         // AM - orderedShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user
         // and ordered base on the distance.
-    public List<shopDistance> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
+    public List<ShopDistance> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
         List<Shop> shops = findShopsByItemContainsName(searchName, itemCategoryId);
-        List<shopDistance> orderShops = getShopDistance(shops,ip);
-        orderShops.sort(Comparator.comparing(shopDistance::getDistance));
+        List<ShopDistance> orderShops = getShopDistance(shops,ip);
+        orderShops.sort(Comparator.comparing(ShopDistance::getDistance));
         return orderShops;
     }
 
         // AM - findShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user.
     private List<Shop> findShopsByItemContainsName(String serchName, int itemCategoryId){
         List<Item> items = itemService.findItemsContainsName(serchName, itemCategoryId);
-        List<Shop> shops = null;
+        List<Shop> shops = new ArrayList<>();
         for(Item item:items) {
             if (!shops.contains(item.getShop())) {
                 shops.add(item.getShop());
@@ -166,11 +163,11 @@ public class ShopService {
         return orderShops;
     }*/
 
-    private List<shopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+    private List<ShopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
         //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
-        shopDistance shopDistance = null;
-        List<shopDistance> shopsDistances = null;
+        ShopDistance shopDistance = new ShopDistance();
+        List<ShopDistance> shopsDistances = new ArrayList<>();
         for (Shop shop:shops){
             double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
             shopDistance.setShop(shop);

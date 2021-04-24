@@ -3,11 +3,11 @@ package com.telcreat.aio.service;
 import com.maxmind.geoip2.exception.GeoIp2Exception;
 import com.telcreat.aio.model.*;
 import com.telcreat.aio.repo.ItemRepo;
-import com.telcreat.aio.model.itemDistance;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
@@ -91,7 +91,7 @@ public class ItemService {
         //AM - findActiveItemsByShopId ---> Returns a List of Active Items that matches the ShopId
     public List<Item> findActiveItemsByShopId(int ShopId){
         List<Item> items = findItemsByShopId(ShopId);
-        List<Item> activeItems = null;
+        List<Item> activeItems = new ArrayList<>();
         if (items != null){
             for (Item item:items){
                 if(item.getStatus()== Item.Status.ACTIVE){
@@ -106,9 +106,9 @@ public class ItemService {
         //criteria (words, order and category)
             // orderCriteriaId = 0) Price 1) Distance
             // itemCategoryId = 0) Dummy 1)... and next are real categories.
-    public List<itemDistance> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
+    public List<ItemDistance> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
         List<Item> items = findItemsContainsName(itemName,itemCategoryId);
-        List<itemDistance> orderedItems;
+        List<ItemDistance> orderedItems;
         if(orderCriteriaId==0){
             items.sort(Comparator.comparingDouble(Item::getPrice));
             orderedItems = getItemDistance(items,ip);
@@ -123,16 +123,16 @@ public class ItemService {
             }*/
         }else{
             orderedItems = getItemDistance(items,ip);
-            orderedItems.sort(Comparator.comparingDouble(itemDistance::getDistance));
+            orderedItems.sort(Comparator.comparingDouble(ItemDistance::getDistance));
         }
         return orderedItems;
     }
 
         //PRIVATE AM - getItemDistance ---> Returns a List of itemDistance which came with the item object and its distance.
-    private List<itemDistance> getItemDistance(List<Item> items, String ip) throws IOException, GeoIp2Exception {
+    private List<ItemDistance> getItemDistance(List<Item> items, String ip) throws IOException, GeoIp2Exception {
         GeoIP location = locationService.getLocation(ip);
-        itemDistance itemDistance = null;
-        List<itemDistance> itemsDistances = null;
+        ItemDistance itemDistance = new ItemDistance();
+        List<ItemDistance> itemsDistances = new ArrayList<>();
         for (Item item:items){
             double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(item.getShop().getLatitude()), parseDouble(item.getShop().getLongitude()));
             itemDistance.setItem(item);
@@ -154,7 +154,7 @@ public class ItemService {
         Optional<Item> foundItem = itemRepo.findById(itemId);
         if(foundItem.isPresent() && foundItem.get().getStatus() == Item.Status.ACTIVE){ // Check if Item exists in DB and is ACTIVE
             tempItem = foundItem.get();
-            List<Variant> variants = tempItem.getVariants();
+            List<Variant> variants = variantService.findActiveVariantByItemId(tempItem.getId());
             for (Variant variant:variants) {
                 variantService.deactivateVariant(variant.getId());
             }
