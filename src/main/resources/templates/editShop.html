@@ -7,6 +7,7 @@
 <body>
 <h1>VIEW AND EDIT MY Shop</h1>
 
+
 <form th:action="@{/shop}" method="get">
     <input type="hidden" id="shopId" name="shopId" th:value="${shopForm.id}">
     <input type="hidden" id="edit" name="edit" th:value="${!edit}">
