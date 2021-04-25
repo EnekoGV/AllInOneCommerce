@@ -1,10 +1,7 @@
 package com.telcreat.aio.service;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.telcreat.aio.model.GeoIP;
-import com.telcreat.aio.model.Item;
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.ShopDistance;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.repo.ShopRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -129,6 +126,8 @@ public class ShopService {
                 itemService.deactivateItem(item.getId());
             }
             tempShop.setStatus(Shop.Status.INACTIVE);
+            User owner = tempShop.getOwner();
+            owner.setUserRole(User.UserRole.CLIENT);
             shopRepo.save(tempShop);
             control = true;
         }
