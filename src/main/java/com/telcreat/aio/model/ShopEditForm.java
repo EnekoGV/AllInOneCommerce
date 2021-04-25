@@ -14,8 +14,6 @@ import java.util.List;
 @Data
 public class ShopEditForm {
     private int id;
-    private Picture picture;
-    private Picture backgroundPicture;
     private String name;
     private String description;
     private String addressName;
