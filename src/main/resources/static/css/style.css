@@ -89,9 +89,9 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .fh5co-nav {
-  padding: 18px 0;
+  padding: 40px 0;
   background: #fff;
-  margin-bottom: 40px;
+  margin-bottom: 10px;
 }
 @media screen and (max-width: 768px) {
   .fh5co-nav {
@@ -784,7 +784,7 @@ h1, h2, h3, h4, h5, h6, figure {
 #fh5co-product,
 #fh5co-contact,
 #fh5co-footer {
-  padding: 7em 0;
+  padding: 3em 0;
   clear: both;
 }
 @media screen and (max-width: 768px) {
@@ -1848,7 +1848,7 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 
 .row-pb-md {
-  padding-bottom: 4em !important;
+  padding-bottom: 3em !important;
 }
 
 .row-pb-sm {
