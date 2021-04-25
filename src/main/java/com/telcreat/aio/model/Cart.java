@@ -26,4 +26,9 @@ public class Cart {
 
     @OneToOne
     private User user;
+
+    public Cart(List<Variant> variants, User user) {
+        this.variants = variants;
+        this.user = user;
+    }
 }

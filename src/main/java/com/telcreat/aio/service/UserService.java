@@ -1,9 +1,6 @@
 package com.telcreat.aio.service;
 
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.model.VerificationToken;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.repo.UserRepo;
 import com.telcreat.aio.repo.VerificationTokenRepo;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,11 +26,13 @@ public class UserService implements UserDetailsService {
     private final SendEmail emailSender;
     private final PictureService pictureService;
     private final ShopService shopService;
+    private final CartService cartService;
 
 
     @Autowired
-    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService, ShopService shopService){
+    public UserService(UserRepo userRepo, VerificationTokenService verificationTokenService, VerificationTokenRepo verificationTokenRepo, PictureService pictureService, ShopService shopService, CartService cartService){
         this.userRepo = userRepo;
+        this.cartService = cartService;
         bCryptPasswordEncoder = new BCryptPasswordEncoder();
         this.verificationTokenService = verificationTokenService;
         emailSender = new SendEmail();
@@ -143,12 +142,14 @@ public class UserService implements UserDetailsService {
         //AM - signUpUser ---> Returns user if signUp or null if not
     public User signUpUser(User user) {
         User savedUser;
+        Cart newCart;
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword())); // Encrypt password
         Picture newPicture = new Picture("");
         Picture savedPicture = pictureService.createPicture(newPicture);
         user.setPicture(savedPicture);
         savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), user.getPicture(), "", "", "", "", "", 0, "", "", null));
         if (savedUser!=null){
+            newCart = cartService.createCart(new Cart(null, savedUser));
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
             emailSender.send(savedUser.getEmail(), verificationToken);
         }

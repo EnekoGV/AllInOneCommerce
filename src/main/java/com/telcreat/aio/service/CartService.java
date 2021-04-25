@@ -101,4 +101,14 @@ public class CartService {
         }
         return control;
     }
+
+       //AM - findCartByUserId ---> Returns the found cart by the related user Id
+    public Cart findCartByUserId(int userId){
+        Cart cart = null;
+        Optional<Cart> foundCart = cartRepo.findCartByUserId(userId);
+        if(foundCart.isPresent()){
+            cart = foundCart.get();
+        }
+        return cart;
+    }
 }
