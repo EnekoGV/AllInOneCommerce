@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -87,14 +87,14 @@
 			</div>
 		</nav>
 	</div>
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" style="background-image:url(../static/images/img_bg_2.jpg);">
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${shopBackgroundPicture} + ');'">
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row">
 				<div class="col-md-1 text-left" data-animate-effect="fadeIn">
 					<div class="display-t">
 						<div class="display-tc animate-box" data-animate-effect="fadeIn">
-							<img src="images/Gasparina-Valencia.-Estudio-Huuun.-Miguel-Lozano-de-la-Mota-Retail-exposición-tienda-de-moda-.jpg" class="shopimg" alt="shopphoto">
+							<img th:src="${shopPicture}" class="shopimg" alt="shopphoto">
 							<p>
 								<ul class="fh5co-social-icons" style="margin-left: 70px;margin-top: -20px;">
 									<li><a href="#"><i class="icon-edit"></i></a></li>
@@ -106,7 +106,8 @@
 				<div class="col-md-8 text-right">
 					<div class="display-t">
 						<div class="display-tc animate-box" data-animate-effect="fadeIn">
-							<h1>CALZADOS PEPE</h1>
+							<h1 th:text="${shopForm.name}">
+							</h1>
 						</div>
 					</div>
 				</div>
@@ -129,7 +130,12 @@
 					<h2>Dendaren Profila</h2>
 				</div>
 				<div class="col-md-4 text-right fh5co-heading">
-					<input type="submit" value="Edit profile" class="btn btn-primary">
+					<form th:action="@{/shop}" method="get">
+						<input type="hidden" id="shopId" name="shopId" th:value="${shopForm.id}">
+						<input type="hidden" id="edit" name="edit" th:value="${!edit}">
+						<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
+						<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
+					</form>
 				</div>
 			</div>
 			<div class="row">
@@ -139,12 +145,12 @@
 						<div class="row form-group">
 							<div class="col-md-12">
 								<label for="alias">Dendaren izena</label>
-								<input type="text" id="alias" class="form-control" placeholder="Calzados Pepe">
+								<input type="text" id="alias" class="form-control" placeholder="Shop name">
 							</div>
 						</div>
 						<div class="row form-group">
 							<div class="col-md-12">
-								<label for="address">Kalea</label>
+								<label for="street">Kalea</label>
 								<input type="text" id="street" class="form-control" placeholder="Calle Zubeldia 3 Bajo">
 							</div>
 						</div>
