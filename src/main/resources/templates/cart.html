@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><!--//injectamos una API de thymleaf que se usa con th:-->
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+<h1>Cart</h1>
+<table>
+    <thead>
+    <tr>
+        <th> Name </th>
+        <th> Description </th>
+        <th> Category </th>
+        <th> Prize </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${cart.variants} == null">
+        <td colspan="2"> No Products Available </td>
+    </tr>
+    <tr th:each="item : ${cart.variants}">
+
+        <td><span th:text="${item.item.name}"> Name </span></td>
+        <td><span th:text="${item.item.shortDescription}"> Description </span></td>
+        <td><span th:text="${item.item.itemCategory}"> Category </span></td>
+        <td><span th:text="${item.item.price}"> Prize </span></td>
+    </tr>
+    </tbody>
+</table>
+</body>
+</html>
+<!--
+//$ el objeto mismo
+//* como el punto en java, coger los atributos del objeto
+//@ genera links (URL) dinamicos
+-->

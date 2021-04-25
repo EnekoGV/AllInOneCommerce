@@ -51,7 +51,7 @@ public class cartController {
                            @RequestParam(name = "userId")int userId,
                            ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
-        if (isLogged && loggedId == userId && cart.getUser().getId() == loggedId){ // Allow editing only each user's profile.
+        if (cart != null && isLogged && loggedId == userId && cart.getUser().getId() == loggedId){ // Allow editing only each user's profile.
 
             // DEFAULT INFORMATION IN ALL VIEWS
             modelMap.addAttribute("isLogged", isLogged);
