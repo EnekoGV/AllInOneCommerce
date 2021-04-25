@@ -89,15 +89,17 @@
 
     <div id="fh5co-contact">
         <div class="container">
-            <div class="row">
-                <div class="col-md-6 animate-box">
-                    <h3>Verification required!</h3>
-                    <p>We have recently sent you a verification code to your email address. Please check your mailbox. </p>
+            <div class="row form-group">
+                <h3 class="text-center">Verification required!</h3>
+                <div class="col-md-6 col-md-offset-3 animate-box">
                     <form th:action="@{/auth/verification}" method="post">
-                        <input type="hidden" name="token" th:value="${token}" required="required">
-                        <input type="text" placeholder="Type your code" name="code" id="code" required="required">
-                        <button type="submit">Verify my account!</button>
-                        <p th:if="${verificationError}">Your code is not valid! Try again!</p>
+                        <input type="hidden" name="token" th:value="${token}" required="required" class="form-control">
+                        <label for="code">We have recently sent you a verification code to your email address. Please check your mailbox.</label>
+                        <input type="text" placeholder="Type your code" name="code" id="code" required="required" class="form-control">
+                        <p th:if="${verificationError}" style="color: red">Your code is not valid! Try again!</p>
+                        <div class="form-group text-right" style="margin-top: 25px">
+                            <button class="btn btn-primary" type="submit">Verify my account!</button>
+                        </div>
                     </form>
                 </div>
             </div>
