@@ -128,7 +128,7 @@ public class shopController {
         modelMap.clear();
         Shop shop = shopService.findActiveShopById(shopEditForm.getId());
 
-        if(loggedUser != null && shop.getOwner().getId() == loggedUser.getId()){
+        if(isLogged && shop != null && shop.getOwner().getId() == loggedId){
 
             shop.setAddressCity(shopEditForm.getAddressCity());
             shop.setAddressCountry(shopEditForm.getAddressCountry());
@@ -198,7 +198,7 @@ public class shopController {
 
         Shop shop = shopService.findActiveShopById(shopId);
 
-        if (loggedUser != null && shop != null && loggedUser.getId() == shop.getOwner().getId()){ // Security check
+        if (isLogged && shop != null && loggedId == shop.getOwner().getId()){ // Security check
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
             return "shopProducts";
