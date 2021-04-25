@@ -104,7 +104,7 @@
 			<div class="row">
 				<div class="col-md-6 col-sm-6 animate-box" data-animate-effect="fadeIn">
 					<div class="fh5co-staff">
-						<img th:src="${userAvatar}" alt="perfilphoto">
+						<img th:src="${userAvatar}" alt="perfilphoto" style="object-fit: cover;" class="shopimg">
 						<form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
 							<input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">
 							<input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png" class="form-control">
