@@ -47,20 +47,21 @@ public class shopController {
         }
     }
 
-    //Create, view and edit Shop
-
+    // Create Shop - There is no view here. Directly redirected to edition page.
     @RequestMapping(value = "/shop/create", method = RequestMethod.GET)
     public String createShop(ModelMap modelMap){
 
-        Shop newShop;
-        if(loggedUser != null && loggedUser.getUserRole() == User.UserRole.CLIENT){
-            Picture shopPicture = new Picture("");
-            shopPicture = pictureService.createPicture(shopPicture);
-            Picture shopBackPicture = new Picture("");
-            shopBackPicture = pictureService.createPicture(shopBackPicture);
-            newShop = new Shop(null, shopPicture, shopBackPicture, loggedUser, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
-            newShop = shopService.createShop(newShop);
-            modelMap.addAttribute("shop", newShop);//Se mandan a la siguiente vista siendo redirect??
+        if(isLogged && loggedRole == User.UserRole.CLIENT){ // Only allowed when you are CLIENT and logged
+            Picture newPicture = new Picture("");
+            Picture savedPicture = pictureService.createPicture(newPicture); // Create picture in DB
+            Picture newBackPicture = new Picture("");
+            Picture savedBackPicture = pictureService.createPicture(newBackPicture); // Create picture in DB
+            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
+            Shop savedShop = shopService.createShop(newShop); // Create Shop in DB
+
+            modelMap.addAttribute("shop", savedShop);//Se mandan a la siguiente vista siendo redirect??
+
+            // Update User role
             loggedUser.setUserRole(User.UserRole.OWNER);
             userService.updateUser(loggedUser);
 
@@ -70,18 +71,24 @@ public class shopController {
             return "redirect:/?createShopError"; // Error creating new shop: not logged or is already owner
     }
 
+    // Edit Shop View
     @RequestMapping(value ="/shop/edit", method = RequestMethod.GET)
-    public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false")boolean edit,
+    public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false") boolean edit,
                                   @RequestParam(name = "shopId") int shopId,
                                   @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                   ModelMap modelMap){
 
         Shop shop = shopService.findActiveShopById(shopId);
 
-        if(loggedUser != null && loggedUser.getId() == shop.getOwner().getId()){
+        if(isLogged && loggedShopId == shop.getOwner().getId()){
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("loggedShopId", loggedShopId);
+
             modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
-                    shop.getPicture(),
-                    shop.getBackgroundPicture(),
                     shop.getName(),
                     shop.getDescription(),
                     shop.getAddressName(),
@@ -98,6 +105,10 @@ public class shopController {
                     shop.getBillingCity(),
                     shop.getBillingCountry(),
                     shop.getBillingTelNumber()));
+
+            // Send shop picture paths to HTML view
+            modelMap.addAttribute("shopPicture", shop.getPicture().getPath());
+            modelMap.addAttribute("shopBackgroundPicture", shop.getBackgroundPicture().getPath());
 
             modelMap.addAttribute("edit", edit);
             modelMap.addAttribute("updateError", updateError);
@@ -128,8 +139,6 @@ public class shopController {
             shop.setAddressTelNumber(shopEditForm.getAddressTelNumber());
             shop.setBillingAddress(shopEditForm.getBillingAddress());
             shop.setName(shopEditForm.getName());
-            shop.setPicture(shopEditForm.getPicture());
-            shop.setBackgroundPicture(shopEditForm.getBackgroundPicture());
             shop.setBillingCity(shopEditForm.getBillingCity());
             shop.setBillingCountry(shopEditForm.getBillingCountry());
             shop.setBillingName(shopEditForm.getBillingName());
@@ -151,7 +160,7 @@ public class shopController {
             return "redirect:/shop?shopId=" + shop.getId() + "&updateError=true";
     }
 
-    // Shop Page View
+    // Shop Page View - Public
 
     @RequestMapping(value = "/shop", method = RequestMethod.GET)
     public String viewShop(@RequestParam(name = "shopId") int shopId,
