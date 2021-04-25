@@ -45,8 +45,8 @@ public class userController {
         this.fileUploaderService = fileUploaderService;
         this.shopService = shopService;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
