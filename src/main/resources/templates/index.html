@@ -58,7 +58,7 @@
 	<script src="../js/modernizr-2.6.2.min.js"></script>
 	<!-- FOR IE9 below -->
 	<!--[if lt IE 9]>
-		<script src="../static/js/respond.min.js"></script>
+		<script src="../js/respond.min.js"></script>
 		<![endif]-->
 
 	</head>
@@ -90,10 +90,11 @@
 						
 						<li class="shopping-cart"><a href="#" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
 						<li class="has-dropdown">
-							<a href="#">Profila</a>
+							<a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
+							<a th:if="${isLogged == false}" href="/auth">Log in</a>
 							<ul class="dropdown">
-								<li><a href="#">Erregistratu</a></li>
-								<li><a href="#">Kontua Sortu</a></li>
+								<li><a th:if="${loggedUserRole.name() != 'OWNER' && isLogged == true}" href="/shop/create">Create shop!</a></li>
+								<li><a th:if="${loggedUserRole.name() == 'OWNER' && isLogged == true}" th:href="@{/shop/edit(shopId=${loggedShopId})}">Go to my shop!</a></li>
 							</ul>
 						</li>
 					</ul>
@@ -103,7 +104,7 @@
 		</div>
 	</nav>
 
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(../static/images/img_bg_2.jpg);">
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm" role="banner" style="background-image:url(../images/img_bg_2.jpg);">
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row">
@@ -167,7 +168,7 @@
 			<div class="row">
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-1.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-1.jpg);">
 							<div class="inner">
 								<p>
 									<a href="h_single.html" class="icon"><i class="icon-shopping-cart"></i></a>
@@ -183,7 +184,7 @@
 				</div>
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-2.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-2.jpg);">
 							<span class="sale">Sale</span>
 							<div class="inner">
 								<p>
@@ -200,7 +201,7 @@
 				</div>
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-3.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-3.jpg);">
 							<div class="inner">
 								<p>
 									<a href="h_single.html" class="icon"><i class="icon-shopping-cart"></i></a>
@@ -218,7 +219,7 @@
 			<div class="row">
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-4.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-4.jpg);">
 							<div class="inner">
 								<p>
 									<a href="h_single.html" class="icon"><i class="icon-shopping-cart"></i></a>
@@ -234,7 +235,7 @@
 				</div>
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-5.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-5.jpg);">
 							<div class="inner">
 								<p>
 									<a href="h_single.html" class="icon"><i class="icon-shopping-cart"></i></a>
@@ -250,7 +251,7 @@
 				</div>
 				<div class="col-md-4 text-center animate-box">
 					<div class="product">
-						<div class="product-grid" style="background-image:url(../static/images/product-6.jpg);">
+						<div class="product-grid" style="background-image:url(../images/product-6.jpg);">
 							<div class="inner">
 								<p>
 									<a href="h_single.html" class="icon"><i class="icon-shopping-cart"></i></a>
@@ -321,7 +322,7 @@
 	</div>
 	
 
-	<div id="fh5co-counter" class="fh5co-bg fh5co-counter" style="background-image:url(../static/images/img_bg_5.jpg);">
+	<div id="fh5co-counter" class="fh5co-bg fh5co-counter" style="background-image:url(../images/img_bg_5.jpg);">
 		<div class="container">
 			<div class="row">
 				<div class="display-t">
