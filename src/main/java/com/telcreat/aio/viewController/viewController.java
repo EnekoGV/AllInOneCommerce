@@ -30,8 +30,13 @@ public class viewController {
     private final VerificationTokenService verificationTokenService;
     private final FileUploaderService fileUploaderService;
     private final ShopService shopService;
-    private User loggedUser;
     private final HttpServletRequest request;
+
+    private User loggedUser;
+    private boolean isLogged = false;
+    private User.UserRole loggedRole = User.UserRole.CLIENT;
+    private int loggedId;
+    private int loggedShopId;
 
     @Autowired
     public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -45,8 +50,16 @@ public class viewController {
         this.verificationTokenService = verificationTokenService;
         this.fileUploaderService = fileUploaderService;
         this.shopService = shopService;
-        loggedUser = this.userService.getLoggedUser();
         this.request = request;
+
+        this.loggedUser = userService.getLoggedUser();
+        if (this.loggedUser != null){
+            isLogged = true;
+            loggedId = loggedUser.getId();
+            loggedRole = loggedUser.getUserRole();
+            if (loggedRole == User.UserRole.OWNER)
+                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+        }
     }
 
 
@@ -57,22 +70,19 @@ public class viewController {
                              @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
                              ModelMap modelMap) throws IOException, GeoIp2Exception {
 
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("loggedShopId", loggedShopId);
+
         // Get remote IP debug
-        modelMap.addAttribute("clientIP", request.getRemoteAddr());
+        // modelMap.addAttribute("clientIP", request.getRemoteAddr());
         // FIND CLIENTS IP ADDRESS
 
         // Item Search - Item List based on Category and Name search
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
-
-        // DISPLAY LOGGED IN USER'S NAME
-        modelMap.addAttribute("loggedUser", loggedUser.getName());
-        modelMap.addAttribute("loggedUserId", loggedUser.getId());
-        if(userService.getLoggedUser().getUserRole() == User.UserRole.OWNER)
-            modelMap.addAttribute("owner",true);
-        else
-            modelMap.addAttribute("owner",false);
-        // SHOP LIST IS PENDING
 
         return "index"; // Return Search search.html view
     }
