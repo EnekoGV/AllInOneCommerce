@@ -73,14 +73,14 @@ public class shopController {
 
     // Edit Shop View
     @RequestMapping(value ="/shop/edit", method = RequestMethod.GET)
-    public String viewAndEditShop(@RequestParam(name = "edit",required = false, defaultValue = "false") boolean edit,
+    public String viewAndEditShop(@RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
                                   @RequestParam(name = "shopId") int shopId,
                                   @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                   ModelMap modelMap){
 
         Shop shop = shopService.findActiveShopById(shopId);
 
-        if(isLogged && loggedShopId == shop.getOwner().getId()){
+        if(isLogged && shop != null && loggedId == shop.getOwner().getId()){
 
             // DEFAULT INFORMATION IN ALL VIEWS
             modelMap.addAttribute("isLogged", isLogged);
