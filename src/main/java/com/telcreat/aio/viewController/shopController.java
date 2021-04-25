@@ -5,6 +5,7 @@ import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.model.ShopEditForm;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -16,6 +17,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Data
 @Controller
 @RequestScope
 public class shopController {
