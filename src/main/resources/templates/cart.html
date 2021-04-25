@@ -13,6 +13,7 @@
         <th> Description </th>
         <th> Category </th>
         <th> Prize </th>
+        <th> Eliminar</th>
     </tr>
     </thead>
     <tbody>
@@ -25,9 +26,21 @@
         <td><span th:text="${item.item.shortDescription}"> Description </span></td>
         <td><span th:text="${item.item.itemCategory}"> Category </span></td>
         <td><span th:text="${item.item.price}"> Prize </span></td>
+        <form th:action="@{/cart/eliminate}" method="post">
+            <input type="hidden" id="variantId" name="variantId" th:value="${item.id}">
+            <input type="hidden" id="cartId" name="cartId" th:value="${cart.id}">
+            <button type="submit">Eliminate product</button>
+        </form>
+
     </tr>
     </tbody>
 </table>
+
+<form th:action="@{/cart/order}" method="post">
+    <input type="hidden" id="userId" name="userId" th:value="${cart.user.id}">
+    <input type="hidden" id="cart" name="cart" th:value="${cart}">
+    <button type="submit">Create the order</button>
+</form>
 </body>
 </html>
 <!--
