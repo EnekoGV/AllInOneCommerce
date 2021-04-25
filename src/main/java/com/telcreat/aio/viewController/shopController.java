@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,6 +24,7 @@ public class shopController {
     private final PictureService pictureService;
     private final UserService userService;
     private final ShopService shopService;
+    private final FileUploaderService fileUploaderService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -31,7 +33,7 @@ public class shopController {
     private int loggedShopId;
 
     @Autowired
-    public shopController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
+    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -45,6 +47,7 @@ public class shopController {
             if (loggedRole == User.UserRole.OWNER)
                 loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
         }
+        this.fileUploaderService = fileUploaderService;
     }
 
     // Create Shop - There is no view here. Directly redirected to edition page.
@@ -56,7 +59,7 @@ public class shopController {
             Picture savedPicture = pictureService.createPicture(newPicture); // Create picture in DB
             Picture newBackPicture = new Picture("");
             Picture savedBackPicture = pictureService.createPicture(newBackPicture); // Create picture in DB
-            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser, "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
+            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser,  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
             Shop savedShop = shopService.createShop(newShop); // Create Shop in DB
 
             modelMap.addAttribute("shop", savedShop);//Se mandan a la siguiente vista siendo redirect??
@@ -91,8 +94,6 @@ public class shopController {
             modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
                     shop.getName(),
                     shop.getDescription(),
-                    shop.getAddressName(),
-                    shop.getAddressSurname(),
                     shop.getAddressAddress(),
                     shop.getAddressPostNumber(),
                     shop.getAddressCity(),
@@ -133,8 +134,6 @@ public class shopController {
             shop.setAddressCity(shopEditForm.getAddressCity());
             shop.setAddressCountry(shopEditForm.getAddressCountry());
             shop.setAddressAddress(shopEditForm.getAddressAddress());
-            shop.setAddressName(shopEditForm.getAddressName());
-            shop.setAddressSurname(shopEditForm.getAddressSurname());
             shop.setAddressPostNumber(shopEditForm.getAddressPostNumber());
             shop.setAddressTelNumber(shopEditForm.getAddressTelNumber());
             shop.setBillingAddress(shopEditForm.getBillingAddress());
@@ -157,7 +156,7 @@ public class shopController {
                 return "redirect:/shop/edit?shopId=" + shop.getId() + "&updateError=true";
         }else
             //noinspection SpringMVCViewInspection
-            return "redirect:/shop?shopId=" + shop.getId() + "&updateError=true";
+            return "redirect:/shop?shopId=" + shopEditForm.getId() + "&updateError=true";
     }
 
     // Shop Page View - Public
