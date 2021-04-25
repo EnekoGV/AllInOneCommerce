@@ -3,7 +3,7 @@
 	<head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title>Shop &mdash; Free Website Template, Free HTML5 Template by gettemplates.co</title>
+	<title>Auth</title>
 	<meta name="viewport" content="width=device-width, initial-scale=1">
 	<meta name="description" content="Free HTML5 Website Template by gettemplates.co" />
 	<meta name="keywords" content="free website templates, free html5, free template, free bootstrap, free website template, html5, css3, mobile first, responsive" />
@@ -128,9 +128,9 @@
 								<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
 							</div>
 						</div>
+						<p th:if="${registrationError}" class="text-right" style="color: red">Current email address already in use. Please try with another email address.</p>
 						<div class="form-group text-right">
 							<input type="submit" value="Sign Up" class="btn btn-primary">
-							<p th:if="${registrationError}">Current email address already in use. Please try with another email address.</p>
 						</div>
 
 					</form>		
@@ -152,9 +152,9 @@
 								<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
 							</div>
 						</div>
+						<p th:if="${loginError}" class="text-right" style="color: red">Incorrect login credentials. Try again.</p>
 						<div class="form-group text-right">
 							<input type="submit" value="Log In" class="btn btn-primary"><br/>
-							<p th:if="${loginError}">Incorrect login credentials. Try again.</p>
 						</div>
 
 					</form>		
