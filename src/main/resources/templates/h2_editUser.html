@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>My Profile</title>
+</head>
+<body>
+<h1>VIEW AND EDIT MY PROFILE</h1>
+
+<form th:action="@{/user}" method="get">
+    <input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
+    <input type="hidden" id="edit" name="edit" th:value="${!edit}">
+    <button th:if="${!edit}" type="submit">Enable edition</button>
+    <button th:if="${edit}" type="submit">Disable edition</button>
+</form>
+
+<form th:action="@{/user}" th:object="${userForm}" method="post">
+
+    <input type="hidden" th:field="*{id}" th:value="${userForm.id}">
+    Alias: <input type="text" th:field="*{alias}" th:disabled="${edit == false}" required="required"><br/>
+    Name: <input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required"><br/>
+    Last name: <input type="text" th:field="*{lastName}" th:disabled="${edit == false}" required="required"><br/>
+    Birthday: <input type="date" th:field="*{birthDay}" th:disabled="${edit == false}" required="required"><br/>
+    Email: <input type="email" th:field="*{email}" th:disabled="${edit == false}" required="required"><br/>
+
+    Street: <input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}"><br/>
+    Number: <input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}"><br/>
+    Floor: <input type="text" th:field="*{addressFlat}" th:disabled="${edit == false}"><br/>
+    Door: <input type="text" th:field="*{addressDoor}" th:disabled="${edit == false}"><br/>
+    City: <input type="text" th:field="*{addressCity}" th:disabled="${edit == false}"><br/>
+    Postcode: <input type="text" th:field="*{postCode}" th:disabled="${edit == false}"><br/>
+    Region: <input type="text" th:field="*{addressRegion}" th:disabled="${edit == false}"><br/>
+    Country: <input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}"><br/>
+
+    <button th:if="${edit == true}" type="submit">Update my profile!</button>
+</form>
+
+<form th:action="@{/user/changePassword}" method="get">
+    <input type="hidden" id="userIdPassword" name="userId" th:value="${userForm.id}">
+    <button type="submit">Change my password!</button>
+</form>
+
+
+<img th:src="${userAvatar}">
+
+<form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
+    <input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">
+    <input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png">
+    <button type="submit">Update image!</button>
+</form>
+
+
+<!--<form th:action="@{/shop}" method="get">
+    <input type="hidden" name="shopId" id="shopId" th:value="${}">
+    <button type="submit">Edit my shop</button>
+</form>-->
+</body>
+</html>
