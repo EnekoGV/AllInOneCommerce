@@ -1,9 +1,6 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.ShopEditForm;
-import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -180,9 +177,15 @@ public class shopController {
     // Shop Products View - Only accessible for owner
     // WARNING - NOT FINISHED!
 
-    @RequestMapping(value = "/shop/products", method = RequestMethod.GET)
+    @RequestMapping(value = "/shop/edit/products", method = RequestMethod.GET)
     public String viewShopProducts(@RequestParam(name = "shopId") int shopId,
                                    ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("loggedShopId", loggedShopId);
 
         Shop shop = shopService.findActiveShopById(shopId);
 
@@ -195,5 +198,29 @@ public class shopController {
             return "error/error-404";
         }
     }
+
+    @RequestMapping(value = "/item", method = RequestMethod.GET)
+    public String viewItem(@RequestParam(name = "itemId") int itemId,
+                           ModelMap modelMap){
+
+        Item item = itemService.findActiveItemById(itemId);
+
+        if (item != null){
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("loggedShopId", loggedShopId);
+
+            modelMap.addAttribute("item", item);
+
+            return "item"; // Return Item view
+        }
+        else{
+            return "redirect:/?itemNotFound";
+        }
+    }
+
+
 
 }
