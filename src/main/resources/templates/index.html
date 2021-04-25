@@ -94,7 +94,7 @@
 							<a th:if="${isLogged == false}" href="/auth">Log in</a>
 							<ul class="dropdown">
 								<li><a th:if="${loggedUserRole.name() != 'OWNER' && isLogged == true}" href="/shop/create">Create shop!</a></li>
-								<li><a th:if="${loggedUserRole.name() == 'OWNER' && isLogged == true}" th:href="@{/shop/edit(shopId=${loggedShopId})}">Go to my shop!</a></li>
+								<li><a th:if="${loggedUserRole.name() == 'OWNER' && isLogged == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
 							</ul>
 						</li>
 					</ul>
