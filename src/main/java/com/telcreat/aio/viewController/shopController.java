@@ -24,7 +24,12 @@ public class shopController {
     private final PictureService pictureService;
     private final UserService userService;
     private final ShopService shopService;
-    private final User loggedUser;
+
+    private User loggedUser;
+    private boolean isLogged = false;
+    private User.UserRole loggedRole = User.UserRole.CLIENT;
+    private int loggedId;
+    private int loggedShopId;
 
     @Autowired
     public shopController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -32,7 +37,15 @@ public class shopController {
         this.pictureService = pictureService;
         this.userService = userService;
         this.shopService = shopService;
-        loggedUser = this.userService.getLoggedUser();
+
+        this.loggedUser = userService.getLoggedUser();
+        if (this.loggedUser != null){
+            isLogged = true;
+            loggedId = loggedUser.getId();
+            loggedRole = loggedUser.getUserRole();
+            if (loggedRole == User.UserRole.OWNER)
+                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+        }
     }
 
     //Create, view and edit Shop
@@ -145,18 +158,16 @@ public class shopController {
     public String viewShop(@RequestParam(name = "shopId") int shopId,
                            ModelMap modelMap){
 
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("loggedShopId", loggedShopId);
+
         Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
-        boolean ownerLogged = false; // View-control variable
-
         if (shop != null){ // If shop exists
-
-            if (loggedUser.getId() == shop.getOwner().getId()){
-                ownerLogged = true;
-            }
-
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
-            modelMap.addAttribute("ownerLogged", ownerLogged); // Send view-control variable
             return "shop";
         }
         else{

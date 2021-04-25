@@ -27,7 +27,13 @@ public class userController {
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
     private final FileUploaderService fileUploaderService;
-    private final User loggedUser;
+    private final ShopService shopService;
+
+    private User loggedUser;
+    private boolean isLogged = false;
+    private User.UserRole loggedRole = User.UserRole.CLIENT;
+    private int loggedId;
+    private int loggedShopId;
 
     @Autowired
     public userController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -35,7 +41,16 @@ public class userController {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.fileUploaderService = fileUploaderService;
-        loggedUser = this.userService.getLoggedUser();
+        this.shopService = shopService;
+
+        this.loggedUser = userService.getLoggedUser();
+        if (this.loggedUser != null){
+            isLogged = true;
+            loggedId = loggedUser.getId();
+            loggedRole = loggedUser.getUserRole();
+            if (loggedRole == User.UserRole.OWNER)
+                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+        }
     }
 
 
@@ -46,7 +61,13 @@ public class userController {
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
 
-        if (loggedUser != null && loggedUser.getId() == userId){ // Allow editing only each user's profile.
+        if (isLogged && loggedId == userId){ // Allow editing only each user's profile.
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("loggedShopId", loggedShopId);
 
             modelMap.addAttribute("userAvatar", loggedUser.getPicture().getPath());
             modelMap.addAttribute("userForm", new UserEditForm(loggedUser.getId(),
@@ -77,9 +98,11 @@ public class userController {
     @RequestMapping(value = "/user", method = RequestMethod.POST)
     public String updateProfile(@ModelAttribute(name = "userForm") UserEditForm userForm,
                                 ModelMap modelMap){
+
         modelMap.clear();
 
-        if (loggedUser != null && userForm.getId() == loggedUser.getId()){ // Security check - Verify logged user
+        if (isLogged && userForm.getId() == loggedId){ // Security check - Verify logged user
+
             loggedUser.setAlias(userForm.getAlias());
             loggedUser.setName(userForm.getName());
             loggedUser.setLastName(userForm.getLastName());
@@ -115,8 +138,10 @@ public class userController {
                                     @RequestParam(name = "userId") Integer userId,
                                     ModelMap modelMap){
 
-        if (loggedUser != null && loggedUser.getId() == userId){ // Security check - Verify logged user
+        if (isLogged && loggedId == userId){ // Security check - Verify logged user
+
             String imagePath = fileUploaderService.uploadUserPicture(file,userId, "/user"); // Upload image to server filesystem
+
             if(imagePath != null){ // Security check - Besides, will always be not null
                 Picture loggedUserPicture = loggedUser.getPicture(); // Obtain Picture object
                 loggedUserPicture.setPath(imagePath); // Set new path
@@ -143,7 +168,14 @@ public class userController {
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                      ModelMap modelMap){
 
-        if (loggedUser != null && loggedUser.getId() == userId){ // Security check - Verify logged user
+        if (isLogged && loggedId == userId){ // Security check - Verify logged user
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("loggedShopId", loggedShopId);
+
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);
             return "changePassword"; // Server view
@@ -159,7 +191,8 @@ public class userController {
                                         @RequestParam(name = "repeatPassword") String repeatPassword,
                                         ModelMap modelMap){
 
-        if (loggedUser != null && loggedUser.getId() == userId && newPassword.equals(repeatPassword)){ // Security check - Logged User and Password validation
+        if (isLogged && loggedId == userId && newPassword.equals(repeatPassword)){ // Security check - Logged User and Password validation
+
             BCryptPasswordEncoder bCryptPasswordEncoder = new BCryptPasswordEncoder();
             SendEmail emailSender = new SendEmail();
             loggedUser.setEnabled(false); // Disable user
