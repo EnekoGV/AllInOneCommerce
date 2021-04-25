@@ -231,5 +231,50 @@ public class shopController {
     }
 
 
+    @RequestMapping(value = "/shop/uploadPicture", method = RequestMethod.POST)
+    public String uploadUserPicture(@RequestParam(name = "shopPicture") MultipartFile file,
+                                    @RequestParam(name = "shopId") int shopId,
+                                    @RequestParam(name = "type") int type,
+                                    ModelMap modelMap){
+
+        Shop shop = shopService.findActiveShopById(shopId);
+        String dir = "";
+        Picture shopPicture = new Picture();
+
+        if (isLogged && shop != null && loggedShopId == shopId && (type == 0 || type == 1)){ // Security check - Verify logged user
+
+            if (type == 0) // Principal image
+                dir = "/shop";
+            else if (type == 1) // Background image
+                dir = "/shopBackground";
+
+            String imagePath = fileUploaderService.uploadUserPicture(file, shopId, dir); // Upload image to server filesystem
+
+            if(imagePath != null){ // Security check - Besides, will always be not null
+                if (type == 0){ // Principal image
+                    shopPicture = shop.getPicture();
+                }
+                else if (type == 1){ // Background image
+                    shopPicture = shop.getBackgroundPicture();
+                }
+                shopPicture.setPath(imagePath);
+                pictureService.updatePicture(shopPicture); // Update Object
+                modelMap.clear();
+                return "redirect:/shop?shopId=" + shop.getId(); // Return to User View
+            }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/shop?shopId=" + shop.getId()+ "&updateError=true"; // Redirect if imagePath is null
+            }
+
+        }
+        else{
+            //noinspection SpringMVCViewInspection
+            return "redirect:/user?userId=" + shopId + "&updateError=true"; // Redirect if not allowed
+        }
+
+    }
+
+
 
 }
