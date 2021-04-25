@@ -52,8 +52,8 @@ public class viewController {
         this.shopService = shopService;
         this.request = request;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();

@@ -5,6 +5,7 @@ import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.UserEditForm;
 import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Data
 @Controller
 @RequestScope
 public class userController {
@@ -43,8 +45,8 @@ public class userController {
         this.fileUploaderService = fileUploaderService;
         this.shopService = shopService;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();

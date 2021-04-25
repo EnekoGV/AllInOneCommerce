@@ -83,6 +83,16 @@ public class ItemService {
                     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+        //AM - findActiveItemById ---> Returns found item that matches with itemId
+    public Item findActiveItemById(int itemId){
+        Item tempItem = null;
+        Optional<Item> foundItem = itemRepo.findItemByIdAndStatus(itemId, Item.Status.ACTIVE);
+        if (foundItem.isPresent()){
+            tempItem = foundItem.get();
+        }
+        return tempItem;
+    }
+
         //AM - findItemsByShopId ---> Returns a List of Items that matches the Shop ID
     public List<Item> findItemsByShopId(int shopId){
         return itemRepo.findItemsByShop_Id(shopId);
