@@ -157,7 +157,7 @@
 				<div th:each="item : ${itemList}" class="col-md-4 text-center animate-box">
 					<div class="product">
 						<!--<div class="product-grid" style="background-image:url(../images/1326-samsung-ww90ta046ax-lavadora-de-carga-frontal-9kg-a-acero-inoxidable-opiniones.jpeg);">-->
-						<div class="product-grid" th:style="'background-image:url(' + @{${item.picture.path}} + ');'">
+						<div class="product-grid" th:style="'background-image:url(' + ${item.picture.path} + ');'">
 							<!--<span class="sale">Sale</span>-->
 							<div class="inner">
 								<p>
