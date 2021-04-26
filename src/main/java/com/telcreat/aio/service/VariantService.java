@@ -71,6 +71,16 @@ public class VariantService {
     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+    //AM - findActiveVariantById ---> Return Active Variant by Id
+    public Variant findActiveVariantById(int variantId){
+        Variant tempVariant = null;
+        Optional<Variant> foundVariant = variantRepo.findVariantByIdAndStatus(variantId, Variant.Status.ACTIVE);
+        if (foundVariant.isPresent()){
+            tempVariant = foundVariant.get();
+        }
+        return tempVariant;
+    }
+
     //AM - deactivateVariant ---> Returns TRUE if the variant is been deactivated and FALSE if not.
     public boolean deactivateVariant(int variantId) {
         boolean control = false;
