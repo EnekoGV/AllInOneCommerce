@@ -302,4 +302,24 @@ public class shopController {
         }
 
     }
+
+
+    @RequestMapping(value = "/item/edit/create", method = RequestMethod.GET)
+    public String createItem(@RequestParam(name = "shopId") int shopId,
+                             ModelMap modelMap){
+
+        Shop shop = shopService.findActiveShopById(shopId);
+
+        if (isLogged && shop != null && loggedId == shop.getOwner().getId()){
+            Picture newPicture = new Picture("/images/Item.png");
+            Picture savedPicture = pictureService.createPicture(newPicture);
+            Item newItem = new Item(shop, null, savedPicture, "", "", 0.0f, "", Item.Status.ACTIVE);
+            Item savedItem = itemService.createItem(newItem);
+
+            return "redirect:/item/edit?itemId=" + savedItem.getId();
+        }
+        else{
+            return "redirect:/?errorCreatingItem";
+        }
+    }
 }
