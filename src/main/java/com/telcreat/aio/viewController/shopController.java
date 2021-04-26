@@ -3,6 +3,7 @@ package com.telcreat.aio.viewController;
 import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
+import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -324,9 +325,11 @@ public class shopController {
     }
 
     @RequestMapping(value = "/item/edit", method = RequestMethod.GET)
-    public String editItem(@RequestParam(name = "itemId") int itemId,
+    public String viewEditItem(@RequestParam(name = "itemId") int itemId,
                            @RequestParam(name = "editVariantNumber", required = false, defaultValue = "0") int editVariantNumber,
                            @RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
+                           @RequestParam(name = "itemUpdateError", required = false, defaultValue = "false") boolean itemUpdateError,
+                           @RequestParam(name = "variantUpdateError", required = false, defaultValue = "false") boolean variantUpdateError,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -344,8 +347,49 @@ public class shopController {
 
             modelMap.addAttribute("editVariantNumber", editVariantNumber);
             modelMap.addAttribute("edit", edit);
+            modelMap.addAttribute("itemUpdateError", itemUpdateError);
+            modelMap.addAttribute("variantUpdateError", variantUpdateError);
 
             return "addProduct";
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/item/edit", method = RequestMethod.POST)
+    public String receiveEditItem(@ModelAttribute(name = "item") Item itemForm,
+                                  ModelMap modelMap){
+
+        Item item = itemService.findActiveItemById(itemForm.getId());
+
+        if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
+            Item savedItem = itemService.updateItem(itemForm);
+            if (savedItem != null){
+                return "redirect:/item/edit?itemId=" + item.getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + item.getId() + "&itemUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/variant/edit", method = RequestMethod.POST)
+    public String receiveEditVariant(@ModelAttribute(name = "variant") Variant variantForm,
+                                     ModelMap modelMap){
+
+        Variant variant = variantService.findActiveVariantById(variantForm.getId());
+        if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
+            Variant savedVariant = variantService.updateVariant(variantForm);
+            if (savedVariant != null){
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantUpdateError=true";
+            }
         }
         else{
             return "redirect:/?notAllowed";
