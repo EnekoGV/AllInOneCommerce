@@ -322,4 +322,33 @@ public class shopController {
             return "redirect:/?errorCreatingItem";
         }
     }
+
+    @RequestMapping(value = "/item/edit", method = RequestMethod.GET)
+    public String editItem(@RequestParam(name = "itemId") int itemId,
+                           @RequestParam(name = "editVariantNumber", required = false, defaultValue = "0") int editVariantNumber,
+                           @RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
+                           ModelMap modelMap){
+
+        Item item = itemService.findActiveItemById(itemId);
+
+        if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
+
+            modelMap.addAttribute("item", item);
+            modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
+
+            modelMap.addAttribute("editVariantNumber", editVariantNumber);
+            modelMap.addAttribute("edit", edit);
+
+            return "addProduct";
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
 }
