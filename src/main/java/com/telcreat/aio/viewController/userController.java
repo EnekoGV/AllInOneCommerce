@@ -5,6 +5,7 @@ import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.UserEditForm;
 import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -18,6 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 
+@Data
 @Controller
 @RequestScope
 public class userController {
@@ -33,7 +35,7 @@ public class userController {
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
-    private int loggedShopId;
+    private boolean isOwner;
 
     @Autowired
     public userController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -43,13 +45,14 @@ public class userController {
         this.fileUploaderService = fileUploaderService;
         this.shopService = shopService;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
     }
 
@@ -67,7 +70,7 @@ public class userController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("userAvatar", loggedUser.getPicture().getPath());
             modelMap.addAttribute("userForm", new UserEditForm(loggedUser.getId(),
@@ -174,7 +177,7 @@ public class userController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);

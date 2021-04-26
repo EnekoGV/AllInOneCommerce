@@ -35,7 +35,7 @@ public class orderController {
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
-    private int loggedShopId;
+    private boolean isOwner;
 
     @Autowired
     public orderController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -51,13 +51,14 @@ public class orderController {
         this.shopService = shopService;
         this.request = request;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
     }
 
@@ -67,11 +68,12 @@ public class orderController {
                              ModelMap modelMap){
         ShopOrder shopOrder = shopOrderService.findShopOrderById(orderId);
         if(loggedUser != null && shopOrder!= null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
+
             // DEFAULT INFORMATION IN ALL VIEWS
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             // View Order - ShopOrder List based on orderId
             modelMap.addAttribute("order", shopOrder);
