@@ -99,17 +99,8 @@ public class ItemService {
     }
 
         //AM - findActiveItemsByShopId ---> Returns a List of Active Items that matches the ShopId
-    public List<Item> findActiveItemsByShopId(int ShopId){
-        List<Item> items = findItemsByShopId(ShopId);
-        List<Item> activeItems = new ArrayList<>();
-        if (items != null){
-            for (Item item:items){
-                if(item.getStatus()== Item.Status.ACTIVE){
-                    activeItems.add(item);
-                }
-            }
-        }
-        return activeItems;
+    public List<Item> findActiveItemsByShopId(int shopId){
+        return itemRepo.findItemsByShopIdAndStatus(shopId, Item.Status.ACTIVE);
     }
 
         //AM - findItemsContainsNameOrdered ---> Returns the list of Item matching the searching
