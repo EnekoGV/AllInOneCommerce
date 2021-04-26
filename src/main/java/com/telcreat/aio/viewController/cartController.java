@@ -1,10 +1,10 @@
 package com.telcreat.aio.viewController;
 
-import com.sun.xml.internal.ws.policy.privateutil.PolicyUtils;
-import com.telcreat.aio.model.Cart;
-import com.telcreat.aio.model.ShopOrder;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.service.*;
+import com.telcreat.aio.model.*;
+import com.telcreat.aio.service.CartService;
+import com.telcreat.aio.service.ShopOrderService;
+import com.telcreat.aio.service.UserService;
+import com.telcreat.aio.service.VariantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,34 +14,26 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 
-import javax.servlet.http.HttpServletRequest;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
 @RequestScope
 public class cartController {
-    private final ItemService itemService;
-    private final PictureService pictureService;
-    private final UserService userService;
-    private final ShopService shopService;
     private final CartService cartService;
     private final ShopOrderService shopOrderService;
     private final VariantService variantService;
 
-    private User loggedUser;
+    private final User loggedUser;
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
     private int loggedCartId;
 
     @Autowired
-    public cartController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
-        this.itemService = itemService;
-        this.pictureService = pictureService;
-        this.userService = userService;
-        this.shopService = shopService;
+    public cartController(CartService cartService, ShopOrderService shopOrderService, UserService userService, VariantService variantService) {
         this.cartService = cartService;
 
         this.loggedUser = userService.getLoggedUser();
@@ -68,7 +60,20 @@ public class cartController {
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("loggedCartId", loggedCartId);
 
-           modelMap.addAttribute("cart", cart);
+            List<CartQuantity> cartVariantsAndQuantities = new ArrayList<>();
+            ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            Variant tempVariant;
+            int quantity;
+            CartQuantity cartQuantity = new CartQuantity();
+
+            for (Variant variant : uniqueVariantList) {
+                tempVariant = variant;
+                quantity = Collections.frequency(cart.getVariants(), tempVariant);
+                cartQuantity.setQuantity(quantity);
+                cartQuantity.setVariant(tempVariant);
+                cartVariantsAndQuantities.add(cartQuantity);
+            }
+           modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
 
             return "cart";
         }else{
@@ -81,18 +86,15 @@ public class cartController {
                                        @RequestParam(name = "cartId")int cartId){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
-            for(int i=0; i<cart.getVariants().size(); i++){
-                if(variantId == cart.getVariants().get(i).getId())
-                    cart.getVariants().remove(i);
-            }
+            cart.getVariants().removeIf(n -> (n.getId() == variantId));
             cartService.updateCart(cart);
             return "redirect:/cart";
         }else
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/add", method = RequestMethod.POST)
-    public String addItem(@RequestParam(name = "variantId")int variantId,
+    @RequestMapping(value = "/cart/increase", method = RequestMethod.POST)
+    public String increaseItem(@RequestParam(name = "variantId")int variantId,
                           @RequestParam(name = "cartId")int cartId){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
@@ -103,15 +105,34 @@ public class cartController {
             return "redirect:/";
     }
 
+    @RequestMapping(value = "/cart/decrease", method = RequestMethod.POST)
+    public String decreaseItem(@RequestParam(name = "variantId")int variantId,
+                          @RequestParam(name = "cartId")int cartId){
+        Cart cart = cartService.findCartById(cartId);
+        boolean control = true;
+        if(cart != null && cart.getUser().getId() == loggedUser.getId()){
+            for(int i = 0; i<cart.getVariants().size() && control; i++){
+                if(variantId == cart.getVariants().get(i).getId()) {
+                    cart.getVariants().remove(i);
+                    cartService.updateCart(cart);
+                    control = false;
+                }
+            }
+            return "redirect:/cart";
+        }else
+            return "redirect:/";
+    }
+
     @RequestMapping(value = "/cart/order", method = RequestMethod.POST)
-    public String createOrder(@ModelAttribute(name = "cart")Cart cart,
+    public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
+        Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == userId && loggedId == userId){
             List<ShopOrder> shopOrders= shopOrderService.createShopOrderFromCart(cart);
             if(shopOrders == null)
                 return "redirect:/";
             else
-                return "redirect:/cart/order";
+                return "redirect:?userId="+userId;
         }else
             return "redirect:/";
     }
