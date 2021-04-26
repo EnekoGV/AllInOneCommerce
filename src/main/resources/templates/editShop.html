@@ -219,6 +219,12 @@
 							<input type="submit" value="Update profile" class="btn btn-primary">
 						</div>
 					</form>
+					<div class="form-group text-right">
+						<form th:action="@{/shop/edit/delete}" method="post">
+							<input type="hidden" name="shopId" th:value="${shopForm.id}">
+							<button type="submit">Delete Shop</button>
+						</form>
+					</div>
 					<form th:action="@{/shop/uploadPicture}" method="post" enctype="multipart/form-data">
 						<input type="hidden" name="shopId" th:value="${shopForm.id}">
 						<input type="hidden" name="type" value="0">

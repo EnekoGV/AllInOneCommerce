@@ -90,12 +90,12 @@
 						
 						<li class="shopping-cart"><a href="#" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
 						<li class="has-dropdown">
-							<a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
-							<a th:if="${isLogged == false}" href="/auth">Log in</a>
+							<a th:if="${isLogged}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
+							<a th:if="${!isLogged}" href="/auth">Log in</a>
 							<ul class="dropdown">
-								<li><a th:if="${loggedUserRole.name() != 'OWNER' && isLogged == true}" href="/shop/create">Create shop!</a></li>
-								<li><a th:if="${loggedUserRole.name() == 'OWNER' && isLogged == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
-								<li><a th:if="${isLogged == true}" href="/logout">Logout!</a></li>
+								<li><a th:if="${!isOwner && isLogged}" href="/shop/create">Create shop!</a></li>
+								<li><a th:if="${isOwner && isLogged}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
+								<li><a th:if="${isLogged}" href="/logout">Logout!</a></li>
 							</ul>
 						</li>
 					</ul>
