@@ -92,7 +92,7 @@ public class VariantService {
 
     // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
     // Shop is Active.
-    public List<Variant> findActiveVariantByItemId(int itemId){
+    public List<Variant> findActiveVariantsByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
         List<Variant> activeVariants = new ArrayList<>();
         if(variants != null){
