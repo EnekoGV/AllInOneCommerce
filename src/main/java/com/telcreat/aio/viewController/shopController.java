@@ -30,7 +30,7 @@ public class shopController {
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
-    private int loggedShopId;
+    private boolean isOwner = false;
 
     @Autowired
     public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService) {
@@ -44,8 +44,9 @@ public class shopController {
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
         this.fileUploaderService = fileUploaderService;
     }
@@ -89,7 +90,7 @@ public class shopController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
                     shop.getName(),
@@ -165,11 +166,14 @@ public class shopController {
     public String viewShop(@RequestParam(name = "shopId") int shopId,
                            ModelMap modelMap){
 
-        // DEFAULT INFORMATION IN ALL VIEWS
-        modelMap.addAttribute("isLogged", isLogged);
-        modelMap.addAttribute("loggedUserId", loggedId);
-        modelMap.addAttribute("loggedUserRole", loggedRole);
-        modelMap.addAttribute("loggedShopId", loggedShopId);
+        Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
+        if (shop != null){ // If shop exists
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
 
         Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
         if (shop != null){ // If shop exists
@@ -184,20 +188,20 @@ public class shopController {
 
     // Shop Products View - Only accessible for owner
     // WARNING - NOT FINISHED!
-
     @RequestMapping(value = "/shop/edit/products", method = RequestMethod.GET)
     public String viewShopProducts(@RequestParam(name = "shopId") int shopId,
                                    ModelMap modelMap){
 
-        // DEFAULT INFORMATION IN ALL VIEWS
-        modelMap.addAttribute("isLogged", isLogged);
-        modelMap.addAttribute("loggedUserId", loggedId);
-        modelMap.addAttribute("loggedUserRole", loggedRole);
-        modelMap.addAttribute("loggedShopId", loggedShopId);
-
         Shop shop = shopService.findActiveShopById(shopId);
 
         if (isLogged && shop != null && loggedId == shop.getOwner().getId()){ // Security check
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
+
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
             return "shopProducts";
@@ -214,13 +218,15 @@ public class shopController {
         Item item = itemService.findActiveItemById(itemId);
 
         if (item != null){
+
             // DEFAULT INFORMATION IN ALL VIEWS
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("item", item);
+            modelMap.addAttribute("shop", item.getShop());
 
             return "item"; // Return Item view
         }
@@ -240,7 +246,7 @@ public class shopController {
         String dir = "";
         Picture shopPicture = new Picture();
 
-        if (isLogged && shop != null && loggedShopId == shopId && (type == 0 || type == 1)){ // Security check - Verify logged user
+        if (isLogged && shop != null && loggedId == shop.getOwner().getId() && (type == 0 || type == 1)){ // Security check - Verify logged user
 
             if (type == 0) // Principal image
                 dir = "/shop";

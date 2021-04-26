@@ -35,7 +35,7 @@ public class userController {
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
-    private int loggedShopId;
+    private boolean isOwner;
 
     @Autowired
     public userController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -50,8 +50,9 @@ public class userController {
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
     }
 
@@ -69,7 +70,7 @@ public class userController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("userAvatar", loggedUser.getPicture().getPath());
             modelMap.addAttribute("userForm", new UserEditForm(loggedUser.getId(),
@@ -176,7 +177,7 @@ public class userController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedShopId", loggedShopId);
+            modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);
