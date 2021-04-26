@@ -29,7 +29,7 @@ public class Shop {
     @OneToOne
     private Picture backgroundPicture;
 
-    @OneToOne
+    @ManyToOne
     private User owner;
 
     private String name;
