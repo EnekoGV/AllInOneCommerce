@@ -175,14 +175,34 @@ public class shopController {
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
 
-        Shop shop = shopService.findActiveShopById(shopId); // Obtain queried shop
-        if (shop != null){ // If shop exists
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
             return "shop";
         }
         else{
             return "error/error-404";
+        }
+    }
+
+    @RequestMapping(value = "/shop/edit/delete", method = RequestMethod.POST)
+    public String deactivateShop(@RequestParam(name = "shopId") int shopId,
+                                 ModelMap modelMap){
+
+        Shop shop = shopService.findActiveShopById(shopId);
+        boolean control;
+
+        // Security check
+        if (isLogged && shop != null && loggedId == shop.getOwner().getId()){
+            control = shopService.deactivateShop(shop.getId());
+            if (control){
+                return "redirect:/?shopDeleted";
+            }
+            else{
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&errorDeletingShop=true";
+            }
+        }
+        else{
+            return "redirect:/shop/edit?shopId=" + shopId + "&notAllowed=true";
         }
     }
 
