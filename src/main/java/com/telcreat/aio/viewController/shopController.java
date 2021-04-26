@@ -3,7 +3,6 @@ package com.telcreat.aio.viewController;
 import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
-import org.aspectj.weaver.ast.Var;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -13,8 +12,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpServletRequest;
 
 @Data
 @Controller
@@ -191,6 +188,8 @@ public class shopController {
     public String deactivateShop(@RequestParam(name = "shopId") int shopId,
                                  ModelMap modelMap){
 
+        modelMap.clear();
+
         Shop shop = shopService.findActiveShopById(shopId);
         boolean control;
 
@@ -330,6 +329,7 @@ public class shopController {
                            @RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
                            @RequestParam(name = "itemUpdateError", required = false, defaultValue = "false") boolean itemUpdateError,
                            @RequestParam(name = "variantUpdateError", required = false, defaultValue = "false") boolean variantUpdateError,
+                           @RequestParam(name = "variantDeleteError", required = false, defaultValue = "false") boolean variantDeleteError,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -349,6 +349,7 @@ public class shopController {
             modelMap.addAttribute("edit", edit);
             modelMap.addAttribute("itemUpdateError", itemUpdateError);
             modelMap.addAttribute("variantUpdateError", variantUpdateError);
+            modelMap.addAttribute("variantDeleteError", variantDeleteError);
 
             return "addProduct";
         }
@@ -360,6 +361,8 @@ public class shopController {
     @RequestMapping(value = "/item/edit", method = RequestMethod.POST)
     public String receiveEditItem(@ModelAttribute(name = "item") Item itemForm,
                                   ModelMap modelMap){
+
+        modelMap.clear();
 
         Item item = itemService.findActiveItemById(itemForm.getId());
 
@@ -381,6 +384,8 @@ public class shopController {
     public String receiveEditVariant(@ModelAttribute(name = "variant") Variant variantForm,
                                      ModelMap modelMap){
 
+        modelMap.clear();
+
         Variant variant = variantService.findActiveVariantById(variantForm.getId());
         if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
             Variant savedVariant = variantService.updateVariant(variantForm);
@@ -395,4 +400,43 @@ public class shopController {
             return "redirect:/?notAllowed";
         }
     }
+
+    @RequestMapping(value = "/variant/edit/delete", method = RequestMethod.POST)
+    public String deactivateVariant(@RequestParam(name = "variantId") int variantId,
+                                    ModelMap modelMap){
+        Variant variant = variantService.findActiveVariantById(variantId);
+        boolean control;
+        if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
+            control = variantService.deactivateVariant(variant.getId());
+            if (control){
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantDeleteError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/item/edit/delete", method = RequestMethod.POST)
+    public String deactivateItem(@RequestParam(name = "itemId") int itemId,
+                                    ModelMap modelMap){
+        Item item = itemService.findActiveItemById(itemId);
+        boolean control;
+        if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
+            control = itemService.deactivateItem(item.getId());
+            if (control){
+                return "redirect:/shop?shopId=" + item.getShop().getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + item.getId() + "&variantDeleteError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
 }
