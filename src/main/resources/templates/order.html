@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Order Page</title>
+</head>
+<body>
+<th:block th:object="${order}">
+    <p th:text="*{shop}"></p>
+    <p th:text="*{shopOrderStatus}"></p>
+    <p th:text="*{price}"></p>
+    <p th:text="*{shop}"></p>
+</th:block>
+
+<th:block th:each="variant : ${order.variants}">
+    <p th:text="${variant.name}"></p>
+    <p th:text="${variant.status}"></p>
+    <p th:text="${variant.stock}"></p>
+</th:block>
+
+</body>
+</html>

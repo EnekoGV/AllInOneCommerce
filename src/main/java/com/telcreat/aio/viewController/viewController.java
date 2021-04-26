@@ -36,7 +36,7 @@ public class viewController {
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
-    private int loggedShopId;
+    private boolean isOwner;
 
     @Autowired
     public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
@@ -52,13 +52,14 @@ public class viewController {
         this.shopService = shopService;
         this.request = request;
 
-        this.loggedUser = userService.getLoggedUser();
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedShopId = this.shopService.findShopByOwnerId(loggedId).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
     }
 
@@ -74,7 +75,12 @@ public class viewController {
         modelMap.addAttribute("isLogged", isLogged);
         modelMap.addAttribute("loggedUserId", loggedId);
         modelMap.addAttribute("loggedUserRole", loggedRole);
-        modelMap.addAttribute("loggedShopId", loggedShopId);
+        modelMap.addAttribute("isOwner", isOwner);
+
+        Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        if (shop != null){
+            modelMap.addAttribute("loggedShopId",shop.getId());
+        }
 
         // Get remote IP debug
         // modelMap.addAttribute("clientIP", request.getRemoteAddr());

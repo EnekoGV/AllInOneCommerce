@@ -1,11 +1,9 @@
 package com.telcreat.aio.service;
 
 import com.maxmind.geoip2.exception.GeoIp2Exception;
-import com.telcreat.aio.model.GeoIP;
-import com.telcreat.aio.model.Item;
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.ShopDistance;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.repo.ShopRepo;
+import com.telcreat.aio.repo.UserRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,12 +18,14 @@ public class ShopService {
     private final ShopRepo shopRepo;
     private final GeoIPLocationService locationService;
     private final ItemService itemService;
+    private final UserRepo userRepo;
 
     @Autowired
-    public ShopService (ShopRepo shopRepo, GeoIPLocationService locationService, ItemService itemService){
+    public ShopService(ShopRepo shopRepo, GeoIPLocationService locationService, ItemService itemService, UserRepo userRepo){
         this.shopRepo = shopRepo;
         this.locationService = locationService;
         this.itemService = itemService;
+        this.userRepo = userRepo;
     }
 
     //________________________________________________________________________________________________________________//
@@ -84,35 +84,31 @@ public class ShopService {
 
         // AM - findActiveShopById ---> Returns the Shop Object according to the specified ShopId if the Shop is Active.
     public Shop findActiveShopById(int shopId){
-        Shop tempShop = findShopById(shopId);
-        if(tempShop != null){
-            if(tempShop.getStatus() == Shop.Status.INACTIVE){
-                tempShop = null;
-            }
+        Shop tempShop = null;
+        Optional<Shop> foundShop = shopRepo.findShopByIdAndStatus(shopId, Shop.Status.ACTIVE);
+        if (foundShop.isPresent()){
+            tempShop = foundShop.get();
         }
         return tempShop;
     }
 
         // AM - findShopByOwnerId ---> Returns the Shop Object according to the specified UserId.
-    public Shop findShopByOwnerId(int userId){
+    public Shop findShopByOwnerId(int ownerId){
         Shop tempShop = null;
-        if(shopRepo.existsByOwnerId(userId)) {
-            Optional<Shop> foundShop = shopRepo.findShopByOwnerId(userId);
-            if (foundShop.isPresent()){
-                tempShop = foundShop.get();
-            }
+        Optional<Shop> foundShop = shopRepo.findShopByOwnerId(ownerId);
+        if (foundShop.isPresent()){
+            tempShop = foundShop.get();
         }
         return tempShop;
     }
 
         // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
         // Shop is Active.
-    public Shop findActiveShopByOwnerId(int userId){
-        Shop tempShop = findShopByOwnerId(userId);
-        if(tempShop != null){
-            if(tempShop.getStatus() == Shop.Status.INACTIVE){
-                tempShop = null;
-            }
+    public Shop findActiveShopByOwnerId(int ownerId){
+        Shop tempShop = null;
+        Optional<Shop> foundShop = shopRepo.findShopByOwnerIdAndStatus(ownerId, Shop.Status.ACTIVE);
+        if (foundShop.isPresent()){
+            tempShop = foundShop.get();
         }
         return tempShop;
     }
@@ -121,14 +117,18 @@ public class ShopService {
     public boolean deactivateShop(int shopId){
         boolean control = false;
         Shop tempShop;
-        Optional<Shop> foundShop = shopRepo.findById(shopId);
-        if(foundShop.isPresent() && foundShop.get().getStatus() == Shop.Status.ACTIVE){
+        Optional<Shop> foundShop = shopRepo.findShopByIdAndStatus(shopId, Shop.Status.ACTIVE);
+        if(foundShop.isPresent()){
             tempShop = foundShop.get();
             List<Item> shopItems = itemService.findItemsByShopId(tempShop.getId());
             for (Item item:shopItems){
                 itemService.deactivateItem(item.getId());
             }
             tempShop.setStatus(Shop.Status.INACTIVE);
+            User owner = tempShop.getOwner();
+            owner.setUserRole(User.UserRole.CLIENT);
+
+            userRepo.save(owner);
             shopRepo.save(tempShop);
             control = true;
         }
