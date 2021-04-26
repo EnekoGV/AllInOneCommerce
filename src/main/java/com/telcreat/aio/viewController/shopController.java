@@ -259,7 +259,7 @@ public class shopController {
     }
 
 
-    @RequestMapping(value = "/shop/uploadPicture", method = RequestMethod.POST)
+    @RequestMapping(value = "/shop/edit/uploadPicture", method = RequestMethod.POST)
     public String uploadUserPicture(@RequestParam(name = "shopPicture") MultipartFile file,
                                     @RequestParam(name = "shopId") int shopId,
                                     @RequestParam(name = "type") int type,

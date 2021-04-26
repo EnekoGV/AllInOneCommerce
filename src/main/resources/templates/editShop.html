@@ -145,13 +145,13 @@
 								<button type="submit">Delete Shop</button>
 							</form>
 						</div>
-						<form th:action="@{/shop/uploadPicture}" method="post" enctype="multipart/form-data">
+						<form th:action="@{/shop/edit/uploadPicture}" method="post" enctype="multipart/form-data">
 							<input type="hidden" name="shopId" th:value="${shopForm.id}">
 							<input type="hidden" name="type" value="0">
 							<input type="file" name="shopPicture" accept=".jpg, .jpeg, .png" class="form-control">
 							<button type="submit">Update shop image!</button>
 						</form><br/>
-						<form th:action="@{/shop/uploadPicture}" method="post" enctype="multipart/form-data">
+						<form th:action="@{/shop/edit/uploadPicture}" method="post" enctype="multipart/form-data">
 							<input type="hidden" name="shopId" th:value="${shopForm.id}">
 							<input type="hidden" name="type" value="1">
 							<input type="file" name="shopPicture" accept=".jpg, .jpeg, .png" class="form-control">
