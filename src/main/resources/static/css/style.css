@@ -88,6 +88,12 @@ h1, h2, h3, h4, h5, h6, figure {
   background: #d1c286;
 }
 
+hr.vr{
+  width: 1px;
+  height: 430px;
+  background-color: #bfbfbf;
+}
+
 .fh5co-nav {
   padding: 18px 0;
   background: #fff;

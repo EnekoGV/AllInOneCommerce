@@ -5,12 +5,33 @@
 		<div class="fh5co-loader"></div>
 		<div id="page">
 			<div th:replace="fragments :: header"/>
-
 			<div id="fh5co-contact">
-				<div class="container">
+				<div class="container" style="margin-bottom: 20px">
 					<div class="row">
-						<div class="col-md-6 animate-box">
-							<h3>Sign Up</h3>
+						<div class="col-md-6 col-md-offset-3 animate-box">
+							<h3 class="text-center" style="margin-bottom: 40px">Log In</h3>
+							<form th:action="@{/auth}" method="post" th:object="${login}">
+								<div class="row form-group">
+									<div class="col-md-12">
+										<input type="email" th:field="*{email}" placeholder="Type your email" required="required" class="form-control">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-12">
+										<!-- <label for="subject">Subject</label> -->
+										<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
+									</div>
+								</div>
+								<p th:if="${loginError}" class="text-right" style="color: red">Incorrect login credentials. Try again.</p>
+								<div class="form-group text-right">
+									<input type="submit" value="Log In" class="btn btn-primary"><br/>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-md-offset-3 animate-box">
+							<h3 class="text-center" style="margin-bottom: 40px">Sign Up</h3>
 							<form th:action="@{/auth/register}" method="post" th:object="${signup}">
 								<div class="row form-group">
 									<div class="col-md-6">
@@ -40,7 +61,6 @@
 										<input type="email" th:field="*{email}" placeholder="Type your email address" required="required" class="form-control">
 									</div>
 								</div>
-
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="subject">Subject</label> -->
@@ -51,35 +71,9 @@
 								<div class="form-group text-right">
 									<input type="submit" value="Sign Up" class="btn btn-primary">
 								</div>
-
-							</form>
-						</div>
-						<div class="col-md-6 animate-box">
-							<h3>Log In</h3>
-							<form th:action="@{/auth}" method="post" th:object="${login}">
-								<div class="row form-group">
-									<div class="col-md-12">
-										<label>
-											<input type="email" th:field="*{email}" placeholder="Type your email" required="required" class="form-control">
-										</label>
-									</div>
-								</div>
-
-								<div class="row form-group">
-									<div class="col-md-12">
-										<!-- <label for="subject">Subject</label> -->
-										<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
-									</div>
-								</div>
-								<p th:if="${loginError}" class="text-right" style="color: red">Incorrect login credentials. Try again.</p>
-								<div class="form-group text-right">
-									<input type="submit" value="Log In" class="btn btn-primary"><br/>
-								</div>
-
 							</form>
 						</div>
 					</div>
-
 				</div>
 			</div>
 			<div th:replace="fragments :: footer"/>
