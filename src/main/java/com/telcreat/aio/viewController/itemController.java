@@ -69,6 +69,8 @@ public class itemController {
             modelMap.addAttribute("item", item);
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
+            modelMap.addAttribute("newVariant", new Variant());
+
             modelMap.addAttribute("selectedVariantId", selectedVariantId);
 
             if (selectedVariantId == 0){
