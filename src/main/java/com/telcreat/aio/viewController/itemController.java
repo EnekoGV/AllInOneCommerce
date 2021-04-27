@@ -214,7 +214,6 @@ public class itemController {
             }
         }
         else{
-            //noinspection SpringMVCViewInspection
             return "redirect:/?notAllowed"; // Redirect if not allowed
         }
 
