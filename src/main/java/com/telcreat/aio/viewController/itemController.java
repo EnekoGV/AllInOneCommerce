@@ -156,7 +156,7 @@ public class itemController {
     }
 
     @RequestMapping(value = "/item/edit", method = RequestMethod.POST)
-    public String receiveEditItem(@ModelAttribute(name = "item") Item itemForm,
+    public String receiveEditItem(@ModelAttribute(name = "itemForm") ItemEditForm itemForm,
                                   ModelMap modelMap){
 
         modelMap.clear();
@@ -164,7 +164,12 @@ public class itemController {
         Item item = itemService.findActiveItemById(itemForm.getId());
 
         if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
-            Item savedItem = itemService.updateItem(itemForm);
+            item.setName(itemForm.getName());
+            item.setPrice(itemForm.getPrice());
+            item.setShortDescription(itemForm.getShortDescription());
+            item.setLongDescription(itemForm.getLongDescription());
+
+            Item savedItem = itemService.updateItem(item);
             if (savedItem != null){
                 return "redirect:/item/edit?itemId=" + item.getId();
             }
