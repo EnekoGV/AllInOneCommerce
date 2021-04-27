@@ -55,14 +55,18 @@ public class variantController {
     }
 
     @RequestMapping(value = "/variant/edit", method = RequestMethod.POST)
-    public String receiveEditVariant(@ModelAttribute(name = "variant") Variant variantForm,
+    public String receiveEditVariant(@RequestParam(name = "variantId") int variantId,
+                                     @RequestParam(name = "variantName") String variantName,
+                                     @RequestParam(name = "variantStock") int variantStock,
                                      ModelMap modelMap){
 
         modelMap.clear();
 
-        Variant variant = variantService.findActiveVariantById(variantForm.getId());
+        Variant variant = variantService.findActiveVariantById(variantId);
         if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
-            Variant savedVariant = variantService.updateVariant(variantForm);
+            variant.setName(variantName);
+            variant.setStock(variantStock);
+            Variant savedVariant = variantService.updateVariant(variant);
             if (savedVariant != null){
                 return "redirect:/item/edit?itemId=" + variant.getItem().getId();
             }
@@ -127,7 +131,7 @@ public class variantController {
     }
 
     @RequestMapping(value = "/variant/edit/create", method = RequestMethod.POST)
-    public String createVariant(@ModelAttribute(name = "newVariant") Variant newVariant,
+    public String createVariant(@ModelAttribute(name = "variantForm") Variant newVariant,
                                 @RequestParam(name = "itemId") int itemId,
                                 ModelMap modelMap){
 
