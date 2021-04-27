@@ -55,6 +55,7 @@ public class itemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
     public String viewItem(@RequestParam(name = "itemId") int itemId,
+                           @RequestParam(name = "variantId", required = false, defaultValue = "0") int variantId,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -68,6 +69,7 @@ public class itemController {
             modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("item", item);
+            modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
             return "item"; // Return Item view
         }
