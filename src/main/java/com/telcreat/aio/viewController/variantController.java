@@ -1,10 +1,16 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 
 @Data
@@ -43,6 +49,46 @@ public class variantController {
         }
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
+    }
+
+    @RequestMapping(value = "/variant/edit", method = RequestMethod.POST)
+    public String receiveEditVariant(@ModelAttribute(name = "variant") Variant variantForm,
+                                     ModelMap modelMap){
+
+        modelMap.clear();
+
+        Variant variant = variantService.findActiveVariantById(variantForm.getId());
+        if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
+            Variant savedVariant = variantService.updateVariant(variantForm);
+            if (savedVariant != null){
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/variant/edit/delete", method = RequestMethod.POST)
+    public String deactivateVariant(@RequestParam(name = "variantId") int variantId,
+                                    ModelMap modelMap){
+        Variant variant = variantService.findActiveVariantById(variantId);
+        boolean control;
+        if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
+            control = variantService.deactivateVariant(variant.getId());
+            if (control){
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+            }
+            else{
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantDeleteError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
     }
 
 }
