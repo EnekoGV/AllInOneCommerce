@@ -1,9 +1,6 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Item;
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,7 +52,7 @@ public class itemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
     public String viewItem(@RequestParam(name = "itemId") int itemId,
-                           @RequestParam(name = "variantId", required = false, defaultValue = "0") int variantId,
+                           @RequestParam(name = "selectedVariantId", required = false, defaultValue = "0") int selectedVariantId,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -71,7 +68,23 @@ public class itemController {
             modelMap.addAttribute("item", item);
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
-            return "item"; // Return Item view
+            modelMap.addAttribute("selectedVariantId", selectedVariantId);
+
+            if (selectedVariantId == 0){
+                return "item";
+            }
+            else{
+                Variant selectedVariant = variantService.findActiveVariantById(selectedVariantId);
+
+                if (selectedVariant != null && item.getId() == selectedVariant.getItem().getId()){
+                    modelMap.addAttribute("selectedVariant", selectedVariant);
+                    return "item";
+                }
+                else{
+                    //noinspection SpringMVCViewInspection
+                    return "redirect:/item?itemId=" + item.getId() + "&variantNotFound=true";
+                }
+            }
         }
         else{
             return "redirect:/?itemNotFound";
