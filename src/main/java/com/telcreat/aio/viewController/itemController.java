@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @RequestScope
@@ -186,6 +187,37 @@ public class itemController {
         else{
             return "redirect:/?notAllowed";
         }
+    }
+
+    @RequestMapping(value = "/item/edit/uploadPicture", method = RequestMethod.POST)
+    public String uploadItemPicture(@RequestParam(name = "itemPicture") MultipartFile file,
+                                    @RequestParam(name = "itemId") int itemId,
+                                    ModelMap modelMap){
+
+        Item item = itemService.findActiveItemById(itemId);
+
+        if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){ // Security check - Verify logged user
+
+            String imagePath = fileUploaderService.uploadUserPicture(file, itemId, "/item"); // Upload image to server filesystem
+
+            if(imagePath != null){ // Security check - Besides, will always be not null
+                Picture itemPicture = item.getPicture(); // Obtain Picture object
+                itemPicture.setPath(imagePath); // Set new path
+                pictureService.updatePicture(itemPicture); // Update Object
+                modelMap.clear();
+
+                return "redirect:/item?itemId=" + item.getId(); // Return to User View
+            }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item?itemId=" + item.getId() + "&updateError=true"; // Redirect if imagePath is null
+            }
+        }
+        else{
+            //noinspection SpringMVCViewInspection
+            return "redirect:/?notAllowed"; // Redirect if not allowed
+        }
+
     }
 
 }
