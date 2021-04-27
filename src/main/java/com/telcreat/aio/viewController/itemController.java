@@ -64,6 +64,10 @@ public class itemController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             modelMap.addAttribute("item", item);
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
@@ -114,6 +118,10 @@ public class itemController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             modelMap.addAttribute("item", item);
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
