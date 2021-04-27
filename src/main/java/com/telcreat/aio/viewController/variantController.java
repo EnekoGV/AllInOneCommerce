@@ -1,5 +1,7 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.Item;
+import com.telcreat.aio.model.Picture;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.Variant;
 import com.telcreat.aio.service.*;
@@ -12,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
+import org.springframework.web.multipart.MultipartFile;
 
 @Data
 @RequestScope
@@ -90,5 +93,46 @@ public class variantController {
             return "redirect:/?notAllowed";
         }
     }
+
+    @RequestMapping(value = "/variant/edit/uploadPicture", method = RequestMethod.POST)
+    public String uploadVariantPicture(@RequestParam(name = "variantPicture") MultipartFile file,
+                                    @RequestParam(name = "variantId") int variantId,
+                                    ModelMap modelMap){
+
+        Variant variant = variantService.findActiveVariantById(variantId);
+
+        if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){ // Security check - Verify logged user
+
+            String imagePath = fileUploaderService.uploadUserPicture(file, variantId, "/variant"); // Upload image to server filesystem
+
+            if(imagePath != null){ // Security check - Besides, will always be not null
+                Picture variantPicture = variant.getPicture(); // Obtain Picture object
+                variantPicture.setPath(imagePath); // Set new path
+                pictureService.updatePicture(variantPicture); // Update Object
+                modelMap.clear();
+
+                return "redirect:/item?itemId=" + variant.getItem().getId(); // Return to User View
+            }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item?itemId=" + variant.getItem().getId() + "&updateError=true"; // Redirect if imagePath is null
+            }
+        }
+        else{
+            return "redirect:/?notAllowed"; // Redirect if not allowed
+        }
+
+    }
+
+/*    @RequestMapping(value = "/variant/edit/create", method = RequestMethod.POST)
+    public String createVariant(@ModelAttribute(name = "variant") Variant variantForm,
+                                ModelMap modelMap){
+
+        if (isLogged && loggedId == variant){
+            Picture newPicture = new Picture("/images/Item.png");
+            Picture savedPicture = pictureService.createPicture(newPicture);
+            Variant newVariant = new Variant("", 0, )
+        }
+    }*/
 
 }
