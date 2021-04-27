@@ -144,6 +144,7 @@ public class itemController {
                 return "redirect:/item/edit?itemId=" + item.getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/item/edit?itemId=" + item.getId() + "&itemUpdateError=true";
             }
         }
@@ -163,6 +164,7 @@ public class itemController {
                 return "redirect:/shop?shopId=" + item.getShop().getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/item/edit?itemId=" + item.getId() + "&variantDeleteError=true";
             }
         }
