@@ -128,7 +128,15 @@ public class itemController {
                 modelMap.addAttribute("loggedShopId",shop.getId());
             }
 
+            ItemEditForm itemForm = new ItemEditForm(item.getId(),
+                    item.getShortDescription(),
+                    item.getLongDescription(),
+                    item.getPrice(),
+                    item.getName());
+
+            modelMap.addAttribute("itemForm", itemForm);
             modelMap.addAttribute("item", item);
+
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
             modelMap.addAttribute("editVariantNumber", editVariantNumber);
@@ -136,6 +144,9 @@ public class itemController {
             modelMap.addAttribute("itemUpdateError", itemUpdateError);
             modelMap.addAttribute("variantUpdateError", variantUpdateError);
             modelMap.addAttribute("variantDeleteError", variantDeleteError);
+            modelMap.addAttribute("itemDeleteError", itemDeleteError);
+
+            modelMap.addAttribute("variantForm", new Variant());
 
             return "addProduct";
         }
