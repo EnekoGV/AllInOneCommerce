@@ -14,12 +14,8 @@ import java.util.List;
 @Data
 public class ShopEditForm {
     private int id;
-    private Picture picture;
-    private Picture backgroundPicture;
     private String name;
     private String description;
-    private String addressName;
-    private String addressSurname;
     private String addressAddress; //calle + portal + piso
     private String addressPostNumber;
     private String addressCity;
@@ -32,4 +28,5 @@ public class ShopEditForm {
     private String billingCity;
     private String billingCountry;
     private String billingTelNumber;
+
 }

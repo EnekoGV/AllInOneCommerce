@@ -1,0 +1,188 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: HTML_head" />
+    <body>
+
+
+        <div class="fh5co-loader"></div>
+        <div id="page">
+            <div th:replace="fragments :: header"/>
+
+            <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" style="background-image:url(images/img_bg_2.jpg);">
+                <div class="overlay"></div>
+                <div class="container">
+                    <div class="row">
+                        <div class="col-md-1 text-left" data-animate-effect="fadeIn">
+                            <div class="display-t">
+                                <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                                    <img src="images/Gasparina-Valencia.-Estudio-Huuun.-Miguel-Lozano-de-la-Mota-Retail-exposición-tienda-de-moda-.jpg" class="shopimg" alt="shopphoto">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-8 text-right">
+                            <div class="display-t">
+                                <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                                    <h1>CALZADOS PEPE</h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+            <div id="fh5co-about">
+                <div class="container">
+                    <div class="row animate-box">
+                        <div class="col-md-6 col-md-offset-1 text-right fh5co-heading">
+                            <h2>Produktua gehitu</h2>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 animate-box">
+                            <div class="row">
+                                <div class="col-md-12 text-center">
+                                    <h3>VARIANTEAK</h3>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-3 text-left animate-box">
+                                    <div class="product">
+                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
+                                    </div>
+                                </div>
+                                <div class="col-md-9 text-left animate-box">
+                                    <div class="product">
+                                        <div class="desc">
+                                            <h3>Rojo - S</h3>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label for="subvar">Stock:</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="number" id="stock" class="form-control" style="width: 80%; height: 50%;" placeholder="15">
+                                            </div>
+                                        </div>
+                                        <div class="row text-right">
+                                            <div class="col-md-6 col-md-offset-6">
+                                                <input type="submit" value="Variantea ezabatu" class="btn btn-group-xs">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row">
+                                <div class="col-md-3 text-left animate-box">
+                                    <div class="product">
+                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
+                                    </div>
+                                </div>
+                                <div class="col-md-9 text-left animate-box">
+                                    <div class="product">
+                                        <div class="desc">
+                                            <h3>Rojo - M</h3>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-md-3">
+                                                <label for="subvar">Stock:</label>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <input type="number" id="stock" class="form-control" style="width: 80%; height: 50%;" placeholder="15">
+                                            </div>
+                                        </div>
+                                        <div class="row text-right">
+                                            <div class="col-md-6 col-md-offset-6">
+                                                <input type="submit" value="Variantea ezabatu" class="btn btn-group-xs">
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                            <div class="row form-group">
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="subvar">Irudia:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" id="subv" class="form-control" style="width: 80%; height: 50%;" placeholder="">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="subvar">Izena:</label>
+                                    </div>
+                                    <div class="col-md-8">
+                                        <input type="text" id="subv" class="form-control" style="width: 80%; height: 50%;" placeholder="adb. S">
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <label for="stock">Stock:</label>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <input type="number" id="stock" class="form-control" style="width: 80%; height: 50%;" placeholder="0">
+                                    </div>
+                                </div>
+                                <div class="row text-right">
+                                    <div class="col-md-6 col-md-offset-6">
+                                        <input type="submit" value="Variantea gehitu" class="btn btn-group-xs">
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-md-6 animate-box">
+                            <form action="#">
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="alias">Produktuaren izena</label>
+                                        <input type="text" id="alias" class="form-control" placeholder="Calzados Pepe">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="address">Kategoria</label>
+                                        <select class="form-control">
+                                            <option>Zapas</option>
+                                            <option>Lavadoras</option>
+                                            <option>Misioterapia</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="alias">Prezioa</label>
+                                        <input type="number" id="price" class="form-control" placeholder="Prezioa">
+                                    </div>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="country">Deskripzio laburra</label>
+                                    </div>
+                                    <textarea class="form-control" style="margin-left: 15px;" name="shortDesc" id="" cols="60" rows="2"></textarea>
+                                </div>
+                                <div class="row form-group">
+                                    <div class="col-md-12">
+                                        <label for="country">Deskripzio luzea</label>
+                                    </div>
+                                    <textarea class="form-control" style="margin-left: 15px;" name="longDesc" id="" cols="60" rows="4"></textarea>
+                                </div>
+                                <div class="form-group text-right">
+                                    <input type="submit" value="Produktua igo" class="btn btn-primary">
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div th:replace="fragments :: footer"/>
+        </div>
+
+        <div th:replace="fragments :: Up_Button"/>
+        <div th:replace="fragments :: final_scripts"/>
+
+    </body>
+</html>
+
