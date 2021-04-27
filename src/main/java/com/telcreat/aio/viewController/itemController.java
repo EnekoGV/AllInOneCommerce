@@ -68,7 +68,6 @@ public class itemController {
             modelMap.addAttribute("isOwner", isOwner);
 
             modelMap.addAttribute("item", item);
-            modelMap.addAttribute("shop", item.getShop());
 
             return "item"; // Return Item view
         }
