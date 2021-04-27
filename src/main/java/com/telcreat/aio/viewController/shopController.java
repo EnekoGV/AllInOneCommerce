@@ -107,7 +107,9 @@ public class shopController {
                     shop.getBillingPostNumber(),
                     shop.getBillingCity(),
                     shop.getBillingCountry(),
-                    shop.getBillingTelNumber()));
+                    shop.getBillingTelNumber(),
+                    shop.getLongitude(),
+                    shop.getLatitude()));
 
             // Send shop picture paths to HTML view
             modelMap.addAttribute("shopPicture", shop.getPicture().getPath());
@@ -148,6 +150,8 @@ public class shopController {
             shop.setBillingSurname(shopEditForm.getBillingSurname());
             shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
             shop.setDescription(shopEditForm.getDescription());
+            shop.setLongitude(shopEditForm.getLongitude());
+            shop.setLatitude(shopEditForm.getLatitude());
 
             Shop savedShop = shopService.updateShop(shop);
 

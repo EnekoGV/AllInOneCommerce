@@ -28,5 +28,7 @@ public class ShopEditForm {
     private String billingCity;
     private String billingCountry;
     private String billingTelNumber;
+    private String longitude;
+    private String latitude;
 
 }
