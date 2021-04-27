@@ -92,6 +92,27 @@ public class viewController {
         return "index"; // Return Search search.html view
     }
 
+    // Product Search View
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String viewSearch(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+                             @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
+                             @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
+                             ModelMap modelMap) throws IOException, GeoIp2Exception {
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        if (shop != null){
+            modelMap.addAttribute("loggedShopId",shop.getId());
+        }
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
+        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        return "h_products";
+    }
+
 
 
 
