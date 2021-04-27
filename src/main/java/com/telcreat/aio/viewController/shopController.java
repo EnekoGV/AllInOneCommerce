@@ -91,6 +91,7 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("loggedShopId", shop.getId());
 
             modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
                     shop.getName(),
@@ -174,6 +175,10 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
+            if (loggedShop != null){
+                modelMap.addAttribute("loggedShopId", loggedShop.getId());
+            }
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
@@ -223,6 +228,7 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("loggedShopId", shop.getId());
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
