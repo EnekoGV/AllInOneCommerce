@@ -91,7 +91,7 @@ h1, h2, h3, h4, h5, h6, figure {
 .fh5co-nav {
   padding: 18px 0;
   background: #fff;
-  margin-bottom: 40px;
+  margin-bottom: 20px;
 }
 @media screen and (max-width: 768px) {
   .fh5co-nav {
@@ -100,9 +100,9 @@ h1, h2, h3, h4, h5, h6, figure {
 }
 .fh5co-nav #fh5co-logo {
   font-size: 20px;
-  margin-bottom: -40px;
   margin: 0;
   padding: 0;
+  margin-bottom: -40px;
   text-transform: uppercase;
   font-weight: bold;
   font-family: "Montserrat", Arial, sans-serif;
@@ -124,16 +124,16 @@ h1, h2, h3, h4, h5, h6, figure {
 
 .fh5co-nav .menu-2 li.search {
   float: left;
-  width: 80%;
+  width: 83%;
   font-family: "Playfair Display", serif;
   -webkit-transition: 0.3s;
   -o-transition: 0.3s;
   transition: 0.3s;
   padding: 0;
-  margin: 0 0 0 0;
+  margin: -5px 0 0 0;
 }
 .fh5co-nav .menu-2 li input[type=text] {
-  padding: 0px 10px;
+  padding: 6px 10px;
   width: 60%;
   border: none;
   float: right;
