@@ -9,67 +9,67 @@
 				<div class="container" style="margin-bottom: 20px">
 					<div class="row">
 						<div class="col-md-6 col-md-offset-3 animate-box">
-							<h3 class="text-center" style="margin-bottom: 40px">Log In</h3>
+							<h3 class="text-center" style="margin-bottom: 40px">Logeatu</h3>
 							<form th:action="@{/auth}" method="post" th:object="${login}">
 								<div class="row form-group">
 									<div class="col-md-12">
-										<input type="email" th:field="*{email}" placeholder="Type your email" required="required" class="form-control">
+										<input type="email" th:field="*{email}" placeholder="Sartu zure posta elektronikoa" required="required" class="form-control">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="subject">Subject</label> -->
-										<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
+										<input type="password" th:field="*{password}" placeholder="Sartu zure pasahitza" required="required" class="form-control">
 									</div>
 								</div>
-								<p th:if="${loginError}" class="text-right" style="color: red">Incorrect login credentials. Try again.</p>
+								<p th:if="${loginError}" class="text-right" style="color: red">Sarbide-egiaztagiri okerrak. Saiatu berriz.</p>
 								<div class="form-group text-right">
-									<input type="submit" value="Log In" class="btn btn-primary"><br/>
+									<input type="submit" value="Logeatu" class="btn btn-primary"><br/>
 								</div>
 							</form>
 						</div>
 					</div>
 					<div class="row">
 						<div class="col-md-6 col-md-offset-3 animate-box">
-							<h3 class="text-center" style="margin-bottom: 40px">Sign Up</h3>
+							<h3 class="text-center" style="margin-bottom: 40px">Erregistratu</h3>
 							<form th:action="@{/auth/register}" method="post" th:object="${signup}">
 								<div class="row form-group">
 									<div class="col-md-6">
 										<!-- <label for="fname">First Name</label> -->
-										<input type="text" th:field="*{name}" placeholder="Type your name" required="required" class="form-control">
+										<input type="text" th:field="*{name}" placeholder="Sartu zure izena" required="required" class="form-control">
 									</div>
 									<div class="col-md-6">
 										<!-- <label for="lname">Last Name</label> -->
-										<input th:field="*{lastName}" placeholder="Type your last name" required="required" class="form-control">
+										<input th:field="*{lastName}" placeholder="Sartu zure abizena" required="required" class="form-control">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="alias">Alias</label> -->
-										<input th:field="*{alias}" placeholder="Type your alias" required="required" class="form-control">
+										<input th:field="*{alias}" placeholder="Sartu zure ezizena" required="required" class="form-control">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="bday">BirthDay</label> -->
-										<input type="date" th:field="*{birthDay}" placeholder="Birth Day" required="required" class="form-control">
+										<input type="date" th:field="*{birthDay}" placeholder="Jaiotze data" required="required" class="form-control">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="email">Email</label> -->
-										<input type="email" th:field="*{email}" placeholder="Type your email address" required="required" class="form-control">
+										<input type="email" th:field="*{email}" placeholder="Sartu zure posta elektronikoa" required="required" class="form-control">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
 										<!-- <label for="subject">Subject</label> -->
-										<input type="password" th:field="*{password}" placeholder="Type your password" required="required" class="form-control">
+										<input type="password" th:field="*{password}" placeholder="Sartu zure pasahitza" required="required" class="form-control">
 									</div>
 								</div>
-								<p th:if="${registrationError}" class="text-right" style="color: red">Current email address already in use. Please try with another email address.</p>
+								<p th:if="${registrationError}" class="text-right" style="color: red">Dagoeneko erabiltzen ari den helbide elektronikoa. Saiatu berriz beste helbide batekin.</p>
 								<div class="form-group text-right">
-									<input type="submit" value="Sign Up" class="btn btn-primary">
+									<input type="submit" value="Erregistratu" class="btn btn-primary">
 								</div>
 							</form>
 						</div>
