@@ -18,17 +18,17 @@
 				<div class="row">
 					<div class="col-md-6 col-md-offset-0 animate-box">
 						<div class="owl-carousel owl-carousel-fullwidth product-carousel">
-							<div th:if="${selectedVariantId != 0}" class="item">
-								<div class="active text-center">
-									<figure>
-										<img th:src="${selectedVariant.picture.path}" alt="user">
-									</figure>
-								</div>
-							</div>
 							<div class="item">
 								<div class="active text-center">
 									<figure>
 										<img th:src="${item.picture.path}" alt="user">
+									</figure>
+								</div>
+							</div>
+							<div th:each="variant : ${variantList}" class="item">
+								<div class="active text-center">
+									<figure>
+										<img th:src="${variant.picture.path}" alt="user">
 									</figure>
 								</div>
 							</div>
