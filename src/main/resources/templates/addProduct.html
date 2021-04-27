@@ -8,21 +8,21 @@
         <div id="page">
             <div th:replace="fragments :: header"/>
 
-            <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" style="background-image:url(images/img_bg_2.jpg);">
+            <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${item.shop.backgroundPicture.path} + ');'">
                 <div class="overlay"></div>
                 <div class="container">
                     <div class="row">
                         <div class="col-md-1 text-left" data-animate-effect="fadeIn">
                             <div class="display-t">
                                 <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                    <img src="images/Gasparina-Valencia.-Estudio-Huuun.-Miguel-Lozano-de-la-Mota-Retail-exposición-tienda-de-moda-.jpg" class="shopimg" alt="shopphoto">
+                                    <img th:src="${item.shop.picture.path}" class="shopimg" alt="shopphoto">
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-8 text-right">
                             <div class="display-t">
                                 <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                    <h1>CALZADOS PEPE</h1>
+                                    <h1 th:text="${item.shop.name}"></h1>
                                 </div>
                             </div>
                         </div>
@@ -44,125 +44,103 @@
                                     <h3>VARIANTEAK</h3>
                                 </div>
                             </div>
-                            <div class="row">
-                                <div class="col-md-3 text-left animate-box">
-                                    <div class="product">
-                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
-                                    </div>
-                                </div>
-                                <div class="col-md-9 text-left animate-box">
-                                    <div class="product">
-                                        <div class="desc">
-                                            <h3>Rojo - S</h3>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <label for="stock">Stock: 15</label>
-                                            </div>
-                                        </div>
-                                        <div class="row text-right">
-                                            <div class="col-md-6 col-md-offset-6">
-                                                <button href="#" class="btn btn-default icon"><i class="icon-edit"></i></button>
-                                                <button href="#" class="btn btn-danger icon"><i class="icon-cross"></i></button>
-                                            </div>
+
+                            <div th:each="variant : ${variantList}">
+                                <div class="row">
+                                    <div class="col-md-3 text-left animate-box">
+                                        <div class="product">
+                                            <img th:src="${variant.picture.path}" alt="p" class="product-grid2">
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="row">
-                                <div class="col-md-3 text-left animate-box">
-                                    <div class="product">
-                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
-                                    </div>
-                                </div>
-                                <div class="col-md-9 text-left animate-box">
-                                    <div class="product row">
-                                        <form action="#">
-                                            <div class="row">
-                                                <div class="col-md-6 desc">
-                                                    <input type="text" id="variant" class="form-control" style="width: 80%; height: 50%;" placeholder="Rojo - S">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <input type="number" id="stock" class="form-control" style="width: 80%; height: 50%;" placeholder="15">
-                                                </div>
+                                    <div class="col-md-9 text-left animate-box">
+                                        <div class="product">
+                                            <div class="desc">
+                                                <h3 th:text="${variant.name}"></h3>
                                             </div>
                                             <div class="row">
-                                                <div class="col-md-6" style="margin-top: 15px;">
-                                                    <input type="submit" value="Irudia igo" class="btn btn-group-xs">
-                                                </div>
-                                                <div class="col-md-6 text-right" style="margin-top: 25px;">
-                                                    <button href="#" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
-                                                    <button href="#" class="btn btn-default btn-danger icon"><i class="icon-cross"></i></button>
+                                                <div class="col-md-3">
+                                                    <label th:text="'Stock: ' + ${variant.stock}" th:for="${variant.stock}"></label>
                                                 </div>
                                             </div>
-                                        </form>
+                                            <div class="row text-right">
+                                                <div class="col-md-6 col-md-offset-6">
+                                                    <form th:action="@{/item/edit}" method="get">
+                                                        <input type="hidden" name="editVariantNumber" th:value="${variant.id}">
+                                                        <input type="hidden" name="itemId" th:value="${item.id}">
+                                                        <button type="submit" class="btn btn-default icon"><i class="icon-edit"></i></button>
+                                                    </form>
+                                                    <form th:action="@{/variant/edit/delete}" method="post">
+                                                        <input type="hidden" name="variantId" th:value="${variant.id}">
+                                                        <button type="submit" class="btn btn-danger icon"><i class="icon-cross"></i></button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
+                                <div th:if="${editVariantNumber} == ${variant.id}" class="row">
+                                    <div class="col-md-3 text-left animate-box">
+                                        <div class="product">
+                                            <img th:src="${variant.picture.path}" alt="p" class="product-grid2">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-9 text-left animate-box">
+                                        <div class="product row">
+                                            <form th:action="@{/variant/edit}" method="post">
+                                                <div class="row">
+                                                    <div class="col-md-6 desc">
+                                                        <input type="hidden" name="variantId" th:value="${variant.id}">
+                                                        <input type="text" name="variantName" th:value="${variant.name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
+                                                    </div>
+                                                    <div class="col-md-5">
+                                                        <input type="number" name="variantStock" th:value="${variant.stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
+                                                    </div>
+                                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                            <form th:action="@{/variant/edit/uploadPicture}" method="post" enctype="multipart/form-data">
+                                                <div class="row">
+                                                    <div class="col-md-6" style="margin-top: 15px;">
+                                                        <input type="hidden" name="variantId" th:value="${variant.id}">
+                                                        <input type="file" name="variantPicture" accept=".jpg, .jpeg, .png" class="btn btn-group-xs">
+                                                    </div>
+                                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
+                                                    </div>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                                <hr>
                             </div>
+
+                            <form th:action="@{/variant/edit/create}" method="post" th:object="${variantForm}">
+                                <div class="row">
+                                    <div class="col-md-6 desc">
+                                        <input type="hidden" name="itemId" th:value="${item.id}">
+                                        <input type="text" th:field="*{name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
+                                    </div>
+                                    <div class="col-md-5">
+                                        <input type="number" th:field="*{stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
+                                    </div>
+                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                             <hr>
-                            <div class="row">
-                                <div class="col-md-3 text-left animate-box">
-                                    <div class="product">
-                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
-                                    </div>
-                                </div>
-                                <div class="col-md-9 text-left animate-box">
-                                    <div class="product">
-                                        <div class="desc">
-                                            <h3>Rojo - M</h3>
-                                        </div>
-                                        <div class="row">
-                                            <div class="col-md-3">
-                                                <label for="stock">Stock: 15</label>
-                                            </div>
-                                        </div>
-                                        <div class="row text-right">
-                                            <div class="col-md-6 col-md-offset-6">
-                                                <button href="#" class=" btn btn-default icon"><i class="icon-edit"></i></button>
-                                                <button href="#" class="btn btn-default btn-danger icon"><i class="icon-cross"></i></button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <hr>
-                            <div class="row form-group">
-                                <div class="col-md-3 text-left animate-box">
-                                    <div class="product">
-                                        <img src="images/product-1.jpg" alt="p" class="product-grid2">
-                                    </div>
-                                </div>
-                                <div class="col-md-9 text-left animate-box">
-                                    <div class="product row">
-                                        <form action="#">
-                                            <div class="row">
-                                                <div class="col-md-6 desc">
-                                                    <input type="text" id="variant" class="form-control" style="width: 80%; height: 50%;" placeholder="Izena">
-                                                </div>
-                                                <div class="col-md-5">
-                                                    <input type="number" id="stock" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
-                                                </div>
-                                            </div>
-                                            <div class="row">
-                                                <div class="col-md-6" style="margin-top: 15px;">
-                                                    <input type="submit" value="Irudia igo" class="btn btn-group-xs">
-                                                </div>
-                                                <div class="col-md-6 form-group text-right" style="margin-top: 30px;">
-                                                    <input type="submit" value="Variantea igo" class="btn btn-primary">
-                                                </div>
-                                            </div>
-                                        </form>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         <div class="col-md-5 col-md-offset-1 animate-box">
-                            <form action="#">
+                            <form th:action="@{/item/edit}" th:object="${itemForm}" method="post">
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label for="alias">Produktuaren izena</label>
-                                        <input type="text" id="alias" class="form-control" placeholder="Calzados Pepe">
+                                        <label th:for="*{name}">Produktuaren izena</label>
+                                        <input type="hidden" th:field="*{id}" th:value="${itemForm.id}">
+                                        <input type="text" th:field="*{name}" class="form-control" placeholder="Produktuaren izena">
                                     </div>
                                 </div>
                                 <div class="row form-group">
@@ -177,21 +155,21 @@
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label for="alias">Prezioa</label>
-                                        <input type="number" id="price" class="form-control" placeholder="Prezioa">
+                                        <label th:for="*{price}">Prezioa</label>
+                                        <input type="number" min="0" step="0.01" th:field="*{price}" class="form-control" placeholder="Prezioa">
                                     </div>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label for="">Deskripzio laburra</label>
+                                        <label th:for="*{shortDescription}">Deskripzio laburra</label>
                                     </div>
-                                    <textarea class="form-control" style="margin-left: 15px;" name="shortDesc" id="" cols="54" rows="2"></textarea>
+                                    <textarea th:field="*{shortDescription}" class="form-control" style="margin-left: 15px;" cols="54" rows="2"></textarea>
                                 </div>
                                 <div class="row form-group">
                                     <div class="col-md-12">
-                                        <label for="">Deskripzio luzea</label>
+                                        <label th:for="*{longDescription}">Deskripzio luzea</label>
                                     </div>
-                                    <textarea class="form-control" style="margin-left: 15px;" name="longDesc" id="" cols="60" rows="4"></textarea>
+                                    <textarea th:field="*{longDescription}" class="form-control" style="margin-left: 15px;" cols="60" rows="4"></textarea>
                                 </div>
                                 <div class="form-group text-right">
                                     <input type="submit" value="Produktua igo" class="btn btn-primary">
