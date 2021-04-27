@@ -71,6 +71,16 @@ public class VariantService {
     ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+    //AM - findActiveVariantById ---> Return Active Variant by Id
+    public Variant findActiveVariantById(int variantId){
+        Variant tempVariant = null;
+        Optional<Variant> foundVariant = variantRepo.findVariantByIdAndStatus(variantId, Variant.Status.ACTIVE);
+        if (foundVariant.isPresent()){
+            tempVariant = foundVariant.get();
+        }
+        return tempVariant;
+    }
+
     //AM - deactivateVariant ---> Returns TRUE if the variant is been deactivated and FALSE if not.
     public boolean deactivateVariant(int variantId) {
         boolean control = false;
@@ -92,7 +102,7 @@ public class VariantService {
 
     // AM - findActiveShopByOwnerId ---> Returns the Shop Object according to the specified UserId if the
     // Shop is Active.
-    public List<Variant> findActiveVariantByItemId(int itemId){
+    public List<Variant> findActiveVariantsByItemId(int itemId){
         List<Variant> variants = findVariantsByItemId(itemId);
         List<Variant> activeVariants = new ArrayList<>();
         if(variants != null){

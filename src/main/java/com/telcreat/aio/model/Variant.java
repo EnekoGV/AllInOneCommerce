@@ -33,4 +33,12 @@ public class Variant {
     private Item item;
 
     private Status status;
+
+    public Variant(String name, int stock, Picture picture, Item item, Status status) {
+        this.name = name;
+        this.stock = stock;
+        this.picture = picture;
+        this.item = item;
+        this.status = status;
+    }
 }

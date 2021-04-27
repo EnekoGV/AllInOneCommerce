@@ -41,4 +41,15 @@ public class Item {
     }
 
     private Status status;
+
+    public Item(Shop shop, Category itemCategory, Picture picture, String shortDescription, String longDescription, Float price, String name, Status status) {
+        this.shop = shop;
+        this.itemCategory = itemCategory;
+        this.picture = picture;
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
+        this.price = price;
+        this.name = name;
+        this.status = status;
+    }
 }

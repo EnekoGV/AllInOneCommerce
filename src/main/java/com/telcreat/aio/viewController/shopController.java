@@ -13,8 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.http.HttpServletRequest;
-
 @Data
 @Controller
 @RequestScope
@@ -190,6 +188,8 @@ public class shopController {
     public String deactivateShop(@RequestParam(name = "shopId") int shopId,
                                  ModelMap modelMap){
 
+        modelMap.clear();
+
         Shop shop = shopService.findActiveShopById(shopId);
         boolean control;
 
@@ -233,31 +233,6 @@ public class shopController {
             return "error/error-404";
         }
     }
-
-    @RequestMapping(value = "/item", method = RequestMethod.GET)
-    public String viewItem(@RequestParam(name = "itemId") int itemId,
-                           ModelMap modelMap){
-
-        Item item = itemService.findActiveItemById(itemId);
-
-        if (item != null){
-
-            // DEFAULT INFORMATION IN ALL VIEWS
-            modelMap.addAttribute("isLogged", isLogged);
-            modelMap.addAttribute("loggedUserId", loggedId);
-            modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("isOwner", isOwner);
-
-            modelMap.addAttribute("item", item);
-            modelMap.addAttribute("shop", item.getShop());
-
-            return "item"; // Return Item view
-        }
-        else{
-            return "redirect:/?itemNotFound";
-        }
-    }
-
 
     @RequestMapping(value = "/shop/edit/uploadPicture", method = RequestMethod.POST)
     public String uploadUserPicture(@RequestParam(name = "shopPicture") MultipartFile file,
