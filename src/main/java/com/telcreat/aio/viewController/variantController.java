@@ -113,7 +113,7 @@ public class variantController {
                 pictureService.updatePicture(variantPicture); // Update Object
                 modelMap.clear();
 
-                return "redirect:/item?itemId=" + variant.getItem().getId(); // Return to User View
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId(); // Return to User View
             }
             else{
                 //noinspection SpringMVCViewInspection
@@ -138,7 +138,7 @@ public class variantController {
             Picture savedPicture = pictureService.createPicture(newPicture);
             Variant savedVariant = variantService.createVariant(new Variant(newVariant.getName(), newVariant.getStock(), savedPicture, item, Variant.Status.ACTIVE));
             if (savedVariant != null){
-                return "redirect:/item?itemId=" + item.getId();
+                return "redirect:/item/edit?itemId=" + item.getId();
             }
             else{
                 //noinspection SpringMVCViewInspection
