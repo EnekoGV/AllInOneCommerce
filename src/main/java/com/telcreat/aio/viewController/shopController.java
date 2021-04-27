@@ -25,6 +25,7 @@ public class shopController {
     private final UserService userService;
     private final ShopService shopService;
     private final FileUploaderService fileUploaderService;
+    private final VariantService variantService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -33,7 +34,7 @@ public class shopController {
     private boolean isOwner = false;
 
     @Autowired
-    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService) {
+    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -49,6 +50,7 @@ public class shopController {
             }
         }
         this.fileUploaderService = fileUploaderService;
+        this.variantService = variantService;
     }
 
     // Create Shop - There is no view here. Directly redirected to edition page.
@@ -56,7 +58,7 @@ public class shopController {
     public String createShop(ModelMap modelMap){
 
         if(isLogged && loggedRole == User.UserRole.CLIENT){ // Only allowed when you are CLIENT and logged
-            Picture newPicture = new Picture("");
+            Picture newPicture = new Picture("/images/Shop.png");
             Picture savedPicture = pictureService.createPicture(newPicture); // Create picture in DB
             Picture newBackPicture = new Picture("");
             Picture savedBackPicture = pictureService.createPicture(newBackPicture); // Create picture in DB
@@ -209,8 +211,8 @@ public class shopController {
     // Shop Products View - Only accessible for owner
     // WARNING - NOT FINISHED!
     @RequestMapping(value = "/shop/edit/products", method = RequestMethod.GET)
-    public String viewShopProducts(@RequestParam(name = "shopId") int shopId,
-                                   ModelMap modelMap){
+    public String viewManageProducts(@RequestParam(name = "shopId") int shopId,
+                                     ModelMap modelMap){
 
         Shop shop = shopService.findActiveShopById(shopId);
 
@@ -224,7 +226,8 @@ public class shopController {
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
-            return "shopProducts";
+            modelMap.addAttribute("variantList", variantService.findActiveVariantsByShopId(shop.getId())); // Send variant list
+            return "manageProducts";
         }
         else{
             return "error/error-404";
@@ -256,7 +259,7 @@ public class shopController {
     }
 
 
-    @RequestMapping(value = "/shop/uploadPicture", method = RequestMethod.POST)
+    @RequestMapping(value = "/shop/edit/uploadPicture", method = RequestMethod.POST)
     public String uploadUserPicture(@RequestParam(name = "shopPicture") MultipartFile file,
                                     @RequestParam(name = "shopId") int shopId,
                                     @RequestParam(name = "type") int type,
@@ -299,7 +302,4 @@ public class shopController {
         }
 
     }
-
-
-
 }
