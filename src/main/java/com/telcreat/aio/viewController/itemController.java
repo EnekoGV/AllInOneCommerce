@@ -111,6 +111,7 @@ public class itemController {
                                @RequestParam(name = "itemUpdateError", required = false, defaultValue = "false") boolean itemUpdateError,
                                @RequestParam(name = "variantUpdateError", required = false, defaultValue = "false") boolean variantUpdateError,
                                @RequestParam(name = "variantDeleteError", required = false, defaultValue = "false") boolean variantDeleteError,
+                               @RequestParam(name = "itemDeleteError", required = false, defaultValue = "false") boolean itemDeleteError,
                                ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
