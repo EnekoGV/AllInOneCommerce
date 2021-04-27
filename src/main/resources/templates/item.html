@@ -10,57 +10,58 @@
 			<div class="fh5co-product">
 				<div class="container">
 					<div class="row animate-box">
-					<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-						<h2> <a th:text="${item.shop.name}" th:href="@{/shop(shopId=${item.shop.id})}"></a></h2>
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2> <a th:text="${item.shop.name}" th:href="@{/shop(shopId=${item.shop.id})}"></a></h2>
+						</div>
 					</div>
 				</div>
-					<div class="row">
-						<div class="col-md-6 col-md-offset-0 animate-box">
-							<div class="owl-carousel owl-carousel-fullwidth product-carousel">
-								<div th:if="${selectedVariantId != 0}" class="item">
-									<div class="active text-center">
-										<figure>
-											<img th:src="${selectedVariant.picture.path}" alt="user">
-										</figure>
-									</div>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-0 animate-box">
+						<div class="owl-carousel owl-carousel-fullwidth product-carousel">
+							<div class="item">
+								<div class="active text-center">
+									<figure>
+										<img th:src="${item.picture.path}" alt="user">
+									</figure>
 								</div>
-								<div class="item">
-									<div class="active text-center">
-										<figure>
-											<img th:src="${item.picture.path}" alt="user">
-										</figure>
-									</div>
+							</div>
+							<div th:each="variant : ${variantList}" class="item">
+								<div class="active text-center">
+									<figure>
+										<img th:src="${variant.picture.path}" alt="user">
+									</figure>
 								</div>
 							</div>
 						</div>
-						<div class="col-md-6 col-md-offset-0 animate-box">
-							<div class="fh5co-tab-content tab-content active" data-tab-content="1">
-								<div class="col-md-10 col-md-offset-1">
+					</div>
+					<div class="col-md-6 col-md-offset-0 animate-box">
+						<div class="fh5co-tab-content tab-content active" data-tab-content="1">
+							<div class="col-md-10 col-md-offset-1">
 
-									<span th:text="${item.price}" class="price"></span>
-									<h2 th:text="${item.name}"></h2>
-									<p th:text="${item.shortDescription}"></p>
+								<span th:text="${item.price}" class="price"></span>
+								<h2 th:text="${item.name}"></h2>
+								<p th:text="${item.shortDescription}"></p>
 
-									<p th:text="${item.longDescription}"></p>
+								<p th:text="${item.longDescription}"></p>
 
-									<div class="row">
-										<div class="col-md-6">
-											<h2 class="uppercase">Variant</h2>
-											<form th:action="@{/item(itemId=${item.id})}" method="get">
-												<select name="selectedVariantId" class="form-control">
-													<option th:each="variant : ${variantList}" th:text="variant.name" th:value="${variant.id}"></option>
-												</select>
-												<button type="submit">Select variant</button>
-											</form>
-										</div>
+								<div class="row">
+									<div class="col-md-6">
+										<h2 class="uppercase">Variant</h2>
+										<form th:action="@{/item(itemId=${item.id})}" method="get">
+											<select name="selectedVariantId" class="form-control">
+												<option th:each="variant : ${variantList}" th:text="${variant.name}" th:value="${variant.id}"></option>
+											</select>
+											<button type="submit">Select variant</button>
+										</form>
 									</div>
-									<div>
-										<a href="#" class="btn btn-primary btn-outline btn-lg">Add to Cart</a>
-									</div>
+								</div>
+								<div>
+									<a href="#" class="btn btn-primary btn-outline btn-lg">Add to Cart</a>
 								</div>
 							</div>
 						</div>
-
+					</div>
+				</div>
 			</div>
 
 			<div id="fh5co-started">

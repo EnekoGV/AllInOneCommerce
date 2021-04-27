@@ -1,9 +1,6 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.model.UserEditForm;
-import com.telcreat.aio.model.VerificationToken;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,6 +68,10 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             modelMap.addAttribute("userAvatar", loggedUser.getPicture().getPath());
             modelMap.addAttribute("userForm", new UserEditForm(loggedUser.getId(),
@@ -178,6 +179,10 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             modelMap.addAttribute("userId", userId);
             modelMap.addAttribute("updateError", updateError);

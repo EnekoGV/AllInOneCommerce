@@ -53,7 +53,6 @@ public class itemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
     public String viewItem(@RequestParam(name = "itemId") int itemId,
-                           @RequestParam(name = "selectedVariantId", required = false, defaultValue = "0") int selectedVariantId,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -65,29 +64,17 @@ public class itemController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             modelMap.addAttribute("item", item);
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
             modelMap.addAttribute("newVariant", new Variant());
 
-            modelMap.addAttribute("selectedVariantId", selectedVariantId);
-
-            if (selectedVariantId == 0){
-                return "item";
-            }
-            else{
-                Variant selectedVariant = variantService.findActiveVariantById(selectedVariantId);
-
-                if (selectedVariant != null && item.getId() == selectedVariant.getItem().getId()){
-                    modelMap.addAttribute("selectedVariant", selectedVariant);
-                    return "item";
-                }
-                else{
-                    //noinspection SpringMVCViewInspection
-                    return "redirect:/item?itemId=" + item.getId() + "&variantNotFound=true";
-                }
-            }
+            return "item";
         }
         else{
             return "redirect:/?itemNotFound";
@@ -101,10 +88,14 @@ public class itemController {
         Shop shop = shopService.findActiveShopById(shopId);
 
         if (isLogged && shop != null && loggedId == shop.getOwner().getId()){
-            Picture newPicture = new Picture("/images/Item.png");
-            Picture savedPicture = pictureService.createPicture(newPicture);
-            Item newItem = new Item(shop, null, savedPicture, "", "", 0.0f, "", Item.Status.ACTIVE);
+            Picture newItemPicture = new Picture("/images/Item.png");
+            Picture savedItemPicture = pictureService.createPicture(newItemPicture);
+            Item newItem = new Item(shop, null, savedItemPicture, "", "", 0.0f, "", Item.Status.ACTIVE);
             Item savedItem = itemService.createItem(newItem);
+            Picture newVariantPicture = new Picture("/images/Item.png");
+            Picture savedVariantPicture = pictureService.createPicture(newVariantPicture);
+            Variant defaultVariant = new Variant("Default variant", 0, savedVariantPicture,savedItem, Variant.Status.ACTIVE);
+            variantService.createVariant(defaultVariant);
 
             return "redirect:/item/edit?itemId=" + savedItem.getId();
         }
@@ -120,6 +111,7 @@ public class itemController {
                                @RequestParam(name = "itemUpdateError", required = false, defaultValue = "false") boolean itemUpdateError,
                                @RequestParam(name = "variantUpdateError", required = false, defaultValue = "false") boolean variantUpdateError,
                                @RequestParam(name = "variantDeleteError", required = false, defaultValue = "false") boolean variantDeleteError,
+                               @RequestParam(name = "itemDeleteError", required = false, defaultValue = "false") boolean itemDeleteError,
                                ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -131,8 +123,20 @@ public class itemController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
+            ItemEditForm itemForm = new ItemEditForm(item.getId(),
+                    item.getShortDescription(),
+                    item.getLongDescription(),
+                    item.getPrice(),
+                    item.getName());
+
+            modelMap.addAttribute("itemForm", itemForm);
             modelMap.addAttribute("item", item);
+
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
             modelMap.addAttribute("editVariantNumber", editVariantNumber);
@@ -140,6 +144,9 @@ public class itemController {
             modelMap.addAttribute("itemUpdateError", itemUpdateError);
             modelMap.addAttribute("variantUpdateError", variantUpdateError);
             modelMap.addAttribute("variantDeleteError", variantDeleteError);
+            modelMap.addAttribute("itemDeleteError", itemDeleteError);
+
+            modelMap.addAttribute("variantForm", new Variant());
 
             return "addProduct";
         }
@@ -149,7 +156,7 @@ public class itemController {
     }
 
     @RequestMapping(value = "/item/edit", method = RequestMethod.POST)
-    public String receiveEditItem(@ModelAttribute(name = "item") Item itemForm,
+    public String receiveEditItem(@ModelAttribute(name = "itemForm") ItemEditForm itemForm,
                                   ModelMap modelMap){
 
         modelMap.clear();
@@ -157,7 +164,12 @@ public class itemController {
         Item item = itemService.findActiveItemById(itemForm.getId());
 
         if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
-            Item savedItem = itemService.updateItem(itemForm);
+            item.setName(itemForm.getName());
+            item.setPrice(itemForm.getPrice());
+            item.setShortDescription(itemForm.getShortDescription());
+            item.setLongDescription(itemForm.getLongDescription());
+
+            Item savedItem = itemService.updateItem(item);
             if (savedItem != null){
                 return "redirect:/item/edit?itemId=" + item.getId();
             }
