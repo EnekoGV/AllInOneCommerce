@@ -88,10 +88,14 @@ public class itemController {
         Shop shop = shopService.findActiveShopById(shopId);
 
         if (isLogged && shop != null && loggedId == shop.getOwner().getId()){
-            Picture newPicture = new Picture("/images/Item.png");
-            Picture savedPicture = pictureService.createPicture(newPicture);
-            Item newItem = new Item(shop, null, savedPicture, "", "", 0.0f, "", Item.Status.ACTIVE);
+            Picture newItemPicture = new Picture("/images/Item.png");
+            Picture savedItemPicture = pictureService.createPicture(newItemPicture);
+            Item newItem = new Item(shop, null, savedItemPicture, "", "", 0.0f, "", Item.Status.ACTIVE);
             Item savedItem = itemService.createItem(newItem);
+            Picture newVariantPicture = new Picture("/images/Item.png");
+            Picture savedVariantPicture = pictureService.createPicture(newVariantPicture);
+            Variant defaultVariant = new Variant("Default variant", 0, savedVariantPicture,savedItem, Variant.Status.ACTIVE);
+            variantService.createVariant(defaultVariant);
 
             return "redirect:/item/edit?itemId=" + savedItem.getId();
         }
