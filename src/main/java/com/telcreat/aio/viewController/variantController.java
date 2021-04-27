@@ -67,6 +67,7 @@ public class variantController {
                 return "redirect:/item/edit?itemId=" + variant.getItem().getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantUpdateError=true";
             }
         }
@@ -86,6 +87,7 @@ public class variantController {
                 return "redirect:/item/edit?itemId=" + variant.getItem().getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantDeleteError=true";
             }
         }
@@ -124,15 +126,28 @@ public class variantController {
 
     }
 
-/*    @RequestMapping(value = "/variant/edit/create", method = RequestMethod.POST)
-    public String createVariant(@ModelAttribute(name = "variant") Variant variantForm,
+    @RequestMapping(value = "/variant/edit/create", method = RequestMethod.POST)
+    public String createVariant(@ModelAttribute(name = "newVariant") Variant newVariant,
+                                @RequestParam(name = "itemId") int itemId,
                                 ModelMap modelMap){
 
-        if (isLogged && loggedId == variant){
+        Item item = itemService.findActiveItemById(itemId);
+
+        if (isLogged && item != null && loggedId == item.getShop().getOwner().getId()){
             Picture newPicture = new Picture("/images/Item.png");
             Picture savedPicture = pictureService.createPicture(newPicture);
-            Variant newVariant = new Variant("", 0, )
+            Variant savedVariant = variantService.createVariant(new Variant(newVariant.getName(), newVariant.getStock(), savedPicture, item, Variant.Status.ACTIVE));
+            if (savedVariant != null){
+                return "redirect:/item?itemId=" + item.getId();
+            }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item?itemId=" + item.getId() + "&updateError=true";
+            }
         }
-    }*/
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
 
 }
