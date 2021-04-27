@@ -53,7 +53,6 @@ public class itemController {
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
     public String viewItem(@RequestParam(name = "itemId") int itemId,
-                           @RequestParam(name = "selectedVariantId", required = false, defaultValue = "0") int selectedVariantId,
                            ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -71,23 +70,7 @@ public class itemController {
 
             modelMap.addAttribute("newVariant", new Variant());
 
-            modelMap.addAttribute("selectedVariantId", selectedVariantId);
-
-            if (selectedVariantId == 0){
-                return "item";
-            }
-            else{
-                Variant selectedVariant = variantService.findActiveVariantById(selectedVariantId);
-
-                if (selectedVariant != null && item.getId() == selectedVariant.getItem().getId()){
-                    modelMap.addAttribute("selectedVariant", selectedVariant);
-                    return "item";
-                }
-                else{
-                    //noinspection SpringMVCViewInspection
-                    return "redirect:/item?itemId=" + item.getId() + "&variantNotFound=true";
-                }
-            }
+            return "item";
         }
         else{
             return "redirect:/?itemNotFound";
