@@ -62,7 +62,7 @@
                                     <form th:action="@{/item(itemId=${item.id})}" method="get">
                                         <select name="selectedVariantId" class="form-control">
                                             <option th:each="variant : ${variantList}" th:text="${variant.name}"
-                                                    th:value="${variant.id}"/>
+                                                    th:value="${variant.id}"></option>
                                         </select>
                                         <button type="submit">Select variant</button>
                                     </form>

@@ -5,12 +5,11 @@ import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -108,9 +107,12 @@ public class viewController {
         if (shop != null){
             modelMap.addAttribute("loggedShopId",shop.getId());
         }
+
+        modelMap.addAttribute("search", itemName);
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
+        // modelMap.addAttribute("itemSearch", itemService.findItemsByNameContains(itemName));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
-        return "h_products";
+        return "search";
     }
 
 

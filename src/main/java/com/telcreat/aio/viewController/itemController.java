@@ -24,6 +24,7 @@ public class itemController {
     private final ShopService shopService;
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
+    private final CategoryService categoryService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -32,7 +33,7 @@ public class itemController {
     private boolean isOwner = false;
 
     @Autowired
-    public itemController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService) {
+    public itemController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -49,6 +50,7 @@ public class itemController {
         }
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
+        this.categoryService = categoryService;
     }
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
@@ -132,10 +134,12 @@ public class itemController {
                     item.getShortDescription(),
                     item.getLongDescription(),
                     item.getPrice(),
-                    item.getName());
+                    item.getName(),
+                    item.getItemCategory());
 
             modelMap.addAttribute("itemForm", itemForm);
             modelMap.addAttribute("item", item);
+            modelMap.addAttribute("categoryList", categoryService.findAllCategories());
 
             modelMap.addAttribute("variantList", variantService.findActiveVariantsByItemId(item.getId()));
 
@@ -168,6 +172,7 @@ public class itemController {
             item.setPrice(itemForm.getPrice());
             item.setShortDescription(itemForm.getShortDescription());
             item.setLongDescription(itemForm.getLongDescription());
+            item.setItemCategory(itemForm.getItemCategory());
 
             Item savedItem = itemService.updateItem(item);
             if (savedItem != null){

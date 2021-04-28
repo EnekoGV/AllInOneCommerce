@@ -1,0 +1,139 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments :: HTML_head" />
+	<body>
+		
+		<div class="fh5co-loader"></div>
+		<div id="page">
+			<div th:replace="fragments :: header"/>
+
+			<div id="fh5co-product">
+				<div class="container" style="margin-top: -110px;">
+					<div class="row animate-box">
+						<div class="col-md-4 col-md-offset-0 text-left fh5co-heading">
+							<span th:text="'Bilaketaren emaitza: ' + ${search}"></span>
+						</div>
+						<div class="col-md-4 col-md-offset-0 text-center fh5co-heading">
+							<h2>Dendak</h2>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-4 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" style="background-image:url(/images/Gasparina-Valencia.-Estudio-Huuun.-Miguel-Lozano-de-la-Mota-Retail-exposición-tienda-de-moda-.jpg);">
+									<div class="inner">
+										<p>
+											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+								<div class="desc">
+									<h3><a href="item.html">Zapateria mosiso</a></h3>
+									<span>Calle montaculo 7A</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" style="background-image:url(/images/tienda_abarca_shoes_madrid_web-17.jpeg);">
+									<div class="inner">
+										<p>
+											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+								<div class="desc">
+									<h3><a href="item.html">Calzados encarna</a></h3>
+									<span>Calle chimenea 3 bajo</span>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" style="background-image:url(/images/Jane_Loc_10122015_accessories_people_SO_jw_v1._V298374815_.jpg);">
+									<div class="inner">
+										<p>
+											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+								<div class="desc">
+									<h3><a href="item.html">Calzados Juan</a></h3>
+									<span>Calle pepito grillo 18</span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="container" style="margin-top: 30px;">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Produktuak</h2>
+						</div>
+					</div>
+					<div th:each="item : ${itemSearch}" class="row">
+						<div class="col-md-4 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" th:style="'background-image:url(' + ${item.item.picture.path} + ');'">
+									<div class="inner">
+										<p>
+											<a href="item.html" class="icon"><i class="icon-shopping-cart"></i></a>
+											<a th:href="@{/item(itemId=${item.item.id})}" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-8 text-left animate-box">
+							<div class="product">
+								<div class="desc">
+									<h3><a th:href="@{/item(itemId=${item.item.id})}"></a></h3>
+									<span th:if="${isLogged} == true" th:text="${item.item.price} + '€'" class="price"></span>
+									<p th:text="${item.item.shortDescription}"></p>
+								</div>
+								<div class="desc text-right">
+									<h3>Denda</h3>
+									<span th:text="${item.item.shop.addressAddress}"></span>
+									<p th:text="${item.item.shop.addressCity} + ', ' + ${item.item.shop.billingPostNumber}"></p>
+									<!--<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${itemDistance.distance}"></p>-->
+								</div>
+							</div>
+						</div>
+						<hr>
+					</div>
+				</div>
+			</div>
+
+			<div id="fh5co-started">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Newsletter</h2>
+							<p>Just stay tune for our latest Product. Now you can subscribe</p>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2">
+							<form class="form-inline">
+								<div class="col-md-6 col-sm-6">
+									<div class="form-group">
+										<label for="email" class="sr-only">Email</label>
+										<input type="email" class="form-control" id="email" placeholder="Email">
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-6">
+									<button type="submit" class="btn btn-default btn-block">Subscribe</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div th:replace="fragments :: footer"/>
+		</div>
+		<div th:replace="fragments :: Up_Button"/>
+		<div th:replace="fragments :: final_scripts"/>
+	</body>
+</html>
+
