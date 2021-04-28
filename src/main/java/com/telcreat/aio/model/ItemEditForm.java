@@ -15,4 +15,5 @@ public class ItemEditForm {
     private String longDescription;
     private Float price;
     private String name;
+    private Category itemCategory;
 }
