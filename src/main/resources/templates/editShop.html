@@ -135,6 +135,17 @@
 								</div>
 							</div>
 
+							<div class="row form-group">
+								<div class="col-md-4">
+									<label th:for="*{latitude}">Latitud</label>
+									<input type="number" step="0.01" th:field="*{latitude}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Latitude">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{longitude}">Longitud</label>
+									<input type="number" step="0.01" th:field="*{longitude}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Longitude">
+								</div>
+							</div>
+
 							<div class="form-group text-right">
 								<input type="submit" value="Update profile" class="btn btn-primary">
 							</div>

@@ -5,12 +5,11 @@ import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
-import org.springframework.web.multipart.MultipartFile;
+
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 
@@ -76,7 +75,6 @@ public class viewController {
         modelMap.addAttribute("loggedUserId", loggedId);
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
-
         Shop shop = shopService.findActiveShopByOwnerId(loggedId);
         if (shop != null){
             modelMap.addAttribute("loggedShopId",shop.getId());
@@ -91,6 +89,31 @@ public class viewController {
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         return "index"; // Return Search search.html view
+    }
+
+    // Product Search View
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String viewSearch(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
+                             @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
+                             @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
+                             ModelMap modelMap) throws IOException, GeoIp2Exception {
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        if (shop != null){
+            modelMap.addAttribute("loggedShopId",shop.getId());
+        }
+
+        modelMap.addAttribute("search", itemName);
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
+        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(itemName, "1.1.1.1", categoryId));
+        // modelMap.addAttribute("itemSearch", itemService.findItemsByNameContains(itemName));
+        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        return "search";
     }
 
 

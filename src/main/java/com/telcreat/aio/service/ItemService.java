@@ -145,7 +145,7 @@ public class ItemService {
 
         //AM - findItemsContainsName ---> Returns a List of items that matches the searching criteria.
     public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
-        return itemRepo.findItemsByItemCategory_IdAndNameIsContaining(itemCategoryId,itemName);
+        return itemRepo.findItemsByItemCategory_IdAndNameContains(itemCategoryId,itemName);
     }
 
         //AM - deactivateItem ---> Returns a TRUE if the item is been deactivated and a FALSE if not.
@@ -165,4 +165,6 @@ public class ItemService {
         }
         return control;
     }
+
+    public List<Item> findItemsByNameContains(String search){return itemRepo.findItemsByNameContaining(search);}
 }

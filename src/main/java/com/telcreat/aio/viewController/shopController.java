@@ -60,7 +60,7 @@ public class shopController {
             Picture savedPicture = pictureService.createPicture(newPicture); // Create picture in DB
             Picture newBackPicture = new Picture("");
             Picture savedBackPicture = pictureService.createPicture(newBackPicture); // Create picture in DB
-            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser,  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", "", Shop.Status.ACTIVE);
+            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser,  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "00,00", "00,00", Shop.Status.ACTIVE);
             Shop savedShop = shopService.createShop(newShop); // Create Shop in DB
 
             modelMap.addAttribute("shop", savedShop);//Se mandan a la siguiente vista siendo redirect??
@@ -91,6 +91,7 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("loggedShopId", shop.getId());
 
             modelMap.addAttribute("shopForm", new ShopEditForm(shop.getId(),
                     shop.getName(),
@@ -106,7 +107,9 @@ public class shopController {
                     shop.getBillingPostNumber(),
                     shop.getBillingCity(),
                     shop.getBillingCountry(),
-                    shop.getBillingTelNumber()));
+                    shop.getBillingTelNumber(),
+                    shop.getLongitude(),
+                    shop.getLatitude()));
 
             // Send shop picture paths to HTML view
             modelMap.addAttribute("shopPicture", shop.getPicture().getPath());
@@ -147,6 +150,8 @@ public class shopController {
             shop.setBillingSurname(shopEditForm.getBillingSurname());
             shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
             shop.setDescription(shopEditForm.getDescription());
+            shop.setLongitude(shopEditForm.getLongitude());
+            shop.setLatitude(shopEditForm.getLatitude());
 
             Shop savedShop = shopService.updateShop(shop);
 
@@ -174,6 +179,10 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
+            if (loggedShop != null){
+                modelMap.addAttribute("loggedShopId", loggedShop.getId());
+            }
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
@@ -223,6 +232,7 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("loggedShopId", shop.getId());
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list

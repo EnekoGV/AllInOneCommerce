@@ -1,5 +1,6 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.Shop;
 import com.telcreat.aio.model.ShopOrder;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.service.*;
@@ -74,6 +75,10 @@ public class orderController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
 
             // View Order - ShopOrder List based on orderId
             modelMap.addAttribute("order", shopOrder);

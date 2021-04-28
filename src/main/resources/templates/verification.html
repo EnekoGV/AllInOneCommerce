@@ -7,17 +7,17 @@
             <div th:replace="fragments :: header"/>
 
             <div id="fh5co-contact">
-                <div class="container">
+                <div class="container" style="margin-bottom: 85px">
                     <div class="row form-group">
-                        <h3 class="text-center">Verification required!</h3>
+                        <h3 class="text-center" style="margin-bottom: 40px">Beharrezko egiaztapena</h3>
                         <div class="col-md-6 col-md-offset-3 animate-box">
                             <form th:action="@{/auth/verification}" method="post">
                                 <input type="hidden" name="token" th:value="${token}" required="required" class="form-control">
-                                <label for="code">We have recently sent you a verification code to your email address. Please check your mailbox.</label>
-                                <input type="text" placeholder="Type your code" name="code" id="code" required="required" class="form-control">
-                                <p th:if="${verificationError}" style="color: red">Your code is not valid! Try again!</p>
+                                <label for="code">Egiaztapen kode bat bidali da. Zure posta elektronikoko postontzia begiratu.</label>
+                                <input type="text" placeholder="Sartu egiaztapen kodea" name="code" id="code" required="required" class="form-control">
+                                <p th:if="${verificationError}" style="color: red">Kodea ez u balio. Saiatu berriz</p>
                                 <div class="form-group text-right" style="margin-top: 25px">
-                                    <button class="btn btn-primary" type="submit">Verify my account!</button>
+                                    <button class="btn btn-primary" type="submit">Kontua egiaztatu</button>
                                 </div>
                             </form>
                         </div>

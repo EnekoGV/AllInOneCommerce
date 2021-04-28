@@ -88,10 +88,16 @@ h1, h2, h3, h4, h5, h6, figure {
   background: #d1c286;
 }
 
+hr.vr{
+  width: 1px;
+  height: 430px;
+  background-color: #bfbfbf;
+}
+
 .fh5co-nav {
-  padding: 40px 0;
+  padding: 18px 0;
   background: #fff;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 @media screen and (max-width: 768px) {
   .fh5co-nav {
@@ -102,6 +108,7 @@ h1, h2, h3, h4, h5, h6, figure {
   font-size: 20px;
   margin: 0;
   padding: 0;
+  margin-bottom: -40px;
   text-transform: uppercase;
   font-weight: bold;
   font-family: "Montserrat", Arial, sans-serif;
@@ -115,6 +122,12 @@ h1, h2, h3, h4, h5, h6, figure {
     display: none;
   }
 }
+
+.fh5co-nav .menu-2{
+  margin-top: 20px;
+}
+
+
 .fh5co-nav .menu-2 li.search {
   float: left;
   width: 83%;
@@ -784,7 +797,7 @@ h1, h2, h3, h4, h5, h6, figure {
 #fh5co-product,
 #fh5co-contact,
 #fh5co-footer {
-  padding: 3em 0;
+  padding: 2em 0;
   clear: both;
 }
 @media screen and (max-width: 768px) {
@@ -1334,7 +1347,7 @@ h1, h2, h3, h4, h5, h6, figure {
   list-style: none;
 }
 #fh5co-footer .fh5co-footer-links li a {
-  color: #000;
+  color: #828282;
   text-decoration: none;
 }
 #fh5co-footer .fh5co-footer-links li a:hover {
