@@ -81,14 +81,14 @@ public class cartController {
         }
     }
 
-    @RequestMapping(value = "/cart/eliminate", method = RequestMethod.POST)
-    public String eliminateCartItem(@RequestParam(name = "variantId")int variantId,
+    @RequestMapping(value = "/cart/delete", method = RequestMethod.POST)
+    public String deleteCartItem(@RequestParam(name = "variantId")int variantId,
                                        @RequestParam(name = "cartId")int cartId){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
             cart.getVariants().removeIf(n -> (n.getId() == variantId));
             cartService.updateCart(cart);
-            return "redirect:/cart";
+            return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";
     }
@@ -100,7 +100,7 @@ public class cartController {
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
             cart.getVariants().add(variantService.findVariantById(variantId));
             cartService.updateCart(cart);
-            return "redirect:/cart";
+            return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";
     }
@@ -118,7 +118,21 @@ public class cartController {
                     control = false;
                 }
             }
-            return "redirect:/cart";
+            return "redirect:/cart?userId="+loggedUser.getId();
+        }else
+            return "redirect:/";
+    }
+
+    @RequestMapping(value = "/cart/addToCart", method = RequestMethod.POST)
+    public String addToCart(@RequestParam(name = "cartId")int cartId,
+                            @RequestParam(name = "variantId")int variantId,
+                            @RequestParam(name = "userId")int userId,
+                            ModelMap modelMap){
+        Cart cart = cartService.findCartById(cartId);
+        Variant variant = variantService.findActiveVariantById(variantId);
+        if(variant != null && cart != null && cart.getUser().getId() == userId){
+            cartService.addToCart(cart,variant);
+            return "redirect:/cart?userId="+userId;
         }else
             return "redirect:/";
     }
@@ -127,12 +141,15 @@ public class cartController {
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
         Cart cart = cartService.findCartById(cartId);
-        if(cart != null && cart.getUser().getId() == userId && loggedId == userId){
+        if(cart != null && cart.getUser().getId() == userId && loggedId == userId && cart.getVariants().size() != 0){
             List<ShopOrder> shopOrders= shopOrderService.createShopOrderFromCart(cart);
             if(shopOrders == null)
                 return "redirect:/";
-            else
-                return "redirect:?userId="+userId;
+            else {
+                cart.setVariants(new ArrayList<>());
+                cartService.updateCart(cart);
+                return "redirect:/cart?userId=" + userId;
+            }
         }else
             return "redirect:/";
     }

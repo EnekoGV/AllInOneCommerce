@@ -25,6 +25,7 @@ public class itemController {
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
     private final CategoryService categoryService;
+    private final CartService cartService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -33,13 +34,14 @@ public class itemController {
     private boolean isOwner = false;
 
     @Autowired
-    public itemController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService) {
+    public itemController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService, CartService cartService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
         this.shopService = shopService;
 
         loggedUser = userService.getLoggedUser();
+        this.cartService = cartService;
         if (loggedUser != null){
             isLogged = true;
             loggedId = loggedUser.getId();
@@ -69,6 +71,10 @@ public class itemController {
             Shop shop = shopService.findActiveShopByOwnerId(loggedId);
             if (shop != null){
                 modelMap.addAttribute("loggedShopId",shop.getId());
+            }
+            Cart cart = cartService.findCartByUserId(loggedId);
+            if(cart != null){
+                modelMap.addAttribute("cartId",cart.getId());
             }
 
             modelMap.addAttribute("item", item);

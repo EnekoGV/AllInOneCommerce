@@ -20,7 +20,7 @@
     </tr>
     </thead>
     <tbody>
-    <tr th:if="${variantsAndQuantities} == null">
+    <tr th:if="${variantsAndQuantities.size()} == 0">
         <td colspan="2"> No Products Available </td>
     </tr>
     <tr th:each="item : ${variantsAndQuantities}">
@@ -40,7 +40,7 @@
             <input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
             <button type="submit">+1</button>
         </form>
-        <form th:action="@{/cart/eliminate}" method="post">
+        <form th:action="@{/cart/delete}" method="post">
             <input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
             <input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
             <button type="submit">x</button>

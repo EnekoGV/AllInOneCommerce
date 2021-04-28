@@ -14,6 +14,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -149,7 +150,7 @@ public class UserService implements UserDetailsService {
         user.setPicture(savedPicture);
         savedUser = createUser(new User(user.getAlias(), user.getName(), user.getLastName(), user.getBirthDay(), user.getEmail(), user.getPassword(), user.getPicture(), "", "", "", "", "", 0, "", "", null));
         if (savedUser!=null){
-            newCart = cartService.createCart(new Cart(null, savedUser));
+            newCart = cartService.createCart(new Cart(new ArrayList<>(), savedUser));
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
             emailSender.send(savedUser.getEmail(), verificationToken);
         }

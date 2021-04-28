@@ -82,6 +82,7 @@ public class CartService {
             variants.add(variant);
         }
         cart.setVariants(variants);
+        updateCart(cart);
         return cart;
     }
 
