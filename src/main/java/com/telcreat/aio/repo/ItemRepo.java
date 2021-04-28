@@ -10,10 +10,9 @@ import java.util.Optional;
 
 @Repository
 public interface ItemRepo  extends JpaRepository<Item, Integer>{
-    List<Item> findItemsByItemCategory_IdAndNameIsContaining(int itemCategoryId,String itemName);
-    List<Item> findItemsByItemCategory_IdAndNameContains(int itemCategoryId,String itemName);
+    List<Item> findItemsByItemCategory_IdAndNameContainsAndStatus(int itemCategoryId,String itemName, Item.Status itemStatus);
     List<Item> findItemsByShop_Id(int shopId);
     Optional<Item> findItemByIdAndStatus(int itemId, Item.Status itemStatus);
     List<Item> findItemsByShopIdAndStatus(int shopId, Item.Status itemStatus);
-    List<Item> findItemsByNameContaining(String search);
+    List<Item> findItemsByNameContainingAndStatus(String search, Item.Status itemStatus);
 }
