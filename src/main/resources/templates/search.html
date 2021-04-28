@@ -65,7 +65,7 @@
 									<h3>Denda</h3>
 									<span th:text="${item.item.shop.addressAddress}"></span>
 									<p th:text="${item.item.shop.addressCity} + ', ' + ${item.item.shop.billingPostNumber}"></p>
-									<!--<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${itemDistance.distance}"></p>-->
+									<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${item.distance}"></p>
 								</div>
 							</div>
 						</div>
