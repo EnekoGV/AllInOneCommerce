@@ -18,48 +18,18 @@
 						</div>
 					</div>
 					<div class="row">
-						<div class="col-md-4 text-center animate-box">
+						<div th:each="shop : ${shopSearch}" class="col-md-4 text-center animate-box">
 							<div class="product">
-								<div class="product-grid" style="background-image:url(/images/Gasparina-Valencia.-Estudio-Huuun.-Miguel-Lozano-de-la-Mota-Retail-exposición-tienda-de-moda-.jpg);">
+								<div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture} + ');'">
 									<div class="inner">
 										<p>
-											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
+											<a th:href="@{/shop(shopId=${shop.shop.id})}" class="icon"><i class="icon-eye"></i></a>
 										</p>
 									</div>
 								</div>
 								<div class="desc">
-									<h3><a href="item.html">Zapateria mosiso</a></h3>
-									<span>Calle montaculo 7A</span>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 text-center animate-box">
-							<div class="product">
-								<div class="product-grid" style="background-image:url(/images/tienda_abarca_shoes_madrid_web-17.jpeg);">
-									<div class="inner">
-										<p>
-											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
-										</p>
-									</div>
-								</div>
-								<div class="desc">
-									<h3><a href="item.html">Calzados encarna</a></h3>
-									<span>Calle chimenea 3 bajo</span>
-								</div>
-							</div>
-						</div>
-						<div class="col-md-4 text-center animate-box">
-							<div class="product">
-								<div class="product-grid" style="background-image:url(/images/Jane_Loc_10122015_accessories_people_SO_jw_v1._V298374815_.jpg);">
-									<div class="inner">
-										<p>
-											<a href="item.html" class="icon"><i class="icon-eye"></i></a>
-										</p>
-									</div>
-								</div>
-								<div class="desc">
-									<h3><a href="item.html">Calzados Juan</a></h3>
-									<span>Calle pepito grillo 18</span>
+									<h3><a th:href="@{/shop(shopId=${shop.shop.id})}"></a></h3>
+									<span th:text="${shop.shop.addressAddress}"></span>
 								</div>
 							</div>
 						</div>
@@ -95,7 +65,7 @@
 									<h3>Denda</h3>
 									<span th:text="${item.item.shop.addressAddress}"></span>
 									<p th:text="${item.item.shop.addressCity} + ', ' + ${item.item.shop.billingPostNumber}"></p>
-									<!--<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${itemDistance.distance}"></p>-->
+									<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${item.distance}"></p>
 								</div>
 							</div>
 						</div>
