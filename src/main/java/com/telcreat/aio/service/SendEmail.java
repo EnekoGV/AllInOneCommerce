@@ -33,9 +33,9 @@ public class SendEmail {
             message.setFrom(new InternetAddress(sender));
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(email));
             message.setSubject("Verification is required! AIO Commerce");
-
+            String enterCodeLink = "\nEnter your code here: http://localhost:8080/auth/verification?token=" + verificationToken.getToken();
             String passwordRecoveryLink = "\n\n\nIf you think there is something wrong, change your password: http://localhost:8080/auth/recoverPassword?token=" + verificationToken.getToken() + "&code=" + verificationToken.getCode();
-            message.setText("Your verification code is: " + verificationToken.getCode() + passwordRecoveryLink);
+            message.setText("Your verification code is: " + verificationToken.getCode() + enterCodeLink + passwordRecoveryLink);
 
             // Send email
             Transport.send(message);
