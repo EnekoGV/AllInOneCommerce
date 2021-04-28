@@ -110,6 +110,7 @@ public class viewController {
 
         modelMap.addAttribute("search", itemName);
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
+        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(itemName, "1.1.1.1", categoryId));
         // modelMap.addAttribute("itemSearch", itemService.findItemsByNameContains(itemName));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
         return "search";
