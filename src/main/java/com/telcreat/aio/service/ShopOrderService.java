@@ -134,4 +134,15 @@ public class ShopOrderService {
         }
         return shopOrders;
     }
+
+    //AM - findPendingShopOrderById ---> Returns Active Order with status PENDING
+    public ShopOrder findPendingShopOrderById(int shopOrderId){
+        ShopOrder tempShopOrder = null;
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatus(shopOrderId, ShopOrder.ShopOrderStatus.PENDING);
+        if (foundShopOrder.isPresent()){
+            tempShopOrder = foundShopOrder.get();
+        }
+        return tempShopOrder;
+    }
+
 }
