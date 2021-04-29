@@ -60,7 +60,7 @@ public class shopController {
             Picture savedPicture = pictureService.createPicture(newPicture); // Create picture in DB
             Picture newBackPicture = new Picture("");
             Picture savedBackPicture = pictureService.createPicture(newBackPicture); // Create picture in DB
-            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser,  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "00,00", "00,00", Shop.Status.ACTIVE);
+            Shop newShop = new Shop(null, savedPicture, savedBackPicture, loggedUser,  "", "", "", "", "", "", "", "", "", "", "", "", "", "", "0.00", "0.00", Shop.Status.ACTIVE);
             Shop savedShop = shopService.createShop(newShop); // Create Shop in DB
 
             modelMap.addAttribute("shop", savedShop);//Se mandan a la siguiente vista siendo redirect??

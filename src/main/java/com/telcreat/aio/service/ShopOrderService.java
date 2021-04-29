@@ -81,6 +81,10 @@ public class ShopOrderService {
                         ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
+    public List<ShopOrder> findShopOrdersByUserId(int userId){
+        return shopOrderRepo.findShopOrderByUserId(userId);
+    }
+
         //AM - createShopOrderFromCart ---> Returns a List of ShopOrder build from incoming cart
     public List<ShopOrder> createShopOrderFromCart(Cart cart){
         ArrayList<Shop> tempVariantShops = new ArrayList<>();

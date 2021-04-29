@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 import static java.lang.Double.parseDouble;
 
@@ -105,26 +102,23 @@ public class ItemService {
 
         //AM - findItemsContainsNameOrdered ---> Returns the list of Item matching the searching
         //criteria (words, order and category)
-            // orderCriteriaId = 0) Price 1) Distance
+            // orderCriteriaId = 0) Distantzia 1) Prezioa
             // itemCategoryId = 0) Dummy 1)... and next are real categories.
-    public List<ItemDistance> findItemsContainsNameOrdered(String itemName, int orderCriteriaId, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
+    public List<ItemDistance> findItemsContainsNameOrdered(String itemName, int itemCategoryId, int orderCriteriaId, int orderDirection, String ip) throws IOException, GeoIp2Exception {
         List<Item> items = findItemsContainsName(itemName,itemCategoryId);
         List<ItemDistance> orderedItems;
         if(orderCriteriaId==0){
-            items.sort(Comparator.comparingDouble(Item::getPrice));
-            orderedItems = getItemDistance(items,ip);
-            /*for(int i=0;i<(items.size()-1);i++){
-                for(int j=i+1;j<items.size();j++){
-                    if(items.get(i).getPrice()>items.get(j).getPrice()){
-                        float aux=items.get(i).getPrice();
-                        items.get(i).setPrice(items.get(j).getPrice());
-                        items.get(j).setPrice(aux);
-                    }
-                }
-            }*/
-        }else{
             orderedItems = getItemDistance(items,ip);
             orderedItems.sort(Comparator.comparingDouble(ItemDistance::getDistance));
+            if (orderDirection == 1){
+                Collections.reverse(orderedItems);
+            }
+        }else{
+            items.sort(Comparator.comparingDouble(Item::getPrice));
+            orderedItems = getItemDistance(items,ip);
+            if (orderDirection == 1){
+                Collections.reverse(orderedItems);
+            }
         }
         return orderedItems;
     }
@@ -132,20 +126,26 @@ public class ItemService {
         //PRIVATE AM - getItemDistance ---> Returns a List of itemDistance which came with the item object and its distance.
     private List<ItemDistance> getItemDistance(List<Item> items, String ip) throws IOException, GeoIp2Exception {
         GeoIP location = locationService.getLocation(ip);
-        ItemDistance itemDistance = new ItemDistance();
         List<ItemDistance> itemsDistances = new ArrayList<>();
-        for (Item item:items){
-            double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(item.getShop().getLatitude()), parseDouble(item.getShop().getLongitude()));
-            itemDistance.setItem(item);
-            itemDistance.setDistance(dist);
-            itemsDistances.add(itemDistance);
-        }
+            for (Item item:items){
+                ItemDistance itemDistance = new ItemDistance();
+                double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(item.getShop().getLatitude()), parseDouble(item.getShop().getLongitude()));
+                itemDistance.setItem(item);
+                itemDistance.setDistance(dist);
+                itemsDistances.add(itemDistance);
+            }
         return itemsDistances;
     }
 
         //AM - findItemsContainsName ---> Returns a List of items that matches the searching criteria.
     public List<Item> findItemsContainsName(String itemName, int itemCategoryId){
-        return itemRepo.findItemsByItemCategory_IdAndNameContains(itemCategoryId,itemName);
+        List<Item> items;
+        if (itemCategoryId==0){
+            items = itemRepo.findItemsByNameContainingAndStatus(itemName, Item.Status.ACTIVE);
+        }else{
+            items = itemRepo.findItemsByItemCategory_IdAndNameContainsAndStatus(itemCategoryId, itemName, Item.Status.ACTIVE);
+        }
+        return items;
     }
 
         //AM - deactivateItem ---> Returns a TRUE if the item is been deactivated and a FALSE if not.
@@ -165,6 +165,4 @@ public class ItemService {
         }
         return control;
     }
-
-    public List<Item> findItemsByNameContains(String search){return itemRepo.findItemsByNameContaining(search);}
 }

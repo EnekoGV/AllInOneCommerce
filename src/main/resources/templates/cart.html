@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"><!--//injectamos una API de thymleaf que se usa con th:-->
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+</head>
+<body>
+<h1>Cart</h1>
+<table>
+    <thead>
+    <tr>
+        <th> Name </th>
+        <th> Description </th>
+        <th> Category </th>
+        <th> Prize </th>
+        <th> -1 </th>
+        <th> Quantity </th>
+        <th> +1 </th>
+        <th> x </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:if="${variantsAndQuantities.size()} == 0">
+        <td colspan="2"> No Products Available </td>
+    </tr>
+    <tr th:each="item : ${variantsAndQuantities}">
+
+        <td><span th:text="${item.variant.name}"> Name </span></td>
+        <td><span th:text="${item.variant.item.shortDescription}"> Description </span></td>
+        <td><span th:text="${item.variant.item.itemCategory.name}"> Category </span></td>
+        <td><span th:text="${item.variant.item.price}"> Prize </span></td>
+        <form th:action="@{/cart/decrease}" method="post">
+            <input type="hidden" id="variantId" name="variantId" th:value="${item.variant.id}">
+            <input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
+            <button type="submit">-1</button>
+        </form>
+        <td><span th:text="${item.quantity}"> Quantity </span></td>
+        <form th:action="@{/cart/increase}" method="post">
+            <input type="hidden" id="variantId1" name="variantId" th:value="${item.variant.id}">
+            <input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
+            <button type="submit">+1</button>
+        </form>
+        <form th:action="@{/cart/delete}" method="post">
+            <input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
+            <input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
+            <button type="submit">x</button>
+        </form>
+
+    </tr>
+    </tbody>
+</table>
+
+<form th:action="@{/cart/order}" method="post">
+    <input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
+    <input type="hidden" id="cart" name="cart" th:value="${loggedCartId}">
+    <button type="submit">Create the order</button>
+</form>
+</body>
+</html>
+<!--
+//$ el objeto mismo
+//* como el punto en java, coger los atributos del objeto
+//@ genera links (URL) dinamicos
+-->

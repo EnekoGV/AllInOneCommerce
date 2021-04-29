@@ -9,7 +9,25 @@
 
 			<div id="fh5co-product">
 				<div class="container" style="margin-top: -110px;">
-					<div class="row animate-box">
+					<div>
+						<form th:action="@{/search}" method="get">
+							<input type="hidden" name="search" th:value="${search}">
+							<select name="categoryId" class="btn btn-primary btn-outline btn-lg">
+								<option th:each="category : ${categories}" th:text="${category.name}"
+										th:value="${category.id}"></option>
+							</select>
+							<select name="orderCriteriaId" class="btn btn-primary btn-outline btn-lg">
+								<option value="0">Distantzia</option>
+								<option value="1">Prezioa</option>
+							</select>
+							<select name="orderDirection" class="btn btn-primary btn-outline btn-lg">
+								<option value="0">Goranzkoa</option>
+								<option value="1">Beheranzkoa</option>
+							</select>
+							<button type="submit">Add filter</button>
+						</form>
+					</div>
+					<div class="row animate-box" style="margin-top: 40px">
 						<div class="col-md-4 col-md-offset-0 text-left fh5co-heading">
 							<span th:text="'Bilaketaren emaitza: ' + ${search}"></span>
 						</div>
@@ -20,7 +38,7 @@
 					<div class="row">
 						<div th:each="shop : ${shopSearch}" class="col-md-4 text-center animate-box">
 							<div class="product">
-								<div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture} + ');'">
+								<div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture.path} + ');'">
 									<div class="inner">
 										<p>
 											<a th:href="@{/shop(shopId=${shop.shop.id})}" class="icon"><i class="icon-eye"></i></a>
@@ -35,20 +53,22 @@
 						</div>
 					</div>
 				</div>
+
+
 				<div class="container" style="margin-top: 30px;">
 					<div class="row animate-box">
 						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
 							<h2>Produktuak</h2>
 						</div>
 					</div>
-					<div th:each="item : ${itemSearch}" class="row">
+					<div th:each="itemDistance : ${itemSearch}" class="row">
 						<div class="col-md-4 text-center animate-box">
 							<div class="product">
-								<div class="product-grid" th:style="'background-image:url(' + ${item.item.picture.path} + ');'">
+								<div class="product-grid" th:style="'background-image:url(' + ${itemDistance.item.picture.path} + ');'">
 									<div class="inner">
 										<p>
 											<a href="item.html" class="icon"><i class="icon-shopping-cart"></i></a>
-											<a th:href="@{/item(itemId=${item.item.id})}" class="icon"><i class="icon-eye"></i></a>
+											<a th:href="@{/item(itemId=${itemDistance.item.id})}" class="icon"><i class="icon-eye"></i></a>
 										</p>
 									</div>
 								</div>
@@ -57,15 +77,15 @@
 						<div class="col-md-8 text-left animate-box">
 							<div class="product">
 								<div class="desc">
-									<h3><a th:href="@{/item(itemId=${item.item.id})}"></a></h3>
-									<span th:if="${isLogged} == true" th:text="${item.item.price} + '€'" class="price"></span>
-									<p th:text="${item.item.shortDescription}"></p>
+									<h3><a th:href="@{/item(itemId=${itemDistance.item.id})}"></a></h3>
+									<span th:if="${isLogged} == true" th:text="${itemDistance.item.price} + '€'" class="price"></span>
+									<p th:text="${itemDistance.item.shortDescription}"></p>
 								</div>
 								<div class="desc text-right">
 									<h3>Denda</h3>
-									<span th:text="${item.item.shop.addressAddress}"></span>
-									<p th:text="${item.item.shop.addressCity} + ', ' + ${item.item.shop.billingPostNumber}"></p>
-									<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${item.distance}"></p>
+									<span th:text="${itemDistance.item.shop.addressAddress}"></span>
+									<p th:text="${itemDistance.item.shop.addressCity} + ', ' + ${itemDistance.item.shop.billingPostNumber}"></p>
+									<p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${itemDistance.distance}"></p>
 								</div>
 							</div>
 						</div>
