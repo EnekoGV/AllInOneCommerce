@@ -16,6 +16,7 @@
 					<div th:each="order : ${orderList}">
 						<br/>
 						<form th:if="${order.shopOrderStatus.name()} == 'PENDING'" th:action="@{/order/edit/cancel}" method="post">
+							<input type="hidden" name="orderId" th:value="${order.id}">
 							<button type="submit">Eskaria deuseztatu</button>
 						</form>
 						<div th:each="variant : ${order.variants}" class="row product">

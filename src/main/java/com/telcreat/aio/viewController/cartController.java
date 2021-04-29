@@ -124,13 +124,12 @@ public class cartController {
     @RequestMapping(value = "/cart/addToCart", method = RequestMethod.POST)
     public String addToCart(@RequestParam(name = "cartId")int cartId,
                             @RequestParam(name = "variantId")int variantId,
-                            @RequestParam(name = "userId")int userId,
                             ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
         Variant variant = variantService.findActiveVariantById(variantId);
-        if(variant != null && cart != null && cart.getUser().getId() == userId){
+        if(variant != null && cart != null && cart.getUser().getId() == loggedId){
             cartService.addToCart(cart,variant);
-            return "redirect:/cart?userId="+userId;
+            return "redirect:/cart?userId="+loggedId;
         }else
             return "redirect:/";
     }
