@@ -81,10 +81,6 @@ public class ShopOrderService {
                         ////////////////////////////////////////////////////////////////////////////
     //________________________________________________________________________________________________________________//
 
-    public List<ShopOrder> findShopOrdersByUserId(int userId){
-        return shopOrderRepo.findShopOrderByUserId(userId);
-    }
-
         //AM - createShopOrderFromCart ---> Returns a List of ShopOrder build from incoming cart
     public List<ShopOrder> createShopOrderFromCart(Cart cart){
         ArrayList<Shop> tempVariantShops = new ArrayList<>();
@@ -138,4 +134,35 @@ public class ShopOrderService {
         }
         return shopOrders;
     }
+
+    //AM - findPendingShopOrderById ---> Returns Active Order with status PENDING
+    public ShopOrder findPendingShopOrderById(int shopOrderId){
+        ShopOrder tempShopOrder = null;
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatus(shopOrderId, ShopOrder.ShopOrderStatus.PENDING);
+        if (foundShopOrder.isPresent()){
+            tempShopOrder = foundShopOrder.get();
+        }
+        return tempShopOrder;
+    }
+
+    //AM - findNotCanceledNotDeliveredShopOrderById
+    public ShopOrder findNotCanceledNotDeliveredShopOrderById(int shopOrderId){
+        ShopOrder tempShopOrder = null;
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatusNotOrShopOrderStatusNot(shopOrderId, ShopOrder.ShopOrderStatus.CANCELLED, ShopOrder.ShopOrderStatus.DELIVERED);
+        if (foundShopOrder.isPresent()){
+            tempShopOrder = foundShopOrder.get();
+        }
+        return tempShopOrder;
+    }
+
+    //AM - findShopOderByUserId
+    public List<ShopOrder> findShopOrdersByUserId(int userId){
+        return shopOrderRepo.findShopOrdersByUser_Id(userId);
+    }
+
+    //AM - findShopOrderByShopId
+    public List<ShopOrder> findShopOrdersByShopId(int shopId){
+        return shopOrderRepo.findShopOrdersByShop_Id(shopId);
+    }
+
 }

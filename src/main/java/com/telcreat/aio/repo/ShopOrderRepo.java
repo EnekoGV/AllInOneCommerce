@@ -9,5 +9,8 @@ import java.util.Optional;
 
 @Repository
 public interface ShopOrderRepo extends JpaRepository<ShopOrder, Integer> {
-    List<ShopOrder> findShopOrderByUserId(int userId);
+    Optional<ShopOrder> findShopOrderByIdAndShopOrderStatus(int id, ShopOrder.ShopOrderStatus shopOrderStatus);
+    Optional<ShopOrder> findShopOrderByIdAndShopOrderStatusNotOrShopOrderStatusNot(int id, ShopOrder.ShopOrderStatus shopOrderStatus, ShopOrder.ShopOrderStatus shopOrderStatus2);
+    List<ShopOrder> findShopOrdersByUser_Id(int userId);
+    List<ShopOrder> findShopOrdersByShop_Id(int shopId);
 }
