@@ -155,4 +155,14 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
+    //AM - findShopOderByUserId
+    public List<ShopOrder> findShopOrdersByUserId(int userId){
+        return shopOrderRepo.findShopOrdersByUser_Id(userId);
+    }
+
+    //AM - findShopOrderByShopId
+    public List<ShopOrder> findShopOrdersByShopId(int shopId){
+        return shopOrderRepo.findShopOrdersByShop_Id(shopId);
+    }
+
 }
