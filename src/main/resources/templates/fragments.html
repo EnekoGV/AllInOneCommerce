@@ -44,10 +44,15 @@
           <ul>
             <li class="search">
               <div class="input-group">
-                <input type="text" placeholder="Bilatu..">
-                <span class="input-group-btn">
-                        <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                      </span>
+                <form th:action="@{/search}" method="get">
+                  <input type="text" placeholder="Bilatu..." name="search">
+                  <input type="hidden" name="categoryId" th:value="${categoryId}">
+                  <input type="hidden" name="orderCriteriaId" th:value="${orderCriteriaId}">
+                  <input type="hidden" name="orderDirection" th:value="${orderDirection}">
+                  <span class="input-group-btn">
+                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                  </span>
+                </form>
               </div>
             </li>
           </ul>
