@@ -236,7 +236,7 @@ public class userController {
                 modelMap.addAttribute("loggedShopId",shop.getId());
             }
 
-            modelMap.addAttribute("orderList", shopOrderService.findShopOderByUserId(userId));
+            modelMap.addAttribute("orderList", shopOrderService.findShopOrdersByUserId(userId));
 
             return "userOrders";
         }
