@@ -90,6 +90,7 @@ public class orderController {
         }
     }
 
+    // Change Shop Order status
     @RequestMapping(value = "/order/edit/changeStatus", method = RequestMethod.POST)
     public String changeOrderStatus(@RequestParam(name = "updateStatus") ShopOrder.ShopOrderStatus updateStatus,
                                     @RequestParam(name = "orderId") int orderId,
@@ -111,6 +112,7 @@ public class orderController {
         }
     }
 
+    // Cancel Shop Order (Owner or Client can Cancel the Shop Order)
     @RequestMapping(value = "/order/edit/cancel", method = RequestMethod.POST)
     public String cancelOrder(@RequestParam(name = "orderId") int orderId,
                               ModelMap modelMap){
