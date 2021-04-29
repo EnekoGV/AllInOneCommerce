@@ -5,6 +5,7 @@ import com.telcreat.aio.model.ShopOrder;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.service.*;
 import lombok.Data;
+import org.jcp.xml.dsig.internal.dom.ApacheOctetStreamData;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -88,6 +89,49 @@ public class orderController {
             return "redirect:/?orderVisualizationsRequiredCondiotionsFailed"; //In case any of the conditions required fails
         }
     }
+
+    @RequestMapping(value = "/order/edit/changeStatus", method = RequestMethod.POST)
+    public String changeOrderStatus(@RequestParam(name = "updateStatus") ShopOrder.ShopOrderStatus updateStatus,
+                                    @RequestParam(name = "orderId") int orderId,
+                                    ModelMap modelMap){
+        ShopOrder shopOrder = shopOrderService.findNotCanceledNotDeliveredShopOrderById(orderId);
+
+        if (isLogged && shopOrder != null && loggedId == shopOrder.getShop().getOwner().getId()){
+            shopOrder.setShopOrderStatus(updateStatus);
+            ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+            if (savedShopOrder != null){
+                return "redirect:/order?orderId=" + shopOrder.getId();
+            }
+            else{
+                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/order/edit/cancel", method = RequestMethod.POST)
+    public String cancelOrder(@RequestParam(name = "orderId") int orderId,
+                              ModelMap modelMap){
+
+        ShopOrder shopOrder = shopOrderService.findPendingShopOrderById(orderId); // Can only be cancelled when it's PENDING
+
+        if (isLogged && shopOrder != null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
+            shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
+            ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+            if (savedShopOrder != null){
+                return "redirect:/order?orderId=" + shopOrder.getId();
+            }
+            else{
+                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/notAllowed";
+        }
+    }
+
 
 
 
