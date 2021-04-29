@@ -1,64 +1,101 @@
-<!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"><!--//injectamos una API de thymleaf que se usa con th:-->
-<head>
-    <meta charset="UTF-8">
-    <title>Cart</title>
-</head>
-<body>
-<h1>Cart</h1>
-<table>
-    <thead>
-    <tr>
-        <th> Name </th>
-        <th> Description </th>
-        <th> Category </th>
-        <th> Prize </th>
-        <th> -1 </th>
-        <th> Quantity </th>
-        <th> +1 </th>
-        <th> x </th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:if="${variantsAndQuantities.size()} == 0">
-        <td colspan="2"> No Products Available </td>
-    </tr>
-    <tr th:each="item : ${variantsAndQuantities}">
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments :: HTML_head" />
+	<body>
+		<div class="fh5co-loader"></div>
+		<div id="page">
+			<div th:replace="fragments :: header"/>
+			<div id="fh5co-product">
+				<div class="container" style="margin-top: -100px;">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Cesta</h2>
+						</div>
+					</div>
+					<div th:each="item : ${variantsAndQuantities}" class="row">
+						<div class="col-md-4 text-right animate-box">
+							<div class="product">
+								<img th:src="${item.variant.picture.path}" alt="p" class="product-grid2">
+							</div>
+						</div>
+						<div class="col-md-4 text-left animate-box">
+							<div class="product">
+								<div class="desc">
+									<h3><a th:href="@{/item(itemId=${item.variant.item.id})}" th:text="${item.variant.item.name}"></a></h3>
+									<p th:text="${item.variant.name}" style="margin-bottom: 0%;" ></p>
+									<form th:action="@{/cart/decrease}" method="post">
+										<input type="hidden" id="variantId" name="variantId" th:value="${item.variant.id}">
+										<input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
+										<button type="submit" >-1</button>
+									</form>
+									<span th:text="${item.quantity}"> Quantity </span>
+									<form th:action="@{/cart/addToCart}" method="post">
+										<input type="hidden" id="variantId1" name="variantId" th:value="${item.variant.id}">
+										<input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
+										<button type="submit">+1</button>
+									</form>
+									<form th:action="@{/cart/delete}" method="post">
+										<input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
+										<input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
+										<button type="submit">x</button>
+									</form>
+								</div>
+								<div class="desc text-right">
+									<span th:text="${item.variant.item.price}+'€'" class="price text-right bottom"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 text-right fh5co-heading">
+							<div class="product">
+								<div class="desc">
+									<h2 th:text="${totalPrice}"></h2>
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 text-right">
+							<form th:action="@{/cart/order}" method="post">
+								<input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
+								<input type="hidden" id="cart" name="cart" th:value="${loggedCartId}">
+								<button type="submit" class="btn btn-primary btn-outline btn-sm" style="margin-top: -80px;">Ordaindu</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
 
-        <td><span th:text="${item.variant.name}"> Name </span></td>
-        <td><span th:text="${item.variant.item.shortDescription}"> Description </span></td>
-        <td><span th:text="${item.variant.item.itemCategory.name}"> Category </span></td>
-        <td><span th:text="${item.variant.item.price}"> Prize </span></td>
-        <td><form th:action="@{/cart/decrease}" method="post">
-            <input type="hidden" id="variantId" name="variantId" th:value="${item.variant.id}">
-            <input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
-            <button type="submit">-1</button>
-        </form></td>
-        <td><span th:text="${item.quantity}"> Quantity </span></td>
-        <td><form th:action="@{/cart/addToCart}" method="post">
-            <input type="hidden" id="variantId1" name="variantId" th:value="${item.variant.id}">
-            <input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
-            <button type="submit">+1</button>
-        </form></td>
-        <td><form th:action="@{/cart/delete}" method="post">
-            <input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
-            <input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
-            <button type="submit">x</button>
-        </form></td>
-
-    </tr>
-    </tbody>
-</table>
-
-<form th:action="@{/cart/order}" method="post">
-    <input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
-    <input type="hidden" id="cart" name="cart" th:value="${loggedCartId}">
-    <button type="submit">Create the order</button>
-</form>
-</body>
+			<div id="fh5co-started">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Newsletter</h2>
+							<p>Just stay tune for our latest Product. Now you can subscribe</p>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2">
+							<form class="form-inline">
+								<div class="col-md-6 col-sm-6">
+									<div class="form-group">
+										<label for="email" class="sr-only">Email</label>
+										<input type="email" class="form-control" id="email" placeholder="Email">
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-6">
+									<button type="submit" class="btn btn-default btn-block">Subscribe</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div th:replace="fragments :: footer"/>
+		</div>
+		<div th:replace="fragments :: Up_Button"/>
+		<div th:replace="fragments :: final_scripts"/>
+	</body>
 </html>
-<!--
-//$ el objeto mismo
-//* como el punto en java, coger los atributos del objeto
-//@ genera links (URL) dinamicos
--->
+
