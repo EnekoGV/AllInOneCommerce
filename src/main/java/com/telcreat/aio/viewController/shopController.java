@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Map;
+
 @Data
 @Controller
 @RequestScope
@@ -107,9 +109,7 @@ public class shopController {
                     shop.getBillingPostNumber(),
                     shop.getBillingCity(),
                     shop.getBillingCountry(),
-                    shop.getBillingTelNumber(),
-                    shop.getLongitude(),
-                    shop.getLatitude()));
+                    shop.getBillingTelNumber()));
 
             // Send shop picture paths to HTML view
             modelMap.addAttribute("shopPicture", shop.getPicture().getPath());
@@ -150,8 +150,11 @@ public class shopController {
             shop.setBillingSurname(shopEditForm.getBillingSurname());
             shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
             shop.setDescription(shopEditForm.getDescription());
-            shop.setLongitude(shopEditForm.getLongitude());
-            shop.setLatitude(shopEditForm.getLatitude());
+
+            Map<String, Double> coords;
+            coords = OpenStreetMapUtils.getInstance().getCoordinates(shopEditForm.getAddressAddress() + " " + shopEditForm.getAddressCity());
+            shop.setLongitude(Double.toString(coords.get("lon")));
+            shop.setLatitude((Double.toString(coords.get("lat"))));
 
             Shop savedShop = shopService.updateShop(shop);
 
