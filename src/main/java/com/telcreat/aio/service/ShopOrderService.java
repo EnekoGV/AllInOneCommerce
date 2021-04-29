@@ -145,4 +145,14 @@ public class ShopOrderService {
         return tempShopOrder;
     }
 
+    //AM - findNotCanceledNotDeliveredShopOrderById
+    public ShopOrder findNotCanceledNotDeliveredShopOrderById(int shopOrderId){
+        ShopOrder tempShopOrder = null;
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatusNotOrShopOrderStatusNot(shopOrderId, ShopOrder.ShopOrderStatus.CANCELLED, ShopOrder.ShopOrderStatus.DELIVERED);
+        if (foundShopOrder.isPresent()){
+            tempShopOrder = foundShopOrder.get();
+        }
+        return tempShopOrder;
+    }
+
 }
