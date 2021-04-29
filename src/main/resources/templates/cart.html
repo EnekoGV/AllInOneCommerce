@@ -29,22 +29,22 @@
         <td><span th:text="${item.variant.item.shortDescription}"> Description </span></td>
         <td><span th:text="${item.variant.item.itemCategory.name}"> Category </span></td>
         <td><span th:text="${item.variant.item.price}"> Prize </span></td>
-        <form th:action="@{/cart/decrease}" method="post">
+        <td><form th:action="@{/cart/decrease}" method="post">
             <input type="hidden" id="variantId" name="variantId" th:value="${item.variant.id}">
             <input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
             <button type="submit">-1</button>
-        </form>
+        </form></td>
         <td><span th:text="${item.quantity}"> Quantity </span></td>
-        <form th:action="@{/cart/increase}" method="post">
+        <td><form th:action="@{/cart/increase}" method="post">
             <input type="hidden" id="variantId1" name="variantId" th:value="${item.variant.id}">
             <input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
             <button type="submit">+1</button>
-        </form>
-        <form th:action="@{/cart/delete}" method="post">
+        </form></td>
+        <td><form th:action="@{/cart/delete}" method="post">
             <input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
             <input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
             <button type="submit">x</button>
-        </form>
+        </form></td>
 
     </tr>
     </tbody>

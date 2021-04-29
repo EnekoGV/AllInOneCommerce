@@ -14,10 +14,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestScope
@@ -62,12 +59,13 @@ public class cartController {
 
             List<CartQuantity> cartVariantsAndQuantities = new ArrayList<>();
             ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            Collections.sort(uniqueVariantList);
             Variant tempVariant;
             int quantity;
-            CartQuantity cartQuantity = new CartQuantity();
 
-            for (Variant variant : uniqueVariantList) {
-                tempVariant = variant;
+            for (int i=0; i<uniqueVariantList.size(); i++) {
+                CartQuantity cartQuantity = new CartQuantity();
+                tempVariant = uniqueVariantList.get(i);
                 quantity = Collections.frequency(cart.getVariants(), tempVariant);
                 cartQuantity.setQuantity(quantity);
                 cartQuantity.setVariant(tempVariant);
