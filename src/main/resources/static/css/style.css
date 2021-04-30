@@ -140,7 +140,7 @@ hr.vr{
 }
 .fh5co-nav .menu-2 li input[type=text] {
   padding: 6px 10px;
-  width: 60%;
+  width: 76%;
   border: none;
   float: right;
   font-size: 13px;
@@ -881,7 +881,7 @@ hr.vr{
 }
 
 .product {
-  margin-top: 10px;
+  margin-top: 0px;
   margin-bottom: 10px;
 }
 .product .product-grid {
@@ -889,7 +889,7 @@ hr.vr{
   background-position: top center;
   background-repeat: no-repeat;
   position: relative;
-  height: 350px;
+  height: 350px; /* Cambiado de 350*/
   margin-bottom: 10px;
   -webkit-transition: 0.3s;
   -o-transition: 0.3s;

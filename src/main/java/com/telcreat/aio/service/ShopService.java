@@ -160,9 +160,9 @@ public class ShopService {
     private List<ShopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
         //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
-        ShopDistance shopDistance = new ShopDistance();
         List<ShopDistance> shopsDistances = new ArrayList<>();
         for (Shop shop:shops){
+            ShopDistance shopDistance = new ShopDistance();
             double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
             shopDistance.setShop(shop);
             shopDistance.setDistance(dist);

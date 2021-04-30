@@ -31,106 +31,122 @@
   <![endif]-->
 </head>
 <body>
-<header th:fragment="header">
-  <nav class="fh5co-nav" role="navigation">
-    <div class="container">
-      <div class="row">
+  <header th:fragment="header">
+      <nav class="fh5co-nav" role="navigation">
+          <div class="container">
+              <div class="row">
+                  <div class="col-md-3 col-xs-2">
+                      <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="45px"></img></a>
+                  </div>
+                  <div class="col-md-6 col-xs-6 text-center menu-2">
+                      <form th:action="@{/search}" method="get">
+                          <ul>
+                              <li class="search">
+                                  <div class="input-group">
+                                      <input type="text" placeholder="Bilatu..." name="search">
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                                      </span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <select name="categoryId" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Edozein</option>
+                                      <option th:each="category : ${categories}" th:text="${category.name}"
+                                              th:value="${category.id}"></option>
+                                  </select>
+                                  <select name="orderCriteriaId" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Distantzia</option>
+                                      <option value="1">Prezioa</option>
+                                  </select>
+                                  <select name="orderDirection" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Goranzkoa</option>
+                                      <option value="1">Beheranzkoa</option>
+                                  </select>
+                              </li>
+                          </ul>
+                      </form>
+                  </div>
 
-        <div class="col-md-3 col-xs-2">
-          <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="45px"></img></a>
-        </div>
+                  <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2">
+                      <ul>
+                          <li class="shopping-cart"><a href="#" class="cart"><span><small>0</small><i
+                                  class="icon-shopping-cart"></i></span></a></li>
+                          <li class="has-dropdown">
+                              <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
+                              <a th:if="${isLogged == false}" href="/auth">Log in</a>
+                              <ul class="dropdown">
+                                  <li><a th:if="${isOwner == false && isLogged == true}" href="/shop/create">Create
+                                      shop!</a></li>
+                                  <li><a th:if="${isOwner == true && isLogged == true}"
+                                         th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
+                              </ul>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </nav>
+  </header>
 
-        <div class="col-md-6 col-xs-6 text-center menu-2">
-          <ul>
-            <li class="search">
-                <form th:action="@{/search}" method="get" class="input-group">
-                  <input type="text" placeholder="Bilatu..." name="search">
-                  <input type="hidden" name="categoryId" th:value="${categoryId}">
-                  <input type="hidden" name="orderCriteriaId" th:value="${orderCriteriaId}">
-                  <input type="hidden" name="orderDirection" th:value="${orderDirection}">
-                  <span class="input-group-btn">
-                    <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
-                  </span>
-                </form>
-            </li>
-          </ul>
-        </div>
-
-        <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2">
-          <ul>
-            <li class="shopping-cart"><a href="#" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
-            <li class="has-dropdown">
-              <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
-              <a th:if="${isLogged == false}" href="/auth">Log in</a>
-              <ul class="dropdown">
-                <li><a th:if="${isOwner == false && isLogged == true}" href="/shop/create">Create shop!</a></li>
-                <li><a th:if="${isOwner == true && isLogged == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div>
-
+  <footer id="fh5co-footer" role="contentinfo" th:fragment="footer">
+      <div class="container">
+          <div class="row copyright" style="margin-bottom: 10px;">
+              <div class="col-md-6 col-md-offset-3 text-center">
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="#">Cookie-Politika</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="#">Pribatutasun-Politika</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="#">Kontaktua</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="row copyright">
+              <div class="col-md-12 text-center">
+                  <p>
+                      <small class="block">&copy; 2021 AllInOneCommerce. All Rights Reserved.</small>
+                      <small class="block">Designed by
+                        <a href="https://telcreat.com/" target="_blank">TelcreaT Company</a>
+                      </small>
+                  </p>
+              </div>
+          </div>
+          <div class="row copyright">
+              <div class="col-md-12 text-center">
+                  <a href="index.html">
+                    <img id="fh5co-logo" src="/images/logo.png" alt="logo" height="40px" style="opacity: 80%;"/>
+                  </a>
+              </div>
+          </div>
       </div>
-    </div>
-  </nav>
-</header>
+  </footer>
 
-<footer id="fh5co-footer" role="contentinfo" th:fragment="footer">
-  <div class="container">
-    <div class="row copyright" style="margin-bottom: 10px;">
-      <div class="col-md-6 col-md-offset-3 text-center">
-        <div class="col-md-4">
-          <ul class="fh5co-footer-links">
-            <li><a href="#">Cookie-Politika</a></li>
-          </ul>
-        </div>
-
-        <div class="col-md-4">
-          <ul class="fh5co-footer-links">
-            <li><a href="#">Pribatutasun-Politika</a></li>
-          </ul>
-        </div>
-
-        <div class="col-md-4">
-          <ul class="fh5co-footer-links">
-            <li><a href="#">Kontaktua</a></li>
-          </ul>
-        </div>
-      </div>
-    </div>
-    <div class="row copyright">
-      <div class="col-md-12 text-center">
-        <p>
-          <small class="block">&copy; 2021 AllInOneCommerce. All Rights Reserved.</small>
-          <small class="block">Designed by <a href="https://telcreat.com/" target="_blank">TelcreaT Company</a></small>
-        </p>
-
-      </div>
-    </div>
-    <div class="row copyright">
-      <div class="col-md-12 text-center">
-        <a href="index.html"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="40px" style="opacity: 80%;"></img></a>
-      </div>
-    </div>
+  <div class="gototop js-top" th:fragment="Up_Button">
+      <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
   </div>
-</footer>
 
-<div class="gototop js-top" th:fragment="Up_Button">
-  <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
-</div>
-
-<div th:fragment="final_scripts">
-  <!--Scripts - Some of them have to be in the body to improve rendering. Otherwise it can be blocking--->
-  <script src="/js/jquery.min.js"></script>				<!-- jQuery -->
-  <script src="/js/jquery.easing.1.3.js"></script> 		<!-- jQuery Easing -->
-  <script src="/js/bootstrap.min.js"></script> 			<!-- Bootstrap -->
-  <script src="/js/jquery.waypoints.min.js"></script> 	<!-- Waypoints -->
-  <script src="/js/owl.carousel.min.js"></script> 		<!-- Carousel -->
-  <script src="/js/jquery.countTo.js"></script> 			<!-- countTo -->
-  <script src="/js/jquery.flexslider-min.js"></script> 	<!-- Flexslider -->
-  <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script> <!-- Google Map -->
-  <script src="/js/google_map.js"></script>
-  <script src="/js/main.js"></script> 					<!-- Main -->
-</div>
+  <div th:fragment="final_scripts">
+      <!--Scripts - Some of them have to be in the body to improve rendering. Otherwise it can be blocking--->
+      <script src="/js/jquery.min.js"></script>                <!-- jQuery -->
+      <script src="/js/jquery.easing.1.3.js"></script>        <!-- jQuery Easing -->
+      <script src="/js/bootstrap.min.js"></script>            <!-- Bootstrap -->
+      <script src="/js/jquery.waypoints.min.js"></script>    <!-- Waypoints -->
+      <script src="/js/owl.carousel.min.js"></script>        <!-- Carousel -->
+      <script src="/js/jquery.countTo.js"></script>            <!-- countTo -->
+      <script src="/js/jquery.flexslider-min.js"></script>    <!-- Flexslider -->
+      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
+      <!-- Google Map -->
+      <script src="/js/google_map.js"></script>
+      <script src="/js/main.js"></script>                    <!-- Main -->
+  </div>
 </body>
 </html>
