@@ -67,7 +67,8 @@ public class viewController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
                              @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
-                             @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
+                             @RequestParam(name = "orderDirection", required = false, defaultValue = "0") Integer orderDirection,
+                             @RequestParam(name = "search", required = false, defaultValue = "") String search,
                              ModelMap modelMap) throws IOException, GeoIp2Exception {
 
         // DEFAULT INFORMATION IN ALL VIEWS
@@ -84,9 +85,14 @@ public class viewController {
         // modelMap.addAttribute("clientIP", request.getRemoteAddr());
         // FIND CLIENTS IP ADDRESS
 
+        modelMap.addAttribute("categoryId", categoryId);
+        modelMap.addAttribute("orderCriteriaId", orderCriteriaId);
+        modelMap.addAttribute("orderDirection", orderDirection);
+        modelMap.addAttribute("search", search);
+        modelMap.addAttribute("pageTitle", "AIO");
+
         // Item Search - Item List based on Category and Name search
-//        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId, "1.1.1.1"));
-//        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         return "index"; // Return Search search.html view
     }
@@ -113,12 +119,10 @@ public class viewController {
         modelMap.addAttribute("orderCriteriaId", orderCriteriaId);
         modelMap.addAttribute("orderDirection", orderDirection);
         modelMap.addAttribute("search", search);
-
+        modelMap.addAttribute("pageTitle", "Bilaketa");
 
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(search,  categoryId, orderCriteriaId, orderDirection, "1.1.1.1"));
         modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(search, categoryId, "1.1.1.1"));
-        //modelMap.addAttribute("itemSearch", itemService.findItemsByNameContains(itemName));
-        //modelMap.addAttribute("itemSearch", itemService.findItemsContainsName(itemName,categoryId));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
         return "search";
     }
