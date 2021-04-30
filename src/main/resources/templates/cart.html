@@ -57,7 +57,7 @@
 					</div>
 					<div class="row animate-box">
 						<div class="col-md-8 text-right">
-							<form th:action="@{/cart/order}" method="post">
+							<form th:action="@{/cart/createOrder}" method="post">
 								<input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
 								<input type="hidden" id="cart" name="cart" th:value="${loggedCartId}">
 								<button type="submit" class="btn btn-primary btn-outline btn-sm" style="margin-top: -80px;">Ordaindu</button>

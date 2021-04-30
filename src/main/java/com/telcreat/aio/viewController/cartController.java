@@ -147,7 +147,7 @@ public class cartController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.POST)
+    @RequestMapping(value = "/cart/createOrder", method = RequestMethod.POST)
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
         Cart cart = cartService.findCartById(cartId);
