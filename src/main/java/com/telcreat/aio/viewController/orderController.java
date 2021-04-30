@@ -100,6 +100,11 @@ public class orderController {
             shopOrder.setShopOrderStatus(updateStatus);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
             if (savedShopOrder != null){
+
+                // Send notification email
+                SendEmail sendEmail = new SendEmail();
+                sendEmail.sendOrderStatusUpdateNotificationToUser(savedShopOrder);
+
                 return "redirect:/order?orderId=" + shopOrder.getId();
             }
             else{
