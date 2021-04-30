@@ -153,8 +153,21 @@ public class shopController {
 
             Map<String, Double> coords;
             coords = OpenStreetMapUtils.getInstance().getCoordinates(shopEditForm.getAddressAddress() + " " + shopEditForm.getAddressCity());
-            shop.setLongitude(Double.toString(coords.get("lon")));
-            shop.setLatitude((Double.toString(coords.get("lat"))));
+            if (coords.get("lon") != null || coords.get("lat") != null){
+                shop.setLongitude(Double.toString(coords.get("lon")));
+                shop.setLatitude((Double.toString(coords.get("lat"))));
+            }
+            else{
+                shop.setLongitude("0.00");
+                shop.setLatitude("0.00");
+                shop.setAddressAddress("");
+                shop.setAddressCity("");
+                shop.setAddressPostNumber("");
+                shop.setAddressCountry("");
+                Shop savedShop = shopService.updateShop(shop);
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&edit=true&addressError=true";
+            }
+
 
             Shop savedShop = shopService.updateShop(shop);
 
