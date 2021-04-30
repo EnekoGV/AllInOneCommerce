@@ -26,7 +26,7 @@ public class SendEmail {
 
     public void sendOrderCancelledNotification(ShopOrder shopOrder){
         String subject = "Order " + shopOrder.getId() + " has been cancelled.";
-        String part1 = "We would like to inform you that order with ID:" + shopOrder.getId() + " has been cancelled";
+        String part1 = "We would like to inform you that order with ID: " + shopOrder.getId() + " has been cancelled";
         String part2_user = "\nPlease check your other order status here: http://localhost:8080/user/myOrders?userId=" + shopOrder.getUser().getId();
         String part2_owner = "\nPlease check your other order status here: http://localhost:8080/shop/myOrders?shopId=" + shopOrder.getShop().getId();
 
@@ -37,7 +37,17 @@ public class SendEmail {
         ownerThread.start();
     }
 
-    public void sendNewOrderNotificationToOwner(String email, ShopOrder shopOrder){
+    public void sendOrderStatusUpdateNotificationToUser(ShopOrder shopOrder){
+        String subject = "Order status updated.";
+        String part1 = "We would like to inform you that the status of the order with ID: " + shopOrder.getId() + " has been updated to " + shopOrder.getShopOrderStatus().name();
+        String part2 = "\nPlease check your other order status here: http://localhost:8080/user/myOrders?userId=" + shopOrder.getUser().getId();
+        String messageText = part1 + part2;
+
+        Thread thread = new Thread(new EmailSenderThread(shopOrder.getShop().getOwner().getEmail(), subject, messageText));
+        thread.start();
+    }
+
+    public void sendNewOrderNotificationToOwner(ShopOrder shopOrder){
         String subject = "You received a new Order";
         String part1 = "You received a new order from " + shopOrder.getUser().getName();
         String part2 = "\nClick here to check the new order: http://localhost:8080/shop/myOrders?shopId=" + shopOrder.getShop().getId();
