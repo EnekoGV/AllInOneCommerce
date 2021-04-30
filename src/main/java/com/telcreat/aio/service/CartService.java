@@ -6,6 +6,7 @@ import com.telcreat.aio.repo.CartRepo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -78,27 +79,23 @@ public class CartService {
         //AM - addToCart ---> Returns the Cart object updated.
     public Cart addToCart(Cart cart, Variant variant){
         List<Variant> variants = cart.getVariants();
-        if(checkStock(variant)){
+        int quantity = Collections.frequency(cart.getVariants(),variant);
+        if(quantity < variant.getStock()){
             variants.add(variant);
         }
         cart.setVariants(variants);
+        updateCart(cart);
         return cart;
     }
 
-        //AM - checkStock ---> Returns TRUE if there is enough stock for a concrete variant and FALSE if not.
-    public boolean checkStock(Variant variant){
-        return variant.getStock() > 0;
-    }
 
-        //AM - checkOutCart ---> Returns TRUE if there is enough stock in all variants and FALSE if not.
-    public boolean checkOutCart(Cart cart){
-        boolean control = true;
-        List<Variant> variants = cart.getVariants();
-        for(Variant variant:variants){
-            if(!checkStock(variant)){
-                control = false;
-            }
+       //AM - findCartByUserId ---> Returns the found cart by the related user Id
+    public Cart findCartByUserId(int userId){
+        Cart cart = null;
+        Optional<Cart> foundCart = cartRepo.findCartByUserId(userId);
+        if(foundCart.isPresent()){
+            cart = foundCart.get();
         }
-        return control;
+        return cart;
     }
 }

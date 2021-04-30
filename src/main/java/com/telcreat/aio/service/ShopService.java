@@ -137,7 +137,7 @@ public class ShopService {
 
         // AM - orderedShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user
         // and ordered base on the distance.
-    public List<ShopDistance> orderedShopByItemContainsName(String searchName, String ip, int itemCategoryId) throws IOException, GeoIp2Exception {
+    public List<ShopDistance> orderedShopByItemContainsName(String searchName, int itemCategoryId, String ip) throws IOException, GeoIp2Exception {
         List<Shop> shops = findShopsByItemContainsName(searchName, itemCategoryId);
         List<ShopDistance> orderShops = getShopDistance(shops,ip);
         orderShops.sort(Comparator.comparing(ShopDistance::getDistance));
@@ -149,26 +149,20 @@ public class ShopService {
         List<Item> items = itemService.findItemsContainsName(serchName, itemCategoryId);
         List<Shop> shops = new ArrayList<>();
         for(Item item:items) {
-            if (!shops.contains(item.getShop())) {
+            if (!shops.contains(item.getShop()) && item.getShop().getStatus()==Shop.Status.ACTIVE) {
                 shops.add(item.getShop());
             }
         }
         return shops;
     }
 
-        // AM - orderShops ---> Returns a list of Shops ordered based on the distance.
-    /*private List<shopDistance> orderShops(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
-        List<shopDistance> orderShops = getShopDistance(shops,ip);
-        orderShops.sort(Comparator.comparing(shopDistance::getDistance));
-        return orderShops;
-    }*/
-
+        // AM - getShopDistance ---> Returns a list of shopDistance with object and its distance.
     private List<ShopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
         //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
-        ShopDistance shopDistance = new ShopDistance();
         List<ShopDistance> shopsDistances = new ArrayList<>();
         for (Shop shop:shops){
+            ShopDistance shopDistance = new ShopDistance();
             double dist = locationService.distance(parseDouble(location.getLatitude()), parseDouble(location.getLongitude()), parseDouble(shop.getLatitude()), parseDouble(shop.getLongitude()));
             shopDistance.setShop(shop);
             shopDistance.setDistance(dist);

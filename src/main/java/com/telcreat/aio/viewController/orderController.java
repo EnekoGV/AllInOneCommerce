@@ -89,6 +89,51 @@ public class orderController {
         }
     }
 
+    // Change Shop Order status
+    @RequestMapping(value = "/order/edit/changeStatus", method = RequestMethod.POST)
+    public String changeOrderStatus(@RequestParam(name = "updateStatus") ShopOrder.ShopOrderStatus updateStatus,
+                                    @RequestParam(name = "orderId") int orderId,
+                                    ModelMap modelMap){
+        ShopOrder shopOrder = shopOrderService.findNotCanceledNotDeliveredShopOrderById(orderId);
+
+        if (isLogged && shopOrder != null && loggedId == shopOrder.getShop().getOwner().getId()){
+            shopOrder.setShopOrderStatus(updateStatus);
+            ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+            if (savedShopOrder != null){
+                return "redirect:/order?orderId=" + shopOrder.getId();
+            }
+            else{
+                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    // Cancel Shop Order (Owner or Client can Cancel the Shop Order)
+    @RequestMapping(value = "/order/edit/cancel", method = RequestMethod.POST)
+    public String cancelOrder(@RequestParam(name = "orderId") int orderId,
+                              ModelMap modelMap){
+
+        ShopOrder shopOrder = shopOrderService.findPendingShopOrderById(orderId); // Can only be cancelled when it's PENDING
+
+        if (isLogged && shopOrder != null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
+            shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
+            ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+            if (savedShopOrder != null){
+                return "redirect:/order?orderId=" + shopOrder.getId();
+            }
+            else{
+                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+            }
+        }
+        else{
+            return "redirect:/notAllowed";
+        }
+    }
+
+
 
 
 }

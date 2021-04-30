@@ -173,6 +173,17 @@
                                     <input type="submit" value="Produktua igo" class="btn btn-primary">
                                 </div>
                             </form>
+                            <form th:action="@{/item/edit/uploadPicture}" method="post" enctype="multipart/form-data">
+                                <div class="row">
+                                    <div class="col-md-6" style="margin-top: 15px;">
+                                        <input type="hidden" name="itemId" th:value="${itemForm.id}">
+                                        <input type="file" name="itemPicture" accept=".jpg, .jpeg, .png" class="btn btn-group-xs">
+                                    </div>
+                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
                 </div>

@@ -15,6 +15,8 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @Controller
@@ -27,6 +29,7 @@ public class userController {
     private final VerificationTokenService verificationTokenService;
     private final FileUploaderService fileUploaderService;
     private final ShopService shopService;
+    private final ShopOrderService shopOrderService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -35,12 +38,13 @@ public class userController {
     private boolean isOwner;
 
     @Autowired
-    public userController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
+    public userController(CartService cartService, ItemService itemService, PictureService pictureService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request, ShopOrderService shopOrderService) {
         this.pictureService = pictureService;
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.fileUploaderService = fileUploaderService;
         this.shopService = shopService;
+        this.shopOrderService = shopOrderService;
 
         loggedUser = userService.getLoggedUser();
         if (loggedUser != null){
@@ -207,13 +211,40 @@ public class userController {
             loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword)); // Encode new password
             User savedUser = userService.updateUser(loggedUser); // Update user information in DB
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser); // Create verification code pair
-            emailSender.send(savedUser.getEmail(), verificationToken); // Send verification email
+            emailSender.sendVerification(savedUser.getEmail(), verificationToken); // Send verification email
             modelMap.clear(); // Clear view
             return "redirect:/auth/verification?token=" + verificationToken.getToken(); // Redirect to verification page
         }
         else{
             //noinspection SpringMVCViewInspection
             return "redirect:/user/changePassword?userId=" + userId + "&updateError=true"; // Return to password change page
+        }
+    }
+
+    // List User's order list
+    @RequestMapping(value = "/user/myOrders", method = RequestMethod.GET)
+    public String viewUserOrders(@RequestParam(name = "userId") int userId,
+                                 ModelMap modelMap){
+
+        if (isLogged && loggedId == userId){
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
+            List<ShopOrder> shopOrders = shopOrderService.findShopOrdersByUserId(userId);
+            Collections.reverse(shopOrders);
+            modelMap.addAttribute("orderList", shopOrders);
+
+            return "userOrders";
+        }
+        else{
+            return "redirect:/?notAllowed";
         }
 
     }
