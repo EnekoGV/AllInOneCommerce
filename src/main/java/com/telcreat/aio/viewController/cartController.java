@@ -1,10 +1,7 @@
 package com.telcreat.aio.viewController;
 
 import com.telcreat.aio.model.*;
-import com.telcreat.aio.service.CartService;
-import com.telcreat.aio.service.ShopOrderService;
-import com.telcreat.aio.service.UserService;
-import com.telcreat.aio.service.VariantService;
+import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
@@ -14,10 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.context.annotation.RequestScope;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Controller
 @RequestScope
@@ -25,26 +19,32 @@ public class cartController {
     private final CartService cartService;
     private final ShopOrderService shopOrderService;
     private final VariantService variantService;
+    private final ShopService shopService;
 
-    private final User loggedUser;
+    private User loggedUser;
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
+    private boolean isOwner = false;
     private int loggedCartId;
 
     @Autowired
-    public cartController(CartService cartService, ShopOrderService shopOrderService, UserService userService, VariantService variantService) {
+    public cartController(CartService cartService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, ShopService shopService) {
         this.cartService = cartService;
 
         this.loggedUser = userService.getLoggedUser();
         this.shopOrderService = shopOrderService;
         this.variantService = variantService;
-        if (this.loggedUser != null){
+        loggedUser = userService.getLoggedUser();
+        this.shopService = shopService;
+        if (loggedUser != null){
+            loggedCartId = cartService.findCartByUserId(loggedUser.getId()).getId();
             isLogged = true;
             loggedId = loggedUser.getId();
             loggedRole = loggedUser.getUserRole();
-            if (loggedRole == User.UserRole.OWNER)
-                loggedCartId = this.cartService.findCartByUserId(loggedUser.getId()).getId();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
         }
     }
 
@@ -58,21 +58,32 @@ public class cartController {
             modelMap.addAttribute("isLogged", isLogged);
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedCartId", loggedCartId);
+            modelMap.addAttribute("isOwner", isOwner);
+            Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
+            if (loggedShop != null){
+                modelMap.addAttribute("loggedShopId", loggedShop.getId());
+            }
+            modelMap.addAttribute("loggedCartId",loggedCartId);
 
             List<CartQuantity> cartVariantsAndQuantities = new ArrayList<>();
             ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            Collections.sort(uniqueVariantList);
             Variant tempVariant;
             int quantity;
-            CartQuantity cartQuantity = new CartQuantity();
 
-            for (Variant variant : uniqueVariantList) {
-                tempVariant = variant;
+            for (int i=0; i<uniqueVariantList.size(); i++) {
+                CartQuantity cartQuantity = new CartQuantity();
+                tempVariant = uniqueVariantList.get(i);
                 quantity = Collections.frequency(cart.getVariants(), tempVariant);
                 cartQuantity.setQuantity(quantity);
                 cartQuantity.setVariant(tempVariant);
                 cartVariantsAndQuantities.add(cartQuantity);
             }
+            int totalPrice = 0;
+            for(int i=0 ;i<cartVariantsAndQuantities.size(); i++){
+                totalPrice += cartVariantsAndQuantities.get(i).getVariant().getItem().getPrice() * cartVariantsAndQuantities.get(i).getQuantity();
+            }
+            modelMap.addAttribute("totalPrice", totalPrice);
            modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
 
             return "cart";
@@ -126,13 +137,12 @@ public class cartController {
     @RequestMapping(value = "/cart/addToCart", method = RequestMethod.POST)
     public String addToCart(@RequestParam(name = "cartId")int cartId,
                             @RequestParam(name = "variantId")int variantId,
-                            @RequestParam(name = "userId")int userId,
                             ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
         Variant variant = variantService.findActiveVariantById(variantId);
-        if(variant != null && cart != null && cart.getUser().getId() == userId){
+        if(variant != null && cart != null && cart.getUser().getId() == loggedId){
             cartService.addToCart(cart,variant);
-            return "redirect:/cart?userId="+userId;
+            return "redirect:/cart?userId="+loggedId;
         }else
             return "redirect:/";
     }
@@ -143,15 +153,17 @@ public class cartController {
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == userId && loggedId == userId && cart.getVariants().size() != 0){
             List<ShopOrder> shopOrders= shopOrderService.createShopOrderFromCart(cart);
-            if(shopOrders == null)
-                return "redirect:/";
-            else {
+            if(shopOrders == null) {
+                cart.setVariants(new ArrayList<>());
+                cartService.updateCart(cart);
+                return "redirect:/?NotEnoughStock";
+            }else {
                 cart.setVariants(new ArrayList<>());
                 cartService.updateCart(cart);
                 return "redirect:/cart?userId=" + userId;
             }
         }else
-            return "redirect:/";
+            return "redirect:/?notAllowed";
     }
 
     @RequestMapping(value = "/cart/order", method = RequestMethod.GET)

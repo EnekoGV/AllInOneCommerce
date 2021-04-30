@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.aspectj.weaver.ast.Var;
 
 import javax.persistence.*;
 
@@ -12,7 +13,7 @@ import javax.persistence.*;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class Variant {
+public class Variant implements Comparable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -23,6 +24,12 @@ public class Variant {
 
     @OneToOne
     private Picture picture;
+
+    @Override
+    public int compareTo(Object o) {
+        Variant otro = (Variant) o;
+        return name.compareTo(otro.getName());
+    }
 
     public enum Status{
         ACTIVE,

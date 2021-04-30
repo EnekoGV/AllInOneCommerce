@@ -15,6 +15,8 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.Collections;
+import java.util.List;
 
 @Data
 @Controller
@@ -235,8 +237,9 @@ public class userController {
             if (shop != null){
                 modelMap.addAttribute("loggedShopId",shop.getId());
             }
-
-            modelMap.addAttribute("orderList", shopOrderService.findShopOrdersByUserId(userId));
+            List<ShopOrder> shopOrders = shopOrderService.findShopOrdersByUserId(userId);
+            Collections.reverse(shopOrders);
+            modelMap.addAttribute("orderList", shopOrders);
 
             return "userOrders";
         }
