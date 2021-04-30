@@ -166,23 +166,4 @@ public class cartController {
             return "redirect:/?notAllowed";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.GET)
-    public String viewOrders(@RequestParam(name = "userId")int userId,
-                             ModelMap modelMap){
-        List<ShopOrder> shopOrders = shopOrderService.findShopOrdersByUserId(userId);
-        if (shopOrders != null && isLogged && loggedId == userId){
-
-            // DEFAULT INFORMATION IN ALL VIEWS
-            modelMap.addAttribute("isLogged", isLogged);
-            modelMap.addAttribute("loggedUserId", loggedId);
-            modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedCartId", loggedCartId);
-
-            modelMap.addAttribute("ordersList", shopOrders);
-            return "orders";
-        }else{
-            return "redirect:/";
-        }
-
-    }
 }
