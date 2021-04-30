@@ -43,7 +43,7 @@ public class SendEmail {
         String part2 = "\nClick here to check the new order: http://localhost:8080/shop/myOrders?shopId=" + shopOrder.getShop().getId();
         String messageText = part1 + part2;
 
-        Thread thread = new Thread(new EmailSenderThread(email, subject, messageText));
+        Thread thread = new Thread(new EmailSenderThread(shopOrder.getShop().getOwner().getEmail(), subject, messageText));
         thread.start();
     }
 }
