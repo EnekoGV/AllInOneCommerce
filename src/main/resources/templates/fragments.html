@@ -70,16 +70,15 @@
 
                   <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2">
                       <ul>
-                          <li class="shopping-cart"><a href="#" class="cart"><span><small>0</small><i
-                                  class="icon-shopping-cart"></i></span></a></li>
+                          <li class="shopping-cart"><a th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
                           <li class="has-dropdown">
                               <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
                               <a th:if="${isLogged == false}" href="/auth">Log in</a>
                               <ul class="dropdown">
-                                  <li><a th:if="${isOwner == false && isLogged == true}" href="/shop/create">Create
-                                      shop!</a></li>
-                                  <li><a th:if="${isOwner == true && isLogged == true}"
-                                         th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
+                                  <li><a th:if="${isLogged == true}" th:href="@{/user/myOrders(userId=${loggedUserId})}">My orders</a></li>
+                                  <li><a th:if="${isOwner == false && isLogged == true}" href="/shop/create">Create shop!</a></li>
+                                  <li><a th:if="${isOwner == true && isLogged == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
+                                  <li><a th:if="${isLogged == true}" href="/logout">Logout</a></li>
                               </ul>
                           </li>
                       </ul>
