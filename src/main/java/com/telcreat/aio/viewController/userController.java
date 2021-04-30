@@ -211,7 +211,7 @@ public class userController {
             loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword)); // Encode new password
             User savedUser = userService.updateUser(loggedUser); // Update user information in DB
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser); // Create verification code pair
-            emailSender.send(savedUser.getEmail(), verificationToken); // Send verification email
+            emailSender.sendVerification(savedUser.getEmail(), verificationToken); // Send verification email
             modelMap.clear(); // Clear view
             return "redirect:/auth/verification?token=" + verificationToken.getToken(); // Redirect to verification page
         }
