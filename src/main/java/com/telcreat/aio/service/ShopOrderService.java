@@ -128,6 +128,10 @@ public class ShopOrderService {
                 tempShopOrder.setPrice(orderPrice); // Set order price
                 tempShopOrder.setVariants(shopVariantList); // Set shop order's variant list
                 shopOrders.add(tempShopOrder); // Add to order list
+
+                // Send verification emails to Shop Owners
+                SendEmail sendEmail = new SendEmail();
+                sendEmail.sendNewOrderNotificationToOwner(tempShopOrder.getShop().getOwner().getEmail(), tempShopOrder);
             }
             variantRepo.saveAll(updateVariantList); // Update Variant Stock in DB. Check if this method is possible.
             shopOrderRepo.saveAll(shopOrders); // Create an order for each shop from the Cart.
