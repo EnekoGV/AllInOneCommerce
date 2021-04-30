@@ -160,7 +160,7 @@ public class cartController {
             }else {
                 cart.setVariants(new ArrayList<>());
                 cartService.updateCart(cart);
-                return "redirect:/cart?userId=" + userId;
+                return "redirect:/user/myOrders?userId=" + userId;
             }
         }else
             return "redirect:/?notAllowed";
