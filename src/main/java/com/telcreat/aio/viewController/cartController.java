@@ -87,7 +87,7 @@ public class cartController {
 
             return "cart";
         }else{
-            return "redirect:/";
+            return "redirect:/auth";
         }
     }
 
