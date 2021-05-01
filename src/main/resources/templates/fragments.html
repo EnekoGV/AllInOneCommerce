@@ -79,11 +79,11 @@
                           <li class="has-dropdown">
                               <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profile</a>
                               <a th:if="${isLogged == false}" href="/auth">Log in</a>
-                              <ul class="dropdown">
-                                  <li><a th:if="${isLogged == true}" th:href="@{/user/myOrders(userId=${loggedUserId})}">My orders</a></li>
-                                  <li><a th:if="${isOwner == false && isLogged == true}" href="/shop/create">Create shop!</a></li>
-                                  <li><a th:if="${isOwner == true && isLogged == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
-                                  <li><a th:if="${isLogged == true}" href="/logout">Logout</a></li>
+                              <ul th:if="${isLogged == true}" class="dropdown">
+                                  <li><a th:href="@{/user/myOrders(userId=${loggedUserId})}">My orders</a></li>
+                                  <li><a th:if="${isOwner == false}" href="/shop/create">Create shop!</a></li>
+                                  <li><a th:if="${isOwner == true}" th:href="@{/shop(shopId=${loggedShopId})}">Go to my shop!</a></li>
+                                  <li><a href="/logout">Logout</a></li>
                               </ul>
                           </li>
                       </ul>

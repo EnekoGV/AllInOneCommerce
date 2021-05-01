@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @RequestScope
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class itemController {
 
     private final ItemService itemService;

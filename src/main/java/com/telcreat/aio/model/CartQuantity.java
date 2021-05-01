@@ -13,5 +13,4 @@ import java.util.List;
 public class CartQuantity {
     private Variant variant;
     private int quantity;
-    private List<Integer> selectQuantity = new ArrayList<>();
 }

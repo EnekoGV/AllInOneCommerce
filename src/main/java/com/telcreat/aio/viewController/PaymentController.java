@@ -27,7 +27,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 @Controller
 @RequestScope
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class PaymentController {
 
     public static final String PAYPAL_SUCCESS_URL = "/payment/success";

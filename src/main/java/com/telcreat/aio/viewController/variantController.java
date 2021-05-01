@@ -16,7 +16,7 @@ import org.springframework.web.multipart.MultipartFile;
 @Data
 @RequestScope
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class variantController {
 
     private final ItemService itemService;

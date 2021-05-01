@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @Controller
 @RequestScope
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class userController {
 
 

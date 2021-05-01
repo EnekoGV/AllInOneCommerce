@@ -12,12 +12,13 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.List;
 
 
 @Data
 @RequestScope
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class viewController {
 
     private final CartService cartService;
@@ -69,6 +70,11 @@ public class viewController {
         return new SearchForm();
     }
 
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
     // Search View
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
@@ -98,7 +104,7 @@ public class viewController {
         modelMap.addAttribute("pageTitle", "AIO");
 
         // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         return "index"; // Return Search search.html view
     }
@@ -126,7 +132,7 @@ public class viewController {
 
         modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(searchForm.getSearch(),  searchForm.getCategoryId(), searchForm.getOrderCriteriaId(), searchForm.getOrderDirection(), "1.1.1.1"));
         modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(searchForm.getSearch(), searchForm.getCategoryId(), "1.1.1.1"));
-        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
         return "search";
     }
 
@@ -138,7 +144,7 @@ public class viewController {
         modelMap.addAttribute("loggedUserId", loggedId);
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
-        modelMap.addAttribute("categories", categoryService.findAllCategories());
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
         modelMap.addAttribute("pageTitle", "CookiePolitika");
 
         return "cookie-politika";
@@ -152,7 +158,7 @@ public class viewController {
         modelMap.addAttribute("loggedUserId", loggedId);
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
-        modelMap.addAttribute("categories", categoryService.findAllCategories());
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
         modelMap.addAttribute("pageTitle", "PribatutasunPolitika");
 
         return "pribatutasun-politika";

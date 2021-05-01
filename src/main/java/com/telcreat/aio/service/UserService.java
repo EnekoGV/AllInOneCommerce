@@ -73,7 +73,8 @@ public class UserService implements UserDetailsService {
     //BM - updateUser ---> Returns updated user if ok or null if not found
     public User updateUser(User user){
         User userTemp = null;
-        if(userRepo.existsById(user.getId()))
+        Optional<User> foundUser = userRepo.findUserByEmail(user.getEmail());
+        if(userRepo.existsById(user.getId()) && foundUser.isPresent() && foundUser.get().getId() == user.getId())
             userTemp = userRepo.save(user);
         return userTemp;
     }
