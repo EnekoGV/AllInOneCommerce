@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class authController {
 
     private final UserService userService;

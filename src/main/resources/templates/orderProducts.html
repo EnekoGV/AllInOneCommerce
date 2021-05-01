@@ -9,69 +9,36 @@
         <div class="container">
             <div class="row animate-box">
                 <div class="col-md-7 text-right fh5co-heading">
-                    <h2>PEDIDO: 1837921</h2>
+                    <h2 th:text="'ESKARIA: ' + ${order.id}"></h2>
                 </div>
-                <div class="col-md-3 text-right">
-                    <select name="estadoId" class="btn" style="font-size: 16px;">
-                        <option value="Pendiente">Pendiente</option>
-                        <option value="Pagado">Pagado</option>
-                        <option value="Otro">Otro</option>
-                    </select>
-                </div>
-                <div class="col-md-2">
-                    <button class="btn">Cambiar estado</button>
-                </div>
+                <form th:action="@{/order/edit/changeStatus}" method="post">
+                    <div class="col-md-3 text-right">
+                        <input type="hidden" name="orderId" th:value="${order.id}">
+                        <select name="updateStatus" class="btn" style="font-size: 16px;">
+                            <option th:each="statusOpt : ${T(com.telcreat.aio.model.ShopOrder.ShopOrderStatus).values}" th:value="${statusOpt}" th:text="${statusOpt}"></option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn">Egoera aldatu</button>
+                    </div>
+                </form>
             </div>
-            <div class="row product">
+            <div th:each="variant : ${order.variants}" class="row product">
                 <div class="col-md-2 col-md-offset-2 animate-box">
-                    <div class="product-grid3 sale" style="background-image:url(images/product-2.jpg);">
+                    <div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.picture.path} + ');'">
 						<span class="sale">
-							<span class="girau">Estado</span>
+							<span th:text="${order.shopOrderStatus.name()}" class="girau"></span>
 						</span>
                     </div>
                 </div>
                 <div class="col-md-4 text-left animate-box">
                     <div class="desc">
-                        <h3><a href="single.html">Jordan 1 Retro High OG Hyper Royal</a></h3>
-                        <p style="margin-bottom: 0%;">Talla: 42.5, Color: Royal Blue&White</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2021</p>
+                        <h3><a th:href="@{/item(itemId=${variant.item.id})}" th:text="${variant.item.name}"></a></h3>
+                        <p th:text="${variant.name}" style="margin-bottom: 0%;"></p>
+                        <p th:text="'Eskariaren data: ' + ${order.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
                     </div>
                 </div>
-            </div>
-            <br>
-            <div class="row product">
-                <div class="col-md-2 col-md-offset-2 animate-box">
-                    <div class="product-grid3 sale" style="background-image:url(images/product-2.jpg);">
-						<span class="sale">
-							<span class="girau">Estado</span>
-						</span>
-                    </div>
-                </div>
-                <div class="col-md-4 text-left animate-box">
-                    <div class="desc">
-                        <h3><a href="single.html">Jordan 1 Retro High OG Hyper Royal</a></h3>
-                        <p style="margin-bottom: 0%;">Talla: 42.5, Color: Royal Blue&White</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2021</p>
-                    </div>
-                </div>
-
-            </div>
-            <br>
-            <div class="row product">
-                <div class="col-md-2 col-md-offset-2 animate-box">
-                    <div class="product-grid3 sale" style="background-image:url(images/product-2.jpg);">
-						<span class="sale">
-							<span class="girau">Estado</span>
-						</span>
-                    </div>
-                </div>
-                <div class="col-md-4 text-left animate-box">
-                    <div class="desc">
-                        <h3><a href="single.html">Jordan 1 Retro High OG Hyper Royal</a></h3>
-                        <p style="margin-bottom: 0%;">Talla: 42.5, Color: Royal Blue&White</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2021</p>
-                    </div>
-                </div>
+                <br>
             </div>
         </div>
     </div>

@@ -5,7 +5,7 @@
 <div class="fh5co-loader"></div>
 <div id="page">
     <div th:replace="fragments :: header"/>
-	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${item.shop.backgroundPicture} + ');'">
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${item.shop.backgroundPicture.path} + ');'">
 		<div class="overlay"></div>
 		<div class="container">
 			<div class="row">

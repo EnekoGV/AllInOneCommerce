@@ -28,7 +28,7 @@
 										<input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
 										<button type="submit" >Update Quantity</button>
 										<select name="quantity" class="btn btn-primary btn-outline btn-lg">
-											<option th:each="quant : ${item.selectQuantity}" th:text="${quant.toString()}"
+											<option th:each="quant : ${#numbers.sequence(1, item.variant.stock)}" th:text="${quant.toString()}"
 													th:value="${quant}" th:selected="${quant==item.quantity}"></option>
 										</select>
 									</form>
@@ -53,7 +53,7 @@
 							<form th:action="@{/cart/createOrder}" method="post">
 								<input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
 								<input type="hidden" id="cart" name="cart" th:value="${loggedCartId}">
-								<button type="submit" class="btn btn-primary btn-outline btn-sm" style="margin-top: -80px;">Ordaindu</button>
+								<button type="submit" class="btn btn-primary btn-outline btn-sm" style="margin-top: -80px;">Eskariak sortu!</button>
 							</form>
 						</div>
 					</div>

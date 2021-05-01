@@ -15,7 +15,7 @@ import java.util.Map;
 @Data
 @Controller
 @RequestScope
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class shopController {
 
     private final ItemService itemService;
