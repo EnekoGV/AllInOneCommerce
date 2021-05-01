@@ -85,9 +85,9 @@ public class orderController {
             // View Order - ShopOrder List based on orderId
             modelMap.addAttribute("order", shopOrder);
 
-            return "order"; // Return order to order.html view
+            return "orderProducts"; // Return order to order.html view
         }else{
-            return "redirect:/?orderVisualizationsRequiredCondiotionsFailed"; //In case any of the conditions required fails
+            return "redirect:/?notAllowed"; //In case any of the conditions required fails
         }
     }
 
@@ -110,6 +110,7 @@ public class orderController {
                 return "redirect:/order?orderId=" + shopOrder.getId();
             }
             else{
+                //noinspection SpringMVCViewInspection
                 return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
             }
         }
