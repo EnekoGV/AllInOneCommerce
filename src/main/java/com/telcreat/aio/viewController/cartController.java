@@ -12,7 +12,7 @@ import java.util.*;
 
 @Controller
 @RequestScope
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 
 public class cartController {
     private final CartService cartService;

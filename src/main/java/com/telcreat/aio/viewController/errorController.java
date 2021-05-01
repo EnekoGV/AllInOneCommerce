@@ -10,7 +10,7 @@ import javax.servlet.RequestDispatcher;
 import javax.servlet.http.HttpServletRequest;
 
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class errorController implements ErrorController {
 
     @RequestMapping("/error")

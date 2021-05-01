@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @Data
 @RequestScope
 @Controller
-@SessionAttributes("searchForm")
+@SessionAttributes({"searchForm", "categories"})
 public class orderController {
 
     private final CartService cartService;
