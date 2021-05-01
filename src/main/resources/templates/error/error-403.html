@@ -1,11 +1,16 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>ERROR 403</title>
-</head>
-<body>
-<h1>Access Forbidden</h1>
-
-</body>
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: HTML_head" />
+    <body>
+        <div class="fh5co-loader"></div>
+        <div id="page">
+            <div th:replace="fragments :: header"/>
+            <div class="col-md-8 col-md-offset-2" style="margin-bottom: 300px">
+                <h1>403: Access Forbidden</h1>
+            </div>
+            <div th:replace="fragments :: footer"/>
+        </div>
+        <div th:replace="fragments :: Up_Button"/>
+        <div th:replace="fragments :: final_scripts"/>
+    </body>
 </html>
