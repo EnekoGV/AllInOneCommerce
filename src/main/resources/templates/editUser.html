@@ -8,123 +8,110 @@
 			<div id="fh5co-about">
 				<div class="container">
 					<div class="row animate-box">
-						<div class="col-md-6 text-right fh5co-heading">
-							<h2>Perfil</h2>
-						</div>
-						<div class="col-md-6 text-right fh5co-heading">
-							<form th:action="@{/user}" method="get">
-								<input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
-								<input type="hidden" id="edit" name="edit" th:value="${!edit}">
-								<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
-								<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
-							</form>
-						</div>
-					</div>
-					<div class="row">
-						<div class="col-md-6 col-sm-6 animate-box" data-animate-effect="fadeIn">
+						<div class="col-md-6 col-md-offset-3 animate-box" data-animate-effect="fadeIn">
 							<div class="fh5co-staff">
 								<img th:src="${userAvatar}" alt="perfilphoto" style="object-fit: cover;" class="shopimg">
 								<form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
 									<input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">
-									<input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png" class="form-control">
-									<button type="submit">Update image!</button>
+									<div class="row">
+										<div class="col-md-8">
+											<input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png" class="btn btn-sm">
+										</div>
+										<div class="col-md-4">
+											<button type="submit" class="btn btn-group-xs">Irudia aldatu</button>
+										</div>
+									</div>
 								</form>
 								<h3 th:text="${userForm.name}"></h3>
 								<strong class="role">Nombre Tienda</strong>
 							</div>
 						</div>
-						<div class="col-md-6 animate-box">
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-md-offset-3 animate-box">
 							<form th:action="@{/user}" th:object="${userForm}" method="post">
 							<div class="row form-group">
 									<div class="col-md-6">
-										<label>First Name
+										<label>First Name</label>
 										<input type="hidden" th:field="*{id}" th:value="${userForm.id}">
-											<input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="First Name">
-										</label>
+										<input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="First Name">
 									</div>
 									<div class="col-md-6">
-										<label>Last Name
-											<input type="text" th:field="*{lastName}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Last Name">
-										</label>
+										<label>Last Name</label>
+										<input type="text" th:field="*{lastName}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Last Name">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
-										<label>Alias
-											<input type="text" th:field="*{alias}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Alias">
-										</label>
+										<label>Alias</label>
+										<input type="text" th:field="*{alias}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Alias">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
-										<label>Birthday
+										<label>Birthday</label>
 											<input type="date" th:field="*{birthDay}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="BirthDay">
-										</label>
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
-										<label>Email
-											<input type="email" th:field="*{email}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Email">
-										</label>
+										<label>Email</label>
+										<input type="email" th:field="*{email}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Email">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-12">
-										<label>Address
-											<input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}" class="form-control" placeholder="Street">
-										</label>
+										<label>Address</label>
+										<input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}" class="form-control" placeholder="Street">
 									</div>
 								</div>
 
 								<div class="row form-group">
 									<div class="col-md-4">
-										<label>
-											<input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}" class="form-control" placeholder="Number">
-										</label>
+										<input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}" class="form-control" placeholder="Number">
 									</div>
 									<div class="col-md-4">
-										<label>
-											<input type="text" th:field="*{addressFlat}" th:disabled="${edit == false}" class="form-control" placeholder="Floor">
-										</label>
+										<input type="text" th:field="*{addressFlat}" th:disabled="${edit == false}" class="form-control" placeholder="Floor">
 									</div>
 									<div class="col-md-4">
-										<label>
-											<input type="text" th:field="*{addressDoor}" th:disabled="${edit == false}" class="form-control" placeholder="Door">
-										</label>
+										<input type="text" th:field="*{addressDoor}" th:disabled="${edit == false}" class="form-control" placeholder="Door">
 									</div>
 								</div>
 								<div class="row form-group">
 									<div class="col-md-4">
-										<label>City
-											<input type="text" th:field="*{addressCity}" th:disabled="${edit == false}" class="form-control" placeholder="City">
-										</label>
+										<label>City</label>
+										<input type="text" th:field="*{addressCity}" th:disabled="${edit == false}" class="form-control" placeholder="City">
 									</div>
 									<div class="col-md-4">
-										<label>Postcode
-											<input type="text" th:field="*{postCode}" th:disabled="${edit == false}" class="form-control" placeholder="Post Code">
-										</label>
+										<label>Postcode</label>
+										<input type="text" th:field="*{postCode}" th:disabled="${edit == false}" class="form-control" placeholder="Post Code">
 									</div>
 									<div class="col-md-4">
-										<label>Region
-											<input type="text" th:field="*{addressRegion}" th:disabled="${edit == false}" class="form-control" placeholder="Region">
-										</label>
+										<label>Region</label>
+										<input type="text" th:field="*{addressRegion}" th:disabled="${edit == false}" class="form-control" placeholder="Region">
 									</div>
 								</div>
 								<div class="row form-group">
 
 									<div class="col-md-12">
-										<label>Country
-											<input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}" class="form-control" placeholder="Country">
-										</label>
+										<label>Country</label>
+										<input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}" class="form-control" placeholder="Country">
 									</div>
 								</div>
 
-								<div class="form-group text-right">
-									<input th:if="${edit == true}" type="submit" value="Update profile" class="btn btn-primary">
+								<div class="row">
+									<div class="form-group text-right">
+										<input th:if="${edit == true}" type="submit" value="Update profile" class="btn btn-primary">
+									</div>
+									<div class="form-group text-right">
+										<form th:action="@{/user}" method="get">
+											<input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
+											<input type="hidden" id="edit" name="edit" th:value="${!edit}">
+											<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
+											<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
+										</form>
+									</div>
 								</div>
-
-
 							</form>
 							<br/>
 							<div class="form-group text-right">
