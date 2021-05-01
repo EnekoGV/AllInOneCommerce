@@ -130,6 +130,34 @@ public class viewController {
         return "search";
     }
 
+    @RequestMapping(value = "/cookie-politika", method = RequestMethod.GET)
+    public String viewCookiak(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "CookiePolitika");
+
+        return "cookie-politika";
+    }
+
+    @RequestMapping(value = "/pribatutasun-politika", method = RequestMethod.GET)
+    public String viewPribatutasuna(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "PribatutasunPolitika");
+
+        return "pribatutasun-politika";
+    }
+
 
 
 
