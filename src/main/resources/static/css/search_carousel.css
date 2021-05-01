@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/icon?family=Material+Icons');
+.carousel-container {
+    width: 1000px;
+    margin: 50px auto;
+    min-height: 200px;
+    position: relative;
+}
+@media screen and (max-width: 768px) {
+    .carousel-container {
+        width: 80%;
+    }
+}
+@media screen and (max-width: 1024px) {
+    .carousel-container {
+        width: 85%;
+    }
+}
+.carousel-container .carousel-inners {
+    overflow: hidden;
+}
+.carousel-container .track {
+    display: inline-flex;
+    transition: transform 0.5s;
+}
+.carousel-container .card-container {
+    width: 340px;
+    flex-shrink: 0;
+    height: 150px;
+    padding-right: 15px;
+    box-sizing: border-box;
+}
+.carousel-container .card-container .card {
+    width: 100%;
+    height: 100%;
+    border: 0px solid #ccc;
+    box-sizing: border-box;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+}
+.navs button {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+.navs .prevs {
+    left: -35px;
+    display: none;
+}
+.navs .prevs.showt {
+    display: block;
+}
+.navs .nexts {
+    right: -15px;
+}
+.navs .nexts.hidet {
+    display: none;
+}
+
+.card > * {
+    flex: 1;
+}
+.card .img {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 30px;
+    cursor: pointer;
+}
+.card .info {
+    flex-basis: 40px;
+    background: #333;
+    color: #000000;
+    flex-grow: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
