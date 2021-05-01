@@ -7,10 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -21,6 +18,7 @@ import java.util.List;
 @Data
 @Controller
 @RequestScope
+@SessionAttributes("searchForm")
 public class userController {
 
 
@@ -211,7 +209,7 @@ public class userController {
             loggedUser.setPassword(bCryptPasswordEncoder.encode(newPassword)); // Encode new password
             User savedUser = userService.updateUser(loggedUser); // Update user information in DB
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser); // Create verification code pair
-            emailSender.send(savedUser.getEmail(), verificationToken); // Send verification email
+            emailSender.sendVerification(savedUser.getEmail(), verificationToken); // Send verification email
             modelMap.clear(); // Clear view
             return "redirect:/auth/verification?token=" + verificationToken.getToken(); // Redirect to verification page
         }

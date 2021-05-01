@@ -152,7 +152,7 @@ public class UserService implements UserDetailsService {
         if (savedUser!=null){
             newCart = cartService.createCart(new Cart(new ArrayList<>(), savedUser));
             VerificationToken verificationToken = verificationTokenService.createVerificationToken(savedUser);
-            emailSender.send(savedUser.getEmail(), verificationToken);
+            emailSender.sendVerification(savedUser.getEmail(), verificationToken);
         }
         return savedUser;
     }

@@ -6,16 +6,16 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Map;
 
 @Data
 @Controller
 @RequestScope
+@SessionAttributes("searchForm")
 public class shopController {
 
     private final ItemService itemService;
@@ -107,9 +107,7 @@ public class shopController {
                     shop.getBillingPostNumber(),
                     shop.getBillingCity(),
                     shop.getBillingCountry(),
-                    shop.getBillingTelNumber(),
-                    shop.getLongitude(),
-                    shop.getLatitude()));
+                    shop.getBillingTelNumber()));
 
             // Send shop picture paths to HTML view
             modelMap.addAttribute("shopPicture", shop.getPicture().getPath());
@@ -150,8 +148,24 @@ public class shopController {
             shop.setBillingSurname(shopEditForm.getBillingSurname());
             shop.setBillingTelNumber(shopEditForm.getBillingTelNumber());
             shop.setDescription(shopEditForm.getDescription());
-            shop.setLongitude(shopEditForm.getLongitude());
-            shop.setLatitude(shopEditForm.getLatitude());
+
+            Map<String, Double> coords;
+            coords = OpenStreetMapUtils.getInstance().getCoordinates(shopEditForm.getAddressAddress() + " " + shopEditForm.getAddressCity());
+            if (coords.get("lon") != null || coords.get("lat") != null){
+                shop.setLongitude(Double.toString(coords.get("lon")));
+                shop.setLatitude((Double.toString(coords.get("lat"))));
+            }
+            else{
+                shop.setLongitude("0.00");
+                shop.setLatitude("0.00");
+                shop.setAddressAddress("");
+                shop.setAddressCity("");
+                shop.setAddressPostNumber("");
+                shop.setAddressCountry("");
+                Shop savedShop = shopService.updateShop(shop);
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&edit=true&addressError=true";
+            }
+
 
             Shop savedShop = shopService.updateShop(shop);
 
