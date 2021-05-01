@@ -19,6 +19,10 @@
 							<input type="hidden" name="orderId" th:value="${order.id}">
 							<button type="submit">Eskaria deuseztatu</button>
 						</form>
+						<form th:if="${order.shopOrderStatus.name()} == 'PENDING'" th:action="@{/payment}" method="post">
+							<input type="hidden" name="orderId" th:value="${order.id}">
+							<button type="submit">Eskaria ordaindu</button>
+						</form>
 						<div th:each="variant : ${order.variants}" class="row product">
 							<div class="col-md-2 col-md-offset-2 animate-box">
 								<div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.item.picture.path} + ');'">
