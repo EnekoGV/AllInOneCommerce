@@ -25,7 +25,7 @@
 						</form>
 						<div th:each="variant : ${order.variants}" class="row product">
 							<div class="col-md-2 col-md-offset-2 animate-box">
-								<div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.item.picture.path} + ');'">
+								<div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.picture.path} + ');'">
 									<span class="sale">
 										<span th:text="${order.shopOrderStatus.name()}" class="girau"></span>
 									</span>
