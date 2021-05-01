@@ -76,11 +76,6 @@ public class cartController {
                 quantity = Collections.frequency(cart.getVariants(), tempVariant);
                 cartQuantity.setQuantity(quantity);
                 cartQuantity.setVariant(tempVariant);
-                List<Integer> quantities = new ArrayList<>();
-                for(int j=1; j<tempVariant.getStock()+1; j++){
-                    quantities.add(j);
-                }
-                cartQuantity.setSelectQuantity(quantities);
                 cartVariantsAndQuantities.add(cartQuantity);
             }
             int totalPrice = 0;
