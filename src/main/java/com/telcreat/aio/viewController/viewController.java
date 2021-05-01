@@ -17,6 +17,7 @@ import java.io.IOException;
 @Data
 @RequestScope
 @Controller
+@SessionAttributes("searchForm")
 public class viewController {
 
     private final CartService cartService;
