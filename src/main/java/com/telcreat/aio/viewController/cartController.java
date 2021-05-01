@@ -5,16 +5,15 @@ import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.*;
 
 @Controller
 @RequestScope
+@SessionAttributes("searchForm")
+
 public class cartController {
     private final CartService cartService;
     private final ShopOrderService shopOrderService;
@@ -147,7 +146,7 @@ public class cartController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.POST)
+    @RequestMapping(value = "/cart/createOrder", method = RequestMethod.POST)
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
         Cart cart = cartService.findCartById(cartId);
@@ -160,29 +159,10 @@ public class cartController {
             }else {
                 cart.setVariants(new ArrayList<>());
                 cartService.updateCart(cart);
-                return "redirect:/cart?userId=" + userId;
+                return "redirect:/user/myOrders?userId=" + userId;
             }
         }else
             return "redirect:/?notAllowed";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.GET)
-    public String viewOrders(@RequestParam(name = "userId")int userId,
-                             ModelMap modelMap){
-        List<ShopOrder> shopOrders = shopOrderService.findShopOrdersByUserId(userId);
-        if (shopOrders != null && isLogged && loggedId == userId){
-
-            // DEFAULT INFORMATION IN ALL VIEWS
-            modelMap.addAttribute("isLogged", isLogged);
-            modelMap.addAttribute("loggedUserId", loggedId);
-            modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedCartId", loggedCartId);
-
-            modelMap.addAttribute("ordersList", shopOrders);
-            return "orders";
-        }else{
-            return "redirect:/";
-        }
-
-    }
 }

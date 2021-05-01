@@ -11,6 +11,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
@@ -18,6 +19,7 @@ import javax.servlet.http.HttpServletRequest;
 @Data
 @RequestScope
 @Controller
+@SessionAttributes("searchForm")
 public class orderController {
 
     private final CartService cartService;
@@ -100,6 +102,11 @@ public class orderController {
             shopOrder.setShopOrderStatus(updateStatus);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
             if (savedShopOrder != null){
+
+                // Send notification email
+                SendEmail sendEmail = new SendEmail();
+                sendEmail.sendOrderStatusUpdateNotificationToUser(savedShopOrder);
+
                 return "redirect:/order?orderId=" + shopOrder.getId();
             }
             else{
@@ -122,6 +129,11 @@ public class orderController {
             shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
             if (savedShopOrder != null){
+
+                // Send notification email
+                SendEmail sendEmail = new SendEmail();
+                sendEmail.sendOrderCancelledNotification(savedShopOrder);
+
                 return "redirect:/order?orderId=" + shopOrder.getId();
             }
             else{

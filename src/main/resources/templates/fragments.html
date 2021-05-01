@@ -43,27 +43,27 @@
                       <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="45px"></img></a>
                   </div>
                   <div class="col-md-6 col-xs-6 text-center menu-2">
-                      <form th:action="@{/search}" method="get">
+                      <form th:action="@{/search}" method="get" th:object="${searchForm}">
                           <ul>
                               <li class="search">
                                   <div class="input-group">
-                                      <input type="text" placeholder="Bilatu..." name="search">
+                                      <input type="text" placeholder="Bilatu..." th:field="*{search}" th:value="${searchForm.search}">
                                       <span class="input-group-btn">
                                         <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
                                       </span>
                                   </div>
                               </li>
                               <li>
-                                  <select name="categoryId" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{categoryId}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Edozein</option>
                                       <option th:each="category : ${categories}" th:text="${category.name}"
                                               th:value="${category.id}"></option>
                                   </select>
-                                  <select name="orderCriteriaId" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{orderCriteriaId}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Distantzia</option>
                                       <option value="1">Prezioa</option>
                                   </select>
-                                  <select name="orderDirection" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{orderDirection}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Goranzkoa</option>
                                       <option value="1">Beheranzkoa</option>
                                   </select>
