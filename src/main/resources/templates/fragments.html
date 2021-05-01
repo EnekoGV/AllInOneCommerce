@@ -8,6 +8,7 @@
   <!--Configuration--->
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv=”Content-Type” content=”text/html; charset=iso-8859-2″>
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <!--Description--->
   <meta name="author" content="Telcreat Company"/>
@@ -22,6 +23,8 @@
   <link rel="stylesheet" href="/css/owl.carousel.min.css">       <!-- Owl Carousel  -->
   <link rel="stylesheet" href="/css/owl.theme.default.min.css">  <!-- Owl Carousel  -->
   <link rel="stylesheet" href="/css/style.css">                  <!-- Theme style  -->
+  <link rel="stylesheet" href="/css/search_carousel.css">        <!-- Search Carousel -->
+
 
   <!--Scripts--->
   <script src="/js/modernizr-2.6.2.min.js"></script><!-- Modernizr JS - Modernizr es una librería JavaScript que nos permite conocer la compatibilidad del navegador con tecnologías HTML5 y CSS3, lo que nos permitirá desarrollar sitios web que se adapten a las capacidades cada navegador.-->
@@ -31,6 +34,8 @@
   <![endif]-->
 </head>
 <body>
+
+<!-- Header of the proyect where all the searching logic is one--->
   <header th:fragment="header">
       <nav class="fh5co-nav" role="navigation">
           <div class="container">
@@ -39,27 +44,27 @@
                       <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="45px"></img></a>
                   </div>
                   <div class="col-md-6 col-xs-6 text-center menu-2">
-                      <form th:action="@{/search}" method="get">
+                      <form th:action="@{/search}" method="get" th:object="${searchForm}">
                           <ul>
                               <li class="search">
                                   <div class="input-group">
-                                      <input type="text" placeholder="Bilatu..." name="search">
+                                      <input type="text" placeholder="Bilatu..." th:field="*{search}" th:value="${searchForm.search}">
                                       <span class="input-group-btn">
                                         <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
                                       </span>
                                   </div>
                               </li>
                               <li>
-                                  <select name="categoryId" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{categoryId}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Edozein</option>
                                       <option th:each="category : ${categories}" th:text="${category.name}"
                                               th:value="${category.id}"></option>
                                   </select>
-                                  <select name="orderCriteriaId" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{orderCriteriaId}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Distantzia</option>
                                       <option value="1">Prezioa</option>
                                   </select>
-                                  <select name="orderDirection" class="btn btn-toolbar" style="font-size: 12px;">
+                                  <select th:field="*{orderDirection}" class="btn btn-toolbar" style="font-size: 12px;">
                                       <option value="0">Goranzkoa</option>
                                       <option value="1">Beheranzkoa</option>
                                   </select>
@@ -88,23 +93,54 @@
       </nav>
   </header>
 
+<!-- Shop carousel section of the search view --->
+  <div class="carousel-container" th:fragment="shop_carousel">
+      <div class="carousel-inners">
+          <div class="track">
+              <div class="card-container animate-box" th:each="shop : ${shopSearch}">
+                  <div class="product">
+                      <div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture.path} + ');'">
+                          <a class="inner"  th:href="@{/shop(shopId=${shop.shop.id})}"></a>
+                          <div class="text-center" th:text="${shop.shop.name} + ' (' + ${shop.distance} + 'km)'"/>
+<!--                          <a th:href="@{/shop(shopId=${shop.shop.id})}" class="text-center info" style="margin-top: 40px" th:text="${shop.shop.addressAddress}"/>-->
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div class="navs">
+          <button class="prevs">
+              <i class="material-icons" style="margin-top: 9px">
+                  keyboard_arrow_left
+              </i>
+          </button>
+          <button class="nexts">
+              <i class="material-icons" style="margin-top: 9px">
+                  keyboard_arrow_right
+              </i>
+          </button>
+      </div>
+  </div>
+
+
   <footer id="fh5co-footer" role="contentinfo" th:fragment="footer">
       <div class="container">
           <div class="row copyright" style="margin-bottom: 10px;">
               <div class="col-md-6 col-md-offset-3 text-center">
                   <div class="col-md-4">
                       <ul class="fh5co-footer-links">
-                          <li><a href="#">Cookie-Politika</a></li>
+                          <li><a href="/cookie-politika">Cookie-Politika</a></li>
                       </ul>
                   </div>
                   <div class="col-md-4">
                       <ul class="fh5co-footer-links">
-                          <li><a href="#">Pribatutasun-Politika</a></li>
+                          <li><a href="/pribatutasun-politika">Pribatutasun-Politika</a></li>
                       </ul>
                   </div>
                   <div class="col-md-4">
                       <ul class="fh5co-footer-links">
-                          <li><a href="#">Kontaktua</a></li>
+                          <li><a href="/kontaktua">Kontaktua</a></li>
                       </ul>
                   </div>
               </div>
@@ -142,10 +178,11 @@
       <script src="/js/owl.carousel.min.js"></script>        <!-- Carousel -->
       <script src="/js/jquery.countTo.js"></script>            <!-- countTo -->
       <script src="/js/jquery.flexslider-min.js"></script>    <!-- Flexslider -->
-      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>
-      <!-- Google Map -->
-      <script src="/js/google_map.js"></script>
+<!--      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>-->
+<!--      &lt;!&ndash; Google Map &ndash;&gt;-->
+<!--      <script src="/js/google_map.js"></script>-->
       <script src="/js/main.js"></script>                    <!-- Main -->
+      <script src="/js/search_carousel.js"></script>
   </div>
 </body>
 </html>

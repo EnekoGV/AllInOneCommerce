@@ -5,16 +5,15 @@ import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 
 import java.util.*;
 
 @Controller
 @RequestScope
+@SessionAttributes("searchForm")
+
 public class cartController {
     private final CartService cartService;
     private final ShopOrderService shopOrderService;
@@ -77,6 +76,11 @@ public class cartController {
                 quantity = Collections.frequency(cart.getVariants(), tempVariant);
                 cartQuantity.setQuantity(quantity);
                 cartQuantity.setVariant(tempVariant);
+                List<Integer> quantities = new ArrayList<>();
+                for(int j=1; j<tempVariant.getStock()+1; j++){
+                    quantities.add(j);
+                }
+                cartQuantity.setSelectQuantity(quantities);
                 cartVariantsAndQuantities.add(cartQuantity);
             }
             int totalPrice = 0;
@@ -84,7 +88,7 @@ public class cartController {
                 totalPrice += cartVariantsAndQuantities.get(i).getVariant().getItem().getPrice() * cartVariantsAndQuantities.get(i).getQuantity();
             }
             modelMap.addAttribute("totalPrice", totalPrice);
-           modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
+            modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
 
             return "cart";
         }else{
@@ -104,7 +108,7 @@ public class cartController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/increase", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/cart/increase", method = RequestMethod.POST)
     public String increaseItem(@RequestParam(name = "variantId")int variantId,
                           @RequestParam(name = "cartId")int cartId){
         Cart cart = cartService.findCartById(cartId);
@@ -132,6 +136,32 @@ public class cartController {
             return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";
+    }*/
+    @RequestMapping(value = "/cart/update", method = RequestMethod.POST)
+    public String updateItemQuantity(@RequestParam(name = "variantId")int variantId,
+                                     @RequestParam(name = "cartId")int cartId,
+                                     @RequestParam(name = "quantity") int newQuantity){
+        Cart cart = cartService.findCartById(cartId);
+        if(cart != null && cart.getUser().getId() == loggedUser.getId()){
+            ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            Collections.sort(uniqueVariantList);
+            Variant tempVariant;
+            tempVariant = variantService.findVariantById(variantId);
+            int quantity = Collections.frequency(cart.getVariants(), tempVariant);
+            if(newQuantity > quantity){
+                for(int i = 0; i< (newQuantity-quantity); i++){
+                    cart.getVariants().add(tempVariant);
+                }
+            }else if(newQuantity < quantity){
+                for(int i = 0; i< (quantity-newQuantity); i++){
+                    cart.getVariants().remove(tempVariant);
+                }
+            }
+
+            cartService.updateCart(cart);
+            return "redirect:/cart?userId="+loggedUser.getId();
+        }else
+            return "redirect:/";
     }
 
     @RequestMapping(value = "/cart/addToCart", method = RequestMethod.POST)
@@ -147,7 +177,7 @@ public class cartController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.POST)
+    @RequestMapping(value = "/cart/createOrder", method = RequestMethod.POST)
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
         Cart cart = cartService.findCartById(cartId);
@@ -160,29 +190,10 @@ public class cartController {
             }else {
                 cart.setVariants(new ArrayList<>());
                 cartService.updateCart(cart);
-                return "redirect:/cart?userId=" + userId;
+                return "redirect:/user/myOrders?userId=" + userId;
             }
         }else
             return "redirect:/?notAllowed";
     }
 
-    @RequestMapping(value = "/cart/order", method = RequestMethod.GET)
-    public String viewOrders(@RequestParam(name = "userId")int userId,
-                             ModelMap modelMap){
-        List<ShopOrder> shopOrders = shopOrderService.findShopOrdersByUserId(userId);
-        if (shopOrders != null && isLogged && loggedId == userId){
-
-            // DEFAULT INFORMATION IN ALL VIEWS
-            modelMap.addAttribute("isLogged", isLogged);
-            modelMap.addAttribute("loggedUserId", loggedId);
-            modelMap.addAttribute("loggedUserRole", loggedRole);
-            modelMap.addAttribute("loggedCartId", loggedCartId);
-
-            modelMap.addAttribute("ordersList", shopOrders);
-            return "orders";
-        }else{
-            return "redirect:/";
-        }
-
-    }
 }
