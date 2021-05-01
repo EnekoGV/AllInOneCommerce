@@ -176,17 +176,24 @@ public class cartController {
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
                               @RequestParam(name = "userId")int userId){
         Cart cart = cartService.findCartById(cartId);
-        if(cart != null && cart.getUser().getId() == userId && loggedId == userId && cart.getVariants().size() != 0){
-            List<ShopOrder> shopOrders= shopOrderService.createShopOrderFromCart(cart);
-            if(shopOrders == null) {
-                cart.setVariants(new ArrayList<>());
-                cartService.updateCart(cart);
-                return "redirect:/?NotEnoughStock";
-            }else {
-                cart.setVariants(new ArrayList<>());
-                cartService.updateCart(cart);
-                return "redirect:/user/myOrders?userId=" + userId;
+        if(cart != null && cart.getUser().getId() == userId && loggedId == userId){
+            if (cart.getVariants().size() != 0){
+                List<ShopOrder> shopOrders= shopOrderService.createShopOrderFromCart(cart);
+                if(shopOrders == null) {
+                    cart.setVariants(new ArrayList<>());
+                    cartService.updateCart(cart);
+                    return "redirect:/?NotEnoughStock";
+                }else {
+                    cart.setVariants(new ArrayList<>());
+                    cartService.updateCart(cart);
+                    return "redirect:/user/myOrders?userId=" + userId;
+                }
             }
+            else{
+                //noinspection SpringMVCViewInspection
+                return "redirect:/cart?userId=" + userId + "&emptyCart=true";
+            }
+
         }else
             return "redirect:/?notAllowed";
     }
