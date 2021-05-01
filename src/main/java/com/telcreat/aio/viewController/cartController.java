@@ -76,6 +76,11 @@ public class cartController {
                 quantity = Collections.frequency(cart.getVariants(), tempVariant);
                 cartQuantity.setQuantity(quantity);
                 cartQuantity.setVariant(tempVariant);
+                List<Integer> quantities = new ArrayList<>();
+                for(int j=1; j<tempVariant.getStock()+1; j++){
+                    quantities.add(j);
+                }
+                cartQuantity.setSelectQuantity(quantities);
                 cartVariantsAndQuantities.add(cartQuantity);
             }
             int totalPrice = 0;
@@ -83,7 +88,7 @@ public class cartController {
                 totalPrice += cartVariantsAndQuantities.get(i).getVariant().getItem().getPrice() * cartVariantsAndQuantities.get(i).getQuantity();
             }
             modelMap.addAttribute("totalPrice", totalPrice);
-           modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
+            modelMap.addAttribute("variantsAndQuantities", cartVariantsAndQuantities);
 
             return "cart";
         }else{
@@ -103,7 +108,7 @@ public class cartController {
             return "redirect:/";
     }
 
-    @RequestMapping(value = "/cart/increase", method = RequestMethod.POST)
+    /*@RequestMapping(value = "/cart/increase", method = RequestMethod.POST)
     public String increaseItem(@RequestParam(name = "variantId")int variantId,
                           @RequestParam(name = "cartId")int cartId){
         Cart cart = cartService.findCartById(cartId);
@@ -128,6 +133,32 @@ public class cartController {
                     control = false;
                 }
             }
+            return "redirect:/cart?userId="+loggedUser.getId();
+        }else
+            return "redirect:/";
+    }*/
+    @RequestMapping(value = "/cart/update", method = RequestMethod.POST)
+    public String updateItemQuantity(@RequestParam(name = "variantId")int variantId,
+                                     @RequestParam(name = "cartId")int cartId,
+                                     @RequestParam(name = "quantity") int newQuantity){
+        Cart cart = cartService.findCartById(cartId);
+        if(cart != null && cart.getUser().getId() == loggedUser.getId()){
+            ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            Collections.sort(uniqueVariantList);
+            Variant tempVariant;
+            tempVariant = variantService.findVariantById(variantId);
+            int quantity = Collections.frequency(cart.getVariants(), tempVariant);
+            if(newQuantity > quantity){
+                for(int i = 0; i< (newQuantity-quantity); i++){
+                    cart.getVariants().add(tempVariant);
+                }
+            }else if(newQuantity < quantity){
+                for(int i = 0; i< (quantity-newQuantity); i++){
+                    cart.getVariants().remove(tempVariant);
+                }
+            }
+
+            cartService.updateCart(cart);
             return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";

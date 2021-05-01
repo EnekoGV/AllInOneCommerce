@@ -23,21 +23,14 @@
 								<div class="desc">
 									<h3><a th:href="@{/item(itemId=${item.variant.item.id})}" th:text="${item.variant.item.name}"></a></h3>
 									<p th:text="${item.variant.name}" style="margin-bottom: 0%;" ></p>
-									<form th:action="@{/cart/decrease}" method="post">
+									<form th:action="@{/cart/update}" method="post">
 										<input type="hidden" id="variantId" name="variantId" th:value="${item.variant.id}">
 										<input type="hidden" id="cartId" name="cartId" th:value="${loggedCartId}">
-										<button type="submit" >-1</button>
-									</form>
-									<span th:text="${item.quantity}"> Quantity </span>
-									<form th:action="@{/cart/addToCart}" method="post">
-										<input type="hidden" id="variantId1" name="variantId" th:value="${item.variant.id}">
-										<input type="hidden" id="cartId1" name="cartId" th:value="${loggedCartId}">
-										<button type="submit">+1</button>
-									</form>
-									<form th:action="@{/cart/delete}" method="post">
-										<input type="hidden" id="variantId2" name="variantId" th:value="${item.variant.id}">
-										<input type="hidden" id="cartId2" name="cartId" th:value="${loggedCartId}">
-										<button type="submit">x</button>
+										<button type="submit" >Update Quantity</button>
+										<select name="quantity" class="btn btn-primary btn-outline btn-lg">
+											<option th:each="quant : ${item.selectQuantity}" th:text="${quant.toString()}"
+													th:value="${quant}" th:selected="${quant==item.quantity}"></option>
+										</select>
 									</form>
 								</div>
 								<div class="desc text-right">
