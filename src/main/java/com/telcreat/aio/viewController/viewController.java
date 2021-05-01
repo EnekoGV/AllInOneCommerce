@@ -64,6 +64,11 @@ public class viewController {
     }
 
 
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
     // Search View
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
@@ -100,10 +105,7 @@ public class viewController {
 
     // Product Search View
     @RequestMapping(value = "/search", method = RequestMethod.GET)
-    public String viewSearch(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
-                             @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
-                             @RequestParam(name = "orderDirection", required = false, defaultValue = "0") Integer orderDirection,
-                             @RequestParam(name = "search", required = false, defaultValue = "") String search,
+    public String viewSearch(@ModelAttribute(name = "searchForm") SearchForm searchForm,
                              ModelMap modelMap) throws IOException, GeoIp2Exception {
 
         // DEFAULT INFORMATION IN ALL VIEWS
@@ -116,14 +118,14 @@ public class viewController {
             modelMap.addAttribute("loggedShopId",shop.getId());
         }
 
-        modelMap.addAttribute("categoryId", categoryId);
-        modelMap.addAttribute("orderCriteriaId", orderCriteriaId);
-        modelMap.addAttribute("orderDirection", orderDirection);
-        modelMap.addAttribute("search", search);
+        modelMap.addAttribute("categoryId", searchForm.getCategoryId());
+        modelMap.addAttribute("orderCriteriaId", searchForm.getOrderCriteriaId());
+        modelMap.addAttribute("orderDirection", searchForm.getOrderDirection());
+        modelMap.addAttribute("search", searchForm.getSearch());
         modelMap.addAttribute("pageTitle", "Bilaketa");
 
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(search,  categoryId, orderCriteriaId, orderDirection, "1.1.1.1"));
-        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(search, categoryId, "1.1.1.1"));
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(searchForm.getSearch(),  searchForm.getCategoryId(), searchForm.getOrderCriteriaId(), searchForm.getOrderDirection(), "1.1.1.1"));
+        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(searchForm.getSearch(), searchForm.getCategoryId(), "1.1.1.1"));
         modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
         return "search";
     }
