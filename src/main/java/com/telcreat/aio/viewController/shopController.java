@@ -85,6 +85,7 @@ public class shopController {
                                   @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
                                   @RequestParam(name = "updateSuccessful", required = false, defaultValue = "false") boolean updateSuccessful,
                                   @RequestParam(name = "addressError", required = false, defaultValue = "false") boolean addressError,
+                                  @RequestParam(name = "createSuccessful", required = false, defaultValue = "false") boolean createSuccessful,
                                   ModelMap modelMap){
 
         Shop shop = shopService.findActiveShopById(shopId);
@@ -122,6 +123,7 @@ public class shopController {
             modelMap.addAttribute("updateError", updateError);
             modelMap.addAttribute("addressError", addressError);
             modelMap.addAttribute("updateSuccessful", updateSuccessful);
+            modelMap.addAttribute("createSuccessful", createSuccessful);
 
             return "editShop";
 

@@ -41,6 +41,7 @@
 						<p th:if="${addressError}" style="color: red">Dendaren helbidea ez da egokia. Saia zaitez berriro ere.</p>
 						<p th:if="${updateError}" style="color: red">Errorea gertatu da informazioa gordetzean. Ziurtatu sartutako informazioa egokia dela.</p>
 						<p th:if="${updateSuccessful}" style="color: green">Informazioa ondo gorde da.</p>
+						<p th:if="${createSuccessful}" style="color: green">Denda ondo sortu da!</p>
 						<form th:action="@{/shop/edit}" method="post" th:object="${shopForm}">
 							<div class="row form-group">
 								<div class="col-md-12">
