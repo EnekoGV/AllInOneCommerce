@@ -13,7 +13,7 @@
 							<h2>Egindako eskariak</h2>
 						</div>
 					</div>
-					<div th:each="order : ${orderList}">
+					<div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
 						<br/>
 						<form th:if="${order.shopOrderStatus.name()} == 'PENDING'" th:action="@{/order/edit/cancel}" method="post">
 							<input type="hidden" name="orderId" th:value="${order.id}">
@@ -46,10 +46,15 @@
 						</div>
 						<hr>
 					</div>
+					<div th:if="${orderList.size() <= 0}" class="container text-center animate-box" style="margin-top: 100px; margin-bottom: 150px">
+						<p>
+							Orain arte ez duzu eskaririk egin. Erabili goiko bilatzailea zure lehenengo produktuen eskariak egiteko.
+						</p>
+					</div>
 				</div>
 			</div>
 
-			<div id="fh5co-started">
+<!--			<div id="fh5co-started">
 				<div class="container">
 					<div class="row animate-box">
 						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
@@ -73,7 +78,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+			</div>-->
 			<div th:replace="fragments :: footer"/>
 		</div>
 		<div th:replace="fragments :: Up_Button"/>

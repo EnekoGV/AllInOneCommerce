@@ -94,7 +94,7 @@
   </header>
 
 <!-- Shop carousel section of the search view --->
-  <div class="carousel-container" th:fragment="shop_carousel">
+  <div th:if="${itemSearch.size() > 0}" class="carousel-container" th:fragment="shop_carousel">
       <div class="carousel-inners">
           <div class="track">
               <div class="card-container animate-box" th:each="shop : ${shopSearch}">
@@ -109,7 +109,7 @@
               </div>
           </div>
       </div>
-      <div class="navs">
+      <div th:if="${shopSearch.size() > 3}" class="navs">
           <button class="prevs">
               <i class="material-icons" style="margin-top: 9px">
                   keyboard_arrow_left
