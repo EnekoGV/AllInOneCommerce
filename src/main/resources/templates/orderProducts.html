@@ -14,7 +14,7 @@
                 <form th:action="@{/order/edit/changeStatus}" method="post">
                     <div class="col-md-3 text-right">
                         <input type="hidden" name="orderId" th:value="${order.id}">
-                        <select name="updateStatus" class="btn" style="font-size: 16px;">
+                        <select th:field="${order.shopOrderStatus}" class="btn" style="font-size: 16px;">
                             <option th:each="statusOpt : ${T(com.telcreat.aio.model.ShopOrder.ShopOrderStatus).values}" th:value="${statusOpt}" th:text="${statusOpt}"></option>
                         </select>
                     </div>
