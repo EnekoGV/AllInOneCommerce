@@ -33,6 +33,7 @@ public class Shop {
     private User owner;
 
     private String name;
+    @Column(columnDefinition = "LONGTEXT")
     private String description;
 
     private String addressAddress; //calle + portal + piso

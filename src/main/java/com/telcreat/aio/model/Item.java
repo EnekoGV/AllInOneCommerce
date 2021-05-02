@@ -29,7 +29,9 @@ public class Item {
     @OneToOne
     private Picture picture;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String shortDescription;
+    @Column(columnDefinition = "LONGTEXT")
     private String longDescription;
     private Float price;
     private String name;
