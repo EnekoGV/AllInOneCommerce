@@ -114,8 +114,47 @@ public class UserService implements UserDetailsService {
         return control;
     }
 
+    //AM - findFavoriteActiveShops --> Returns a list of shops that are user favorites.
+    public List<Shop> findFavoriteActiveShops(int userid){
+        User user = findUserById(userid);
+        List<Shop> shops = user.getFavouriteShops();
+        List<Shop> favoriteShops = new ArrayList<>();
+        for(Shop shop:shops){
+            if (shop.getStatus() == Shop.Status.ACTIVE){
+                favoriteShops.add(shop);
+            }
+        }
+        return favoriteShops;
+    }
 
-    //ANADIR FUNCIONES DE GESTION DE TIENDA.
+    //AM - addFavoriteShop ---> Returns TRUE if the shop has been added successfully and FALSE if not.
+    public boolean addFavoriteShop(User user, Shop shop){
+        boolean control = false;
+        List<Shop> favoriteShops = user.getFavouriteShops();
+        if(!favoriteShops.contains(shop)){
+            favoriteShops.add(shop);
+            user.setFavouriteShops(favoriteShops);
+            userRepo.save(user);
+            control = true;
+        }
+        System.out.println("Pues asi es como ha ido el add" + control);
+        return control;
+    }
+
+    //AM - deleteFavoriteShop ---> Returns TRUE if the shop has been deleted successfully and FALSE if not.
+    public boolean deleteFavoriteShop(User user, Shop shop){
+        boolean control = false;
+        List<Shop> favoriteShops = user.getFavouriteShops();
+        if(favoriteShops.contains(shop)){
+            favoriteShops.remove(shop);
+            user.setFavouriteShops(favoriteShops);
+            userRepo.save(user);
+            control = true;
+        }
+        System.out.println("Pues asi es como ha ido el deleted" + control);
+        return control;
+    }
+
 
 
 
