@@ -23,6 +23,8 @@
 									</div>
 								</form>
 								<h3 th:text="${userForm.name}"></h3>
+								<p th:if="${updateError}" style="color: red">Errorea gertatu da informazioa gordetzean. Ziurtatu sartutako informazioa egokia dela.</p>
+								<p th:if="${updateSuccessful}" style="color: green">Informazioa ondo gorde da.</p>
 							</div>
 						</div>
 					</div>
