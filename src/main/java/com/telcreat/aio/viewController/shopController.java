@@ -73,7 +73,7 @@ public class shopController {
             userService.updateUser(loggedUser);
 
             //noinspection SpringMVCViewInspection
-            return "redirect:/shop/edit?shopId=" + newShop.getId() + "&edit=true"; // After creation go to Shop Edit page
+            return "redirect:/shop/edit?shopId=" + newShop.getId() + "&edit=true&createSuccessful=true"; // After creation go to Shop Edit page
         }else
             return "redirect:/?createShopError"; // Error creating new shop: not logged or is already owner
     }
