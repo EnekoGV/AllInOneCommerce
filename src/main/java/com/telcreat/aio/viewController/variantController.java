@@ -66,11 +66,12 @@ public class variantController {
             variant.setStock(variantStock);
             Variant savedVariant = variantService.updateVariant(variant);
             if (savedVariant != null){
-                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&updateSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantUpdateError=true";
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&updateError=true";
             }
         }
         else{
@@ -86,7 +87,7 @@ public class variantController {
         if (isLogged && variant != null && loggedId == variant.getItem().getShop().getOwner().getId()){
             control = variantService.deactivateVariant(variant.getId());
             if (control){
-                return "redirect:/item/edit?itemId=" + variant.getItem().getId();
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&variantDeleteSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection
@@ -115,7 +116,8 @@ public class variantController {
                 pictureService.updatePicture(variantPicture); // Update Object
                 modelMap.clear();
 
-                return "redirect:/item/edit?itemId=" + variant.getItem().getId(); // Return to User View
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item/edit?itemId=" + variant.getItem().getId() + "&updateSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection
@@ -140,7 +142,7 @@ public class variantController {
             Picture savedPicture = pictureService.createPicture(newPicture);
             Variant savedVariant = variantService.createVariant(new Variant(newVariant.getName(), newVariant.getStock(), savedPicture, item, Variant.Status.ACTIVE));
             if (savedVariant != null){
-                return "redirect:/item/edit?itemId=" + item.getId();
+                return "redirect:/item/edit?itemId=" + item.getId() + "&updateSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection

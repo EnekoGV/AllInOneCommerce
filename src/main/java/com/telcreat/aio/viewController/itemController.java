@@ -103,7 +103,7 @@ public class itemController {
             Variant defaultVariant = new Variant("Default variant", 0, savedVariantPicture,savedItem, Variant.Status.ACTIVE);
             variantService.createVariant(defaultVariant);
 
-            return "redirect:/item/edit?itemId=" + savedItem.getId();
+            return "redirect:/item/edit?itemId=" + savedItem.getId() + "&createSuccessful=true";
         }
         else{
             return "redirect:/?errorCreatingItem";
@@ -114,10 +114,11 @@ public class itemController {
     public String viewEditItem(@RequestParam(name = "itemId") int itemId,
                                @RequestParam(name = "editVariantNumber", required = false, defaultValue = "0") int editVariantNumber,
                                @RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
-                               @RequestParam(name = "itemUpdateError", required = false, defaultValue = "false") boolean itemUpdateError,
-                               @RequestParam(name = "variantUpdateError", required = false, defaultValue = "false") boolean variantUpdateError,
+                               @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                               @RequestParam(name = "updateSuccessful", required = false, defaultValue = "false") boolean updateSuccessful,
+                               @RequestParam(name = "createSuccessful", required = false, defaultValue = "false") boolean createSuccessful,
                                @RequestParam(name = "variantDeleteError", required = false, defaultValue = "false") boolean variantDeleteError,
-                               @RequestParam(name = "itemDeleteError", required = false, defaultValue = "false") boolean itemDeleteError,
+                               @RequestParam(name = "variantDeleteSuccessful", required = false, defaultValue = "false") boolean variantDeleteSuccessful,
                                ModelMap modelMap){
 
         Item item = itemService.findActiveItemById(itemId);
@@ -149,10 +150,13 @@ public class itemController {
 
             modelMap.addAttribute("editVariantNumber", editVariantNumber);
             modelMap.addAttribute("edit", edit);
-            modelMap.addAttribute("itemUpdateError", itemUpdateError);
-            modelMap.addAttribute("variantUpdateError", variantUpdateError);
+
+            modelMap.addAttribute("updateError", updateError);
+            modelMap.addAttribute("updateSuccessful", updateSuccessful);
+            modelMap.addAttribute("createSuccessful", createSuccessful);
+
             modelMap.addAttribute("variantDeleteError", variantDeleteError);
-            modelMap.addAttribute("itemDeleteError", itemDeleteError);
+            modelMap.addAttribute("variantDeleteSuccessful", variantDeleteSuccessful);
 
             modelMap.addAttribute("variantForm", new Variant());
 
@@ -180,11 +184,12 @@ public class itemController {
 
             Item savedItem = itemService.updateItem(item);
             if (savedItem != null){
-                return "redirect:/item/edit?itemId=" + item.getId();
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item/edit?itemId=" + item.getId() + "&updateSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/item/edit?itemId=" + item.getId() + "&itemUpdateError=true";
+                return "redirect:/item/edit?itemId=" + item.getId() + "&updateError=true";
             }
         }
         else{
@@ -229,11 +234,12 @@ public class itemController {
                 pictureService.updatePicture(itemPicture); // Update Object
                 modelMap.clear();
 
-                return "redirect:/item?itemId=" + item.getId(); // Return to User View
+                //noinspection SpringMVCViewInspection
+                return "redirect:/item/edit?itemId=" + item.getId() + "&updateSuccessful=true";
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/item?itemId=" + item.getId() + "&updateError=true"; // Redirect if imagePath is null
+                return "redirect:/item/edit?itemId=" + item.getId() + "&updateError=true"; // Redirect if imagePath is null
             }
         }
         else{
