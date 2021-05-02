@@ -9,10 +9,11 @@
 				<div class="container" style="margin-top: -100px;">
 					<div class="row animate-box">
 						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-							<h2>Cesta</h2>
+							<h2>SASKIA</h2>
 						</div>
 					</div>
-					<div th:each="item : ${variantsAndQuantities}" class="row">
+
+					<div th:if="${variantsAndQuantities.size() > 0}" th:each="item : ${variantsAndQuantities}" class="row">
 						<div class="col-md-4 text-right animate-box">
 							<div class="product">
 								<img th:src="${item.variant.picture.path}" alt="p" class="product-grid2">
@@ -39,7 +40,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row animate-box">
+					<div th:if="${variantsAndQuantities.size() > 0}" class="row animate-box">
 						<div class="col-md-8 text-right fh5co-heading">
 							<div class="product">
 								<div class="desc">
@@ -48,7 +49,7 @@
 							</div>
 						</div>
 					</div>
-					<div class="row animate-box">
+					<div th:if="${variantsAndQuantities.size() > 0}" class="row animate-box">
 						<div class="col-md-8 text-right">
 							<form th:action="@{/cart/createOrder}" method="post">
 								<input type="hidden" id="userId" name="userId" th:value="${loggedUserId}">
@@ -58,6 +59,12 @@
 						</div>
 					</div>
 				</div>
+				<div th:if="${variantsAndQuantities.size() <= 0}" class="container text-center animate-box" style="margin-top: 100px; margin-bottom: 150px">
+					<p>
+						Saskia huts dago. Erabili bilatzailea produktuak gehitzeko.
+					</p>
+				</div>
+
 			</div>
 
 			<div id="fh5co-started">
