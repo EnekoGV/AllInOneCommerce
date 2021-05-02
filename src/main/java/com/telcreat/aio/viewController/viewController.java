@@ -93,6 +93,11 @@ public class viewController {
             modelMap.addAttribute("loggedShopId",shop.getId());
         }
 
+
+
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
+
         // Get remote IP debug
         // modelMap.addAttribute("clientIP", request.getRemoteAddr());
         // FIND CLIENTS IP ADDRESS
@@ -107,6 +112,21 @@ public class viewController {
         // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
         return "index"; // Return Search search.html view
+    }
+    @RequestMapping(value = "/contact", method = RequestMethod.POST)
+    public String contactForm(@ModelAttribute(name = "contactForm") ContactForm contactForm, ModelMap modelMap){
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+
+        // Send notification email
+        SendEmail sendEmail = new SendEmail();
+        sendEmail.sendContactMailToUser(contactForm);
+        sendEmail.sendContactMail(contactForm);
+
+        return "redirect:/";
     }
 
     // Product Search View
@@ -162,6 +182,23 @@ public class viewController {
         modelMap.addAttribute("pageTitle", "PribatutasunPolitika");
 
         return "pribatutasun-politika";
+    }
+
+    @RequestMapping(value = "/kontaktua", method = RequestMethod.GET)
+    public String viewKontaktua(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "Kontaktua");
+
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
+
+        return "kontaktua";
     }
 
 

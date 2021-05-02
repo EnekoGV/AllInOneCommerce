@@ -1,6 +1,7 @@
 package com.telcreat.aio.service;
 
 
+import com.telcreat.aio.model.ContactForm;
 import com.telcreat.aio.model.ShopOrder;
 import com.telcreat.aio.model.VerificationToken;
 
@@ -56,6 +57,30 @@ public class SendEmail {
         String messageText = part1 + part2;
 
         Thread thread = new Thread(new EmailSenderThread(shopOrder.getShop().getOwner().getEmail(), subject, messageText));
+        thread.start();
+    }
+
+    public void sendContactMailToUser(ContactForm contactForm){
+        String subject = contactForm.getSubject();
+        String email = contactForm.getEmail();
+        String part1 = "Kaixo " + contactForm.getName() + " " + contactForm.getLastName() + ", zure mezua bidali da hurrengo informazioarekin\n";
+        String part2 = contactForm.getMessage();
+
+        String messageText = part1 + part2;
+
+        Thread thread = new Thread(new EmailSenderThread(email, subject, messageText));
+        thread.start();
+    }
+
+    public void sendContactMail(ContactForm contactForm){
+        String subject = contactForm.getSubject();
+        String email = "aio@telcreat.com";
+        String part1 = "Mezu bat jaso da hurrengo erabiltzaileak bidalia: " + contactForm.getName() + " " + contactForm.getLastName() + "\n";
+        String part2 = contactForm.getMessage();
+
+        String messageText = part1 + part2;
+
+        Thread thread = new Thread(new EmailSenderThread(email, subject, messageText));
         thread.start();
     }
 }
