@@ -83,6 +83,7 @@ public class shopController {
     public String viewAndEditShop(@RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
                                   @RequestParam(name = "shopId") int shopId,
                                   @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                  @RequestParam(name = "addressError", required = false, defaultValue = "false") boolean addressError,
                                   ModelMap modelMap){
 
         Shop shop = shopService.findActiveShopById(shopId);
@@ -118,6 +119,7 @@ public class shopController {
 
             modelMap.addAttribute("edit", edit);
             modelMap.addAttribute("updateError", updateError);
+            modelMap.addAttribute("addressError", addressError);
 
             return "editShop";
 
