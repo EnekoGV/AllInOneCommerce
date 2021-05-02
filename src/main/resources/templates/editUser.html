@@ -23,7 +23,6 @@
 									</div>
 								</form>
 								<h3 th:text="${userForm.name}"></h3>
-								<strong class="role">Nombre Tienda</strong>
 							</div>
 						</div>
 					</div>
@@ -98,26 +97,22 @@
 										<input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}" class="form-control" placeholder="Country">
 									</div>
 								</div>
-
-								<div class="row">
-									<div class="form-group text-right">
-										<input th:if="${edit == true}" type="submit" value="Update profile" class="btn btn-primary">
-									</div>
-									<div class="form-group text-right">
-										<form th:action="@{/user}" method="get">
-											<input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
-											<input type="hidden" id="edit" name="edit" th:value="${!edit}">
-											<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
-											<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
-										</form>
-									</div>
+								<div class="form-group text-right" style="margin-top: 20px">
+									<input th:if="${edit == true}" type="submit" value="Update profile" class="btn btn-primary">
 								</div>
 							</form>
-							<br/>
-							<div class="form-group text-right">
+							<div class="form-group text-right" style="margin-top: 20px">
+								<form th:action="@{/user}" method="get">
+									<input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
+									<input type="hidden" id="edit" name="edit" th:value="${!edit}">
+									<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
+									<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
+								</form>
+							</div>
+							<div class="form-group text-right" style="margin-top: 20px">
 								<form th:action="@{/user/changePassword}" method="get">
 									<input type="hidden" id="userIdPassword" name="userId" th:value="${userForm.id}">
-									<button type="submit" class="btn btn-primary">Change my password!</button>
+									<button type="submit" class="btn btn-danger">Pasahitza aldatu</button>
 								</form>
 							</div>
 						</div>
