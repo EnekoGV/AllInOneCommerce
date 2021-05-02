@@ -120,6 +120,15 @@ public class orderController {
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
             if (savedShopOrder != null){
 
+                // If owner cancels the order, Stock must be updated
+                if (shopOrder.getShopOrderStatus() == ShopOrder.ShopOrderStatus.CANCELLED){
+                    for (Variant tempVariant : shopOrder.getVariants()){
+                        int tempStock = tempVariant.getStock();
+                        tempVariant.setStock(tempStock + 1);
+                        variantService.updateVariant(tempVariant);
+                    }
+                }
+
                 // Send notification email
                 SendEmail sendEmail = new SendEmail();
                 sendEmail.sendOrderStatusUpdateNotificationToUser(savedShopOrder);
@@ -136,7 +145,7 @@ public class orderController {
         }
     }
 
-    // Cancel Shop Order (Owner or Client can Cancel the Shop Order)
+    // Cancel Shop Order - Client can Cancel the Shop Order)
     @RequestMapping(value = "/order/edit/cancel", method = RequestMethod.POST)
     public String cancelOrder(@RequestParam(name = "orderId") int orderId,
                               ModelMap modelMap){
@@ -146,20 +155,27 @@ public class orderController {
         if (isLogged && shopOrder != null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
             shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+
             if (savedShopOrder != null){
+
+                for (Variant tempVariant : shopOrder.getVariants()){
+                    int tempStock = tempVariant.getStock();
+                    tempVariant.setStock(tempStock + 1);
+                    variantService.updateVariant(tempVariant);
+                }
 
                 // Send notification email
                 SendEmail sendEmail = new SendEmail();
                 sendEmail.sendOrderCancelledNotification(savedShopOrder);
 
-                return "redirect:/order?orderId=" + shopOrder.getId();
+                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId();
             }
             else{
-                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&orderUpdateError=true";
             }
         }
         else{
-            return "redirect:/notAllowed";
+            return "redirect:/?notAllowed";
         }
     }
 

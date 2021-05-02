@@ -61,6 +61,7 @@ public class userController {
     public String viewAndEditProfile(@RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
                                      @RequestParam(name = "userId") int userId,
                                      @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                     @RequestParam(name = "updateSuccessful", required = false, defaultValue = "false") boolean updateSuccessful,
                                      ModelMap modelMap){
 
         if (isLogged && loggedId == userId){ // Allow editing only each user's profile.
@@ -92,7 +93,9 @@ public class userController {
                     loggedUser.getAddressRegion()));
 
             modelMap.addAttribute("edit", edit); // Error message variable
+
             modelMap.addAttribute("updateError", updateError); // Error message variable
+            modelMap.addAttribute("updateSuccessful", updateSuccessful); // Error message variable
 
             return "editUser";
         }else{
@@ -125,7 +128,8 @@ public class userController {
 
             User tempUser = userService.updateUser(loggedUser); // Update user information in DB
             if (tempUser != null){
-                return "redirect:/user?userId=" + loggedUser.getId(); // Redirect to user profile
+                //noinspection SpringMVCViewInspection
+                return "redirect:/user?userId=" + loggedUser.getId() + "&updateSuccessful=true"; // Redirect to user profile
             }
             else{
                 //noinspection SpringMVCViewInspection
@@ -154,7 +158,7 @@ public class userController {
                 pictureService.updatePicture(loggedUserPicture); // Update Object
                 modelMap.clear();
 
-                return "redirect:/user?userId=" + loggedUser.getId(); // Return to User View
+                return "redirect:/user?userId=" + loggedUser.getId() + "&updateSuccessful=true"; // Return to User View
             }
             else{
                 //noinspection SpringMVCViewInspection
