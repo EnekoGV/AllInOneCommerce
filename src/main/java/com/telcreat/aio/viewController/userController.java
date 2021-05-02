@@ -261,6 +261,11 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+            if (shop != null){
+                modelMap.addAttribute("loggedShopId",shop.getId());
+            }
+
             modelMap.addAttribute("pageTitle", "DendaGogokoenak");
 
             List<Shop> shops = userService.findFavoriteActiveShops(loggedId);
