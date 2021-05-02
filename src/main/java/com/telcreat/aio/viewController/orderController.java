@@ -1,8 +1,6 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Shop;
-import com.telcreat.aio.model.ShopOrder;
-import com.telcreat.aio.model.User;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +13,10 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 @Data
 @RequestScope
@@ -82,8 +84,23 @@ public class orderController {
                 modelMap.addAttribute("loggedShopId",shop.getId());
             }
 
+            List<CartQuantity> orderVariantsAndQuantities = new ArrayList<>();
+            ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(shopOrder.getVariants()));
+            int quantity;
+
+            for (int i=0; i<uniqueVariantList.size(); i++) {
+                CartQuantity cartQuantity = new CartQuantity();
+                Variant tempVariant = uniqueVariantList.get(i);
+                quantity = Collections.frequency(shopOrder.getVariants(), tempVariant);
+                cartQuantity.setQuantity(quantity);
+                cartQuantity.setVariant(tempVariant);
+                orderVariantsAndQuantities.add(cartQuantity);
+            }
+
             // View Order - ShopOrder List based on orderId
             modelMap.addAttribute("order", shopOrder);
+            modelMap.addAttribute("orderVariantQuantList", orderVariantsAndQuantities);
+
 
             return "orderProducts"; // Return order to order.html view
         }else{
