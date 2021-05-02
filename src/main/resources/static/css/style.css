@@ -955,13 +955,49 @@ hr.vr{
   position: absolute;
   background: transparent;
   font-weight: bold;
-  top: -70px;
-  left: 0px;
+  font-size: 13px;
+  top: -65px;
+  left: -8px;
   padding: 10px;
   color: white;
   transform: rotate(-45deg);
 }
 
+.product .product-grid4 {
+  background-size: cover;
+  background-position: top center;
+  background-repeat: no-repeat;
+  position: relative;
+  height: 70px;
+  width: 70px;
+  margin-bottom: 10px;
+  -webkit-transition: 0.3s;
+  -o-transition: 0.3s;
+  transition: 0.3s;
+}
+
+.product .product-grid4 .sale {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  padding: 10px;
+  width: 0;
+  height: 0;
+  border-top: 80px solid transparent;
+  border-right: 80px solid transparent;
+}
+
+.product .product-grid4 .sale .girau {
+  position: absolute;
+  background: transparent;
+  font-weight: bold;
+  font-size: 13px;
+  top: -65px;
+  left: -8px;
+  padding: 10px;
+  color: #d1c286;
+  transform: rotate(-45deg);
+}
 
 .product .product-grid .sale {
   position: absolute;
