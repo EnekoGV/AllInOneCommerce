@@ -146,7 +146,14 @@ public class orderController {
         if (isLogged && shopOrder != null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
             shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
+
             if (savedShopOrder != null){
+
+                for (Variant tempVariant : shopOrder.getVariants()){
+                    int tempStock = tempVariant.getStock();
+                    tempVariant.setStock(tempStock + 1);
+                    variantService.updateVariant(tempVariant);
+                }
 
                 // Send notification email
                 SendEmail sendEmail = new SendEmail();
