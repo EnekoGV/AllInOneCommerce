@@ -95,8 +95,8 @@ public class viewController {
 
 
 
-        ContactForm mail = new ContactForm();
-        modelMap.addAttribute("contactForm", mail);
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
 
         // Get remote IP debug
         // modelMap.addAttribute("clientIP", request.getRemoteAddr());
@@ -182,6 +182,23 @@ public class viewController {
         modelMap.addAttribute("pageTitle", "PribatutasunPolitika");
 
         return "pribatutasun-politika";
+    }
+
+    @RequestMapping(value = "/kontaktua", method = RequestMethod.GET)
+    public String viewKontaktua(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "Kontaktua");
+
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
+
+        return "kontaktua";
     }
 
 
