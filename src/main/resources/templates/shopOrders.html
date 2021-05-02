@@ -1,6 +1,6 @@
 <!DOCTYPE HTML>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head th:replace="fragments :: HTML_head" />
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head th:replace="fragments :: HTML_head"/>
 <body>
 <div class="fh5co-loader"></div>
 <div id="page">
@@ -10,154 +10,41 @@
         <div class="container">
             <div class="row animate-box">
                 <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
-                    <h2>Pedidos</h2>
+                    <h2>Dendaren Eskariak</h2>
                 </div>
             </div>
-            <div class="row product">
+            <div th:each="orderItem : ${orderList}" class="row product">
                 <div class="col-md-1 col-md-offset-2 animate-box">
                     <div class="product-grid4 sale">
 						<span class="sale">
-							<span class="girau">Estado</span>
+							<span th:text="${orderItem.shopOrderStatus.name()}" class="girau"></span>
 						</span>
                     </div>
                 </div>
                 <div class="col-md-3" style="margin-left: 40px;">
                     <div class="desc">
-                        <h3><a href="single.html">ID del pedido</a></h3>
-                        <p style="margin-bottom: 0%;">Nº Productos: 3</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2020</p>
+                        <h3><a th:text="'Eskaria: ' + ${orderItem.id}" th:href="@{/order(orderId=${orderItem.id})}"></a></h3>
+                        <p th:text="'Produktu kopurua eskarian: ' + ${orderItem.variants.size()}" style="margin-bottom: 0%;"></p>
+                        <p th:text="'Data: ' + ${orderItem.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
                     </div>
                 </div>
                 <div class="col-md-5 animate-box">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <select name="estadoId" class="btn" style="font-size: 16px;">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Pagado">Pagado</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <button class="btn">Cambiar estado</button>
-                            </div>
+                    <div class="row">
+                        <div class="col-md-10 text-right">
                         </div>
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <button type="submit" class="btn">Ver pedido</button>
-                            </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 text-right">
+                            <form th:action="@{/order(orderId=${orderItem.id})}" method="get">
+                                <input type="hidden" name="orderId" th:value="${orderItem.id}">
+                                <button type="submit" class="btn">Eskaria kudeatu</button>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
+                <br>
             </div>
             <br>
-            <div class="row product">
-                <div class="col-md-1 col-md-offset-2 animate-box">
-                    <div class="product-grid4 sale">
-						<span class="sale">
-							<span class="girau">Estado</span>
-						</span>
-                    </div>
-                </div>
-                <div class="col-md-3" style="margin-left: 40px;">
-                    <div class="desc">
-                        <h3><a href="single.html">ID del pedido</a></h3>
-                        <p style="margin-bottom: 0%;">Nº Productos: 3</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2020</p>
-                    </div>
-                </div>
-                <div class="col-md-5 animate-box">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <select name="estadoId" class="btn" style="font-size: 16px;">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Pagado">Pagado</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <button class="btn">Cambiar estado</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <button type="submit" class="btn">Ver pedido</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br>
-            <div class="row product">
-                <div class="col-md-1 col-md-offset-2 animate-box">
-                    <div class="product-grid4 sale">
-						<span class="sale">
-							<span class="girau">Estado</span>
-						</span>
-                    </div>
-                </div>
-                <div class="col-md-3" style="margin-left: 40px;">
-                    <div class="desc">
-                        <h3><a href="single.html">ID del pedido</a></h3>
-                        <p style="margin-bottom: 0%;">Nº Productos: 3</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2020</p>
-                    </div>
-                </div>
-                <div class="col-md-5 animate-box">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <select name="estadoId" class="btn" style="font-size: 16px;">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Pagado">Pagado</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <button class="btn">Cambiar estado</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <button type="submit" class="btn">Ver pedido</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br>
-            <div class="row product">
-                <div class="col-md-1 col-md-offset-2 animate-box">
-                    <div class="product-grid4 sale">
-						<span class="sale">
-							<span class="girau">Estado</span>
-						</span>
-                    </div>
-                </div>
-                <div class="col-md-3" style="margin-left: 40px;">
-                    <div class="desc">
-                        <h3><a href="single.html">ID del pedido</a></h3>
-                        <p style="margin-bottom: 0%;">Nº Productos: 3</p>
-                        <p style="margin-top: 0%;margin-bottom: 0%;">Fecha: 01/01/2020</p>
-                    </div>
-                </div>
-                <div class="col-md-5 animate-box">
-                    <form action="">
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <select name="estadoId" class="btn" style="font-size: 16px;">
-                                    <option value="Pendiente">Pendiente</option>
-                                    <option value="Pagado">Pagado</option>
-                                    <option value="Otro">Otro</option>
-                                </select>
-                                <button class="btn">Cambiar estado</button>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-10 text-right">
-                                <button type="submit" class="btn">Ver pedido</button>
-                            </div>
-                        </div>
-                    </form>
-                </div>
-            </div>
-            <br>
-
         </div>
     </div>
 

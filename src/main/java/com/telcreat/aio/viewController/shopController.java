@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Map;
 
 @Data
@@ -24,6 +25,7 @@ public class shopController {
     private final ShopService shopService;
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
+    private final ShopOrderService shopOrderService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -32,7 +34,7 @@ public class shopController {
     private boolean isOwner = false;
 
     @Autowired
-    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService) {
+    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, ShopOrderService shopOrderService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -49,6 +51,7 @@ public class shopController {
         }
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
+        this.shopOrderService = shopOrderService;
     }
 
     // Create Shop - There is no view here. Directly redirected to edition page.
@@ -246,7 +249,10 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
-            modelMap.addAttribute("loggedShopId", shop.getId());
+            Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
+            if (loggedShop != null){
+                modelMap.addAttribute("loggedShopId", loggedShop.getId());
+            }
 
             modelMap.addAttribute("shop", shop); // Send shop object
             modelMap.addAttribute("itemList", itemService.findActiveItemsByShopId(shop.getId())); // Send item list
@@ -299,6 +305,35 @@ public class shopController {
             //noinspection SpringMVCViewInspection
             return "redirect:/user?userId=" + shopId + "&updateError=true"; // Redirect if not allowed
         }
+    }
 
+
+    @RequestMapping(value = "/shop/myOrders", method = RequestMethod.GET)
+    public String viewShopOrders(@RequestParam(name = "shopId") int shopId,
+                                 ModelMap modelMap){
+
+        Shop shop = shopService.findActiveShopById(shopId);
+
+        if (isLogged && shop != null && loggedId == shop.getOwner().getId()) { // Security check
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
+            Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
+            if (loggedShop != null){
+                modelMap.addAttribute("loggedShopId", loggedShop.getId());
+            }
+
+            List<ShopOrder> shopOrderList = shopOrderService.findShopOrdersByShopId(shopId);
+            modelMap.addAttribute("orderList", shopOrderList);
+
+            return "shopOrders";
+
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
     }
 }
