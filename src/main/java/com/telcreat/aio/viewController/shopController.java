@@ -83,6 +83,7 @@ public class shopController {
     public String viewAndEditShop(@RequestParam(name = "edit", required = false, defaultValue = "false") boolean edit,
                                   @RequestParam(name = "shopId") int shopId,
                                   @RequestParam(name = "updateError", required = false, defaultValue = "false") boolean updateError,
+                                  @RequestParam(name = "updateSuccessful", required = false, defaultValue = "false") boolean updateSuccessful,
                                   @RequestParam(name = "addressError", required = false, defaultValue = "false") boolean addressError,
                                   ModelMap modelMap){
 
@@ -120,6 +121,7 @@ public class shopController {
             modelMap.addAttribute("edit", edit);
             modelMap.addAttribute("updateError", updateError);
             modelMap.addAttribute("addressError", addressError);
+            modelMap.addAttribute("updateSuccessful", updateSuccessful);
 
             return "editShop";
 
@@ -175,13 +177,13 @@ public class shopController {
             Shop savedShop = shopService.updateShop(shop);
 
             if(savedShop != null)
-                return "redirect:/shop/?shopId=" + shop.getId();
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&updateSuccessful=true";
             else
                 //noinspection SpringMVCViewInspection
-                return "redirect:/shop/edit?shopId=" + shop.getId() + "&updateError=true";
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&edit=true&updateError=true";
         }else
             //noinspection SpringMVCViewInspection
-            return "redirect:/shop?shopId=" + shopEditForm.getId() + "&updateError=true";
+            return "redirect:/?notAllowed";
     }
 
     // Shop Page View - Public
@@ -295,11 +297,11 @@ public class shopController {
                 shopPicture.setPath(imagePath);
                 pictureService.updatePicture(shopPicture); // Update Object
                 modelMap.clear();
-                return "redirect:/shop?shopId=" + shop.getId(); // Return to User View
+                return "redirect:/shop/edit?shopId=" + shop.getId() + "&updateSuccessful=true"; // Return to User View
             }
             else{
                 //noinspection SpringMVCViewInspection
-                return "redirect:/shop?shopId=" + shop.getId()+ "&updateError=true"; // Redirect if imagePath is null
+                return "redirect:/shop/edit?shopId=" + shop.getId()+ "&updateError=true"; // Redirect if imagePath is null
             }
 
         }
