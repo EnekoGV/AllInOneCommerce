@@ -11,6 +11,7 @@
 						<div class="col-md-6 col-md-offset-3 animate-box">
 							<h3 class="text-center" style="margin-bottom: 40px">Logeatu</h3>
 							<p th:if="${accountVerified} == true" style="color: green">Zure kontua ondo egiaztatu da!</p>
+							<p th:if="${logout}" class="text-right" style="color: green">Saioa ondo amaitu da.</p>
 							<form th:action="@{/auth}" method="post" th:object="${login}">
 								<div class="row form-group">
 									<div class="col-md-12">
