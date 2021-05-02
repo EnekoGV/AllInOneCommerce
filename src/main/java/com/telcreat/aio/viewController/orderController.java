@@ -120,6 +120,15 @@ public class orderController {
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
             if (savedShopOrder != null){
 
+                // If owner cancels the order, Stock must be updated
+                if (shopOrder.getShopOrderStatus() == ShopOrder.ShopOrderStatus.CANCELLED){
+                    for (Variant tempVariant : shopOrder.getVariants()){
+                        int tempStock = tempVariant.getStock();
+                        tempVariant.setStock(tempStock + 1);
+                        variantService.updateVariant(tempVariant);
+                    }
+                }
+
                 // Send notification email
                 SendEmail sendEmail = new SendEmail();
                 sendEmail.sendOrderStatusUpdateNotificationToUser(savedShopOrder);
