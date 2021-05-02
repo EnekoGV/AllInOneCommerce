@@ -136,7 +136,7 @@ public class orderController {
         }
     }
 
-    // Cancel Shop Order (Owner or Client can Cancel the Shop Order)
+    // Cancel Shop Order - Client can Cancel the Shop Order)
     @RequestMapping(value = "/order/edit/cancel", method = RequestMethod.POST)
     public String cancelOrder(@RequestParam(name = "orderId") int orderId,
                               ModelMap modelMap){
@@ -152,14 +152,14 @@ public class orderController {
                 SendEmail sendEmail = new SendEmail();
                 sendEmail.sendOrderCancelledNotification(savedShopOrder);
 
-                return "redirect:/order?orderId=" + shopOrder.getId();
+                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId();
             }
             else{
-                return "redirect:/order?orderId=" + shopOrder.getId() + "&orderUpdateError=true";
+                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&orderUpdateError=true";
             }
         }
         else{
-            return "redirect:/notAllowed";
+            return "redirect:/?notAllowed";
         }
     }
 
