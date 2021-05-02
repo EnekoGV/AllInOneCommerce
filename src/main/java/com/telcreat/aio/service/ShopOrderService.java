@@ -152,8 +152,9 @@ public class ShopOrderService {
     //AM - findNotCanceledNotDeliveredShopOrderById
     public ShopOrder findNotCanceledNotDeliveredShopOrderById(int shopOrderId){
         ShopOrder tempShopOrder = null;
-        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatusNotOrShopOrderStatusNot(shopOrderId, ShopOrder.ShopOrderStatus.CANCELLED, ShopOrder.ShopOrderStatus.DELIVERED);
-        if (foundShopOrder.isPresent()){
+        // Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatusNotOrShopOrderStatusNot(shopOrderId, ShopOrder.ShopOrderStatus.CANCELLED, ShopOrder.ShopOrderStatus.DELIVERED);
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findById(shopOrderId);
+        if (foundShopOrder.isPresent() && (foundShopOrder.get().getShopOrderStatus() != ShopOrder.ShopOrderStatus.CANCELLED && foundShopOrder.get().getShopOrderStatus() != ShopOrder.ShopOrderStatus.DELIVERED)){
             tempShopOrder = foundShopOrder.get();
         }
         return tempShopOrder;

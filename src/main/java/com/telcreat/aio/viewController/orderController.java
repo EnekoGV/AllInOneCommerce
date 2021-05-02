@@ -93,7 +93,7 @@ public class orderController {
 
     // Change Shop Order status
     @RequestMapping(value = "/order/edit/changeStatus", method = RequestMethod.POST)
-    public String changeOrderStatus(@RequestParam(name = "updateStatus") ShopOrder.ShopOrderStatus updateStatus,
+    public String changeOrderStatus(@RequestParam(name = "shopOrderStatus") ShopOrder.ShopOrderStatus updateStatus,
                                     @RequestParam(name = "orderId") int orderId,
                                     ModelMap modelMap){
         ShopOrder shopOrder = shopOrderService.findNotCanceledNotDeliveredShopOrderById(orderId);
