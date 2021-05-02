@@ -251,5 +251,35 @@ public class userController {
 
     }
 
+    @RequestMapping(value = "/user/favoriteShops", method = RequestMethod.GET)
+    public String viewUserFavorites(@RequestParam(name = "userId") int userId, ModelMap modelMap){
+
+        if (isLogged && loggedId == userId){
+
+            // DEFAULT INFORMATION IN ALL VIEWS
+            modelMap.addAttribute("isLogged", isLogged);
+            modelMap.addAttribute("loggedUserId", loggedId);
+            modelMap.addAttribute("loggedUserRole", loggedRole);
+            modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("pageTitle", "DendaGogokoenak");
+
+            List<Shop> shops = userService.findFavoriteActiveShops(loggedId);
+            modelMap.addAttribute("favoriteShops", shops);
+
+            return "favoriteShops";
+        }
+        else{
+            return "redirect:/?notAllowed";
+        }
+    }
+
+    @RequestMapping(value = "/unmarkfavorite", method = RequestMethod.POST)
+    public String unMarkFavorite(@RequestParam(name = "mark") int mark, @RequestParam(name = "shopId") int shopId, ModelMap modelMap){
+        if (mark == 1){
+            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
+        }
+        return "redirect:/user/favoriteShops?userId=" + loggedId;
+    }
+
 
 }
