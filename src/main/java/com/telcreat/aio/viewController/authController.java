@@ -28,6 +28,7 @@ public class authController {
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)
     public String register(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
                            @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
+                           @RequestParam(name = "accountVerified", required = false, defaultValue = "false") boolean accountVerified,
                            ModelMap modelMap){
 
         User login = new User();
@@ -38,6 +39,7 @@ public class authController {
         // Error control params
         modelMap.addAttribute("loginError", loginError); // Control param to display error message
         modelMap.addAttribute("registrationError", registrationError); // Control param to display error message
+        modelMap.addAttribute("accountVerified", accountVerified);
 
         return "auth";
     }
@@ -74,7 +76,7 @@ public class authController {
 
         boolean control = userService.validateUser(token, code); // Security check - Token and code integrity
         if (control){
-            return "redirect:/auth?OK";
+            return "redirect:/auth?accountVerified=true";
         }
         else{
             //noinspection SpringMVCViewInspection
