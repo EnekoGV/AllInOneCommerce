@@ -29,6 +29,7 @@ public class authController {
     public String register(@RequestParam(name = "registrationError", required = false, defaultValue = "false") boolean registrationError,
                            @RequestParam(name = "loginError", required = false, defaultValue = "false") boolean loginError, // Control param for login error
                            @RequestParam(name = "accountVerified", required = false, defaultValue = "false") boolean accountVerified,
+                           @RequestParam(name = "logout", required = false, defaultValue = "false")boolean logout,
                            ModelMap modelMap){
 
         User login = new User();
@@ -40,6 +41,8 @@ public class authController {
         modelMap.addAttribute("loginError", loginError); // Control param to display error message
         modelMap.addAttribute("registrationError", registrationError); // Control param to display error message
         modelMap.addAttribute("accountVerified", accountVerified);
+        modelMap.addAttribute("logout",logout);
+
 
         return "auth";
     }
