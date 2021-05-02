@@ -74,7 +74,7 @@ public class SendEmail {
 
     public void sendContactMail(ContactForm contactForm){
         String subject = contactForm.getSubject();
-        String email = "enekogonzalezvergara@gmail.com";
+        String email = "aio@telcreat.com";
         String part1 = "Mezu bat jaso da hurrengo erabiltzaileak bidalia: " + contactForm.getName() + " " + contactForm.getLastName() + "\n";
         String part2 = contactForm.getMessage();
 
