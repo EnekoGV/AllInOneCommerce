@@ -35,31 +35,12 @@
 									</div>
 								</div>
 								<div th:if="${isLogged}" class="icon" style="margin-top: 130px; margin-right: -20px;">
-									<div th:if="${!favoriteShops.contains(shop.id)}">
-										<form  th:action="@{/favorite}" method="post">
-											<input type="hidden" name="shopId" th:value="${shop.id}">
-											<input type="hidden" name="mark" value="0">
-											<button type="submit">
-												<i class="icon-star"></i>
-											</button>
-										</form>
-									</div>
-									<div th:if="${favoriteShops.contains(shop.id)}">
-										<form th:action="@{/favorite}" method="post">
-											<input type="hidden" name="shopId" th:value="${shop.id}">
-											<input type="hidden" name="mark" value="1">
-											<button type="submit">
-												<i class="icon-star2"></i>
-											</button>
-										</form>
-									</div>
-
-<!--
-									<a href="#">
-										<i th:if="${!favoriteShops.contains(shop.id)}" class="icon-star"></i>
-										<i th:if="${favoriteShops.contains(shop.id)}" class="icon-star2"></i>
-									</a>-->
-
+									<a th:if="${!favoriteShops.contains(shop)}" th:href="@{/favorite(shopId=${shop.id})}">
+										<i class="icon-star"></i>
+									</a>
+									<a th:if="${favoriteShops.contains(shop)}" th:href="@{/nofavorite(shopId=${shop.id})}">
+										<i class="icon-star2"></i>
+									</a>
 								</div>
 							</div>
 						</div>
