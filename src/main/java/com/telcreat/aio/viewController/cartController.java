@@ -49,6 +49,7 @@ public class cartController {
 
     @RequestMapping(value = "/cart", method = RequestMethod.GET)
     public String viewCart(@RequestParam(name = "userId")int userId,
+                           @RequestParam(name = "stockOverflow", required = false, defaultValue = "false")boolean stockOverflow,
                            ModelMap modelMap){
         Cart cart = cartService.findCartByUserId(userId);
         if (cart != null && isLogged && loggedId == userId && cart.getUser().getId() == loggedId){ // Allow editing only each user's profile.
@@ -64,6 +65,7 @@ public class cartController {
             }
             modelMap.addAttribute("loggedCartId",loggedCartId);
 
+            modelMap.addAttribute("stockOverflow", stockOverflow);
             List<CartQuantity> cartVariantsAndQuantities = new ArrayList<>();
             ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
             Collections.sort(uniqueVariantList);
@@ -166,6 +168,8 @@ public class cartController {
         Cart cart = cartService.findCartById(cartId);
         Variant variant = variantService.findActiveVariantById(variantId);
         if(variant != null && cart != null && cart.getUser().getId() == loggedId){
+            if(variant.getStock() == Collections.frequency(cart.getVariants(),variant))
+                return "redirect:/cart?userId="+loggedId+"&stockOverflow=true";
             cartService.addToCart(cart,variant);
             return "redirect:/cart?userId="+loggedId;
         }else
