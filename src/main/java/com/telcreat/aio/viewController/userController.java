@@ -278,13 +278,21 @@ public class userController {
         }
     }
 
-    @RequestMapping(value = "/unmarkfavorite", method = RequestMethod.POST)
-    public String unMarkFavorite(@RequestParam(name = "mark") int mark, @RequestParam(name = "shopId") int shopId, ModelMap modelMap){
-        if (mark == 1){
-            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
-        }
+    @RequestMapping(value = "/unmarkfavorite", method = RequestMethod.GET)
+    public String unMarkFavorite(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
+        userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
         return "redirect:/user/favoriteShops?userId=" + loggedId;
     }
 
+    @RequestMapping(value = "/favorite", method = RequestMethod.GET)
+    public String favoriteShop(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
+        userService.addFavoriteShop(loggedUser, shopService.findShopById(shopId));
+        return "redirect:/shop?shopId=" + shopId;
+    }
 
+    @RequestMapping(value = "/nofavorite", method = RequestMethod.GET)
+    public String noFavoriteShop(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
+        userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
+        return "redirect:/shop?shopId=" + shopId;
+    }
 }
