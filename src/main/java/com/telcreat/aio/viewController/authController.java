@@ -1,5 +1,7 @@
 package com.telcreat.aio.viewController;
 
+import com.telcreat.aio.model.Category;
+import com.telcreat.aio.model.SearchForm;
 import com.telcreat.aio.model.User;
 import com.telcreat.aio.model.VerificationToken;
 import com.telcreat.aio.service.*;
@@ -10,6 +12,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 @Controller
 @SessionAttributes({"searchForm", "categories"})
@@ -17,12 +20,25 @@ public class authController {
 
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
+    private final CategoryService categoryService;
 
     @Autowired
     public authController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
 
     //Register and Login page
     @RequestMapping(value = "/auth" , method = RequestMethod.GET)

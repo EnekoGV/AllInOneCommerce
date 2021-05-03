@@ -280,19 +280,40 @@ public class userController {
 
     @RequestMapping(value = "/unmarkfavorite", method = RequestMethod.GET)
     public String unMarkFavorite(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
-        userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
-        return "redirect:/user/favoriteShops?userId=" + loggedId;
+        Shop shop = shopService.findActiveShopById(shopId);
+        if (isLogged && shop != null){
+            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
+            return "redirect:/user/favoriteShops?userId=" + loggedId;
+        }
+        else{
+            //noinspection SpringMVCViewInspection
+            return "redirect:/user/favoriteShops?userId=" + loggedId + "&notAllowed";
+        }
     }
 
     @RequestMapping(value = "/favorite", method = RequestMethod.GET)
     public String favoriteShop(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
-        userService.addFavoriteShop(loggedUser, shopService.findShopById(shopId));
-        return "redirect:/shop?shopId=" + shopId;
+        Shop shop = shopService.findActiveShopById(shopId);
+        if (isLogged && shop != null){
+            userService.addFavoriteShop(loggedUser, shopService.findShopById(shopId));
+            return "redirect:/shop?shopId=" + shopId;
+        }
+        else{
+            return "redirect:/shop?shopId=" + shopId + "&notAllowed";
+        }
+
     }
 
     @RequestMapping(value = "/nofavorite", method = RequestMethod.GET)
     public String noFavoriteShop(@RequestParam(name = "shopId") int shopId, ModelMap modelMap){
-        userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
-        return "redirect:/shop?shopId=" + shopId;
+        Shop shop = shopService.findActiveShopById(shopId);
+        if (isLogged && shop != null){
+            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
+            return "redirect:/shop?shopId=" + shopId;
+        }
+        else{
+            return "redirect:/shop?shopId=" + shopId + "&notAllowed";
+        }
+
     }
 }

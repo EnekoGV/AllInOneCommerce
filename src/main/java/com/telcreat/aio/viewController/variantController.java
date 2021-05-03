@@ -1,9 +1,6 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Item;
-import com.telcreat.aio.model.Picture;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.model.Variant;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,6 +9,8 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Data
 @RequestScope
@@ -25,6 +24,7 @@ public class variantController {
     private final ShopService shopService;
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
+    private final CategoryService categoryService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -33,7 +33,7 @@ public class variantController {
     private boolean isOwner = false;
 
     @Autowired
-    public variantController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService) {
+    public variantController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -50,7 +50,19 @@ public class variantController {
         }
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
 
     @RequestMapping(value = "/variant/edit", method = RequestMethod.POST)
     public String receiveEditVariant(@RequestParam(name = "variantId") int variantId,
