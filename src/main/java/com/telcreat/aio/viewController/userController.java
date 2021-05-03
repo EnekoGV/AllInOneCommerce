@@ -226,6 +226,7 @@ public class userController {
     // List User's order list
     @RequestMapping(value = "/user/myOrders", method = RequestMethod.GET)
     public String viewUserOrders(@RequestParam(name = "userId") int userId,
+                                 @RequestParam(name = "canceled", required = false, defaultValue = "false")boolean canceled,
                                  ModelMap modelMap){
 
         if (isLogged && loggedId == userId){
@@ -235,6 +236,7 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("canceled", canceled);
             Shop shop = shopService.findActiveShopByOwnerId(loggedId);
             if (shop != null){
                 modelMap.addAttribute("loggedShopId",shop.getId());
