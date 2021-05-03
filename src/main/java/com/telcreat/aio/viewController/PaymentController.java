@@ -99,7 +99,7 @@ public class PaymentController {
         ShopOrder shopOrder = shopOrderService.findShopOrderById(orderId);
 
         //noinspection SpringMVCViewInspection
-        return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&paymentConfirmation=false";
+        return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&paymentFail=true";
     }
 
     @RequestMapping(method = RequestMethod.GET, value =
