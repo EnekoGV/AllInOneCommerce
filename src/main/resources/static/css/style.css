@@ -1371,10 +1371,10 @@ hr.vr{
 }
 
 #fh5co-footer {
+  position: relative;
   background: #efefef;
   width: 100%;
-  position: fixed;
-  bottom: 0;
+  bottom:0;
 }
 #fh5co-footer .fh5co-footer-links {
   padding: 0;
