@@ -35,8 +35,14 @@
                 </div>
               </div>
             </div>
+
           </div>
         </header>
+      </div>
+      <div th:if="${favoriteShops.size() <= 0}" class="container text-center animate-box" style="margin-top: 100px; margin-bottom: 150px">
+        <p>
+          Orain arte ez duzu denda gogokoenak aukeratu. Sartu denda baten profilera eta markatu bertan dagoen izarra.
+        </p>
       </div>
       <div th:replace="fragments :: footer"/>
     </div>
