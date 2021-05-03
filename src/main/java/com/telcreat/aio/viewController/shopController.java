@@ -202,10 +202,12 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+
             Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
             if (loggedShop != null){
                 modelMap.addAttribute("loggedShopId", loggedShop.getId());
             }
+
             if (isLogged){
                 List<Shop> favoriteShops = userService.findFavoriteActiveShops(loggedId);
                 modelMap.addAttribute("favoriteShops", favoriteShops);
@@ -347,21 +349,4 @@ public class shopController {
             return "redirect:/?notAllowed";
         }
     }
-
-    @RequestMapping(value = "/favorite", method = RequestMethod.POST)
-    public String markshopFavorite(@RequestParam(name = "mark") int mark, @RequestParam(name = "shopId") int shopId){
-
-        if (mark == 1){
-            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
-            System.out.println("Esto es una prueba de mark 1");
-        }else{
-            userService.addFavoriteShop(loggedUser, shopService.findShopById(shopId));
-            System.out.println("Esto es una prueba de mark 2");
-        }
-        return "redirect:/shop?shopId=" + shopId;
-    }
-
-
-
-
 }
