@@ -28,13 +28,8 @@
               <div class="col-md-3">
                 <div class="feature-center animate-box" data-animate-effect="fadeIn">
                   <div class="icon" style="margin-top: 130px; margin-right: -20px;">
-                      <form method="post" th:action="@{/unmarkfavorite}">
-                          <input type="hidden" name="shopId" th:value="${shop.id}">
-                          <input type="hidden" name="mark" value="1">
-                          <button type="submit">
-                              <i class="icon-star2"></i>
-                          </button>
-                      </form>
+                    <a th:href="@{/unmarkfavorite(shopId=${shop.id})}">
+                      <i class="icon-star2"></i>
                     </a>
                   </div>
                 </div>
