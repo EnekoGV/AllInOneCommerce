@@ -50,7 +50,6 @@
 								<div class="product-grid" th:style="'background-image:url(' + ${itemDistance.item.picture.path} + ');'">
 									<div class="inner">
 										<p>
-											<a href="item.html" class="icon"><i class="icon-shopping-cart"></i></a>
 											<a th:href="@{/item(itemId=${itemDistance.item.id})}" class="icon"><i class="icon-eye"></i></a>
 										</p>
 									</div>
@@ -61,11 +60,13 @@
 						<div class="col-md-5 animate-box">
 							<div class="product">
 								<div class="desc text-left" style="margin-top: 70px; margin-left: 20px">
-									<h3><p th:text="${itemDistance.item.name}"></p></h3>
-									<h3><p th:text="${itemDistance.item.shop.name}" style="margin-top: -10px"></p></h3>
+									<h3><a th:href="@{/item(itemId=${itemDistance.item.id})}"><p th:text="${itemDistance.item.name}"></p></a></h3>
+									<p th:text="${itemDistance.item.shortDescription}" style="margin-top: -20px"></p>
+									<h3><p th:if="${isLogged} == false" th:text="${itemDistance.item.shop.name}"></p></h3>
+									<h3><p th:if="${isLogged} == true" th:text="${itemDistance.item.shop.name}+' ('+${itemDistance.distance}+' km-tara)'"></p></h3>
 									<p th:text="${itemDistance.item.shop.addressAddress}" style="margin-top: -15px"></p>
 									<p th:text="${itemDistance.item.shop.addressCity} + ', ' + ${itemDistance.item.shop.billingPostNumber}" style="margin-top: -20px"></p>
-									<p th:text="${itemDistance.item.shortDescription}" style="margin-top: -20px"></p>
+
 								</div>
 							</div>
 						</div>
@@ -73,8 +74,7 @@
 							<div class="product">
 								<div class="desc text-center" style="margin-top: 100px">
 									<p th:if="${isLogged} == false" th:text="'Logea zaitez produktuaren prezioa eta distantzia ezagutzeko.'" style="color: #f80000;margin-top: 10px"></p>
-									<h3><p th:if="${isLogged} == true" th:text="'Distantzia: ' + ${itemDistance.distance}"></p></h3>
-									<h3><span th:if="${isLogged} == true" th:text="${itemDistance.item.price} + '€'" class="price"></span></h3>
+									<h3><span th:if="${isLogged} == true" th:text="${itemDistance.item.price} + '€'" class="price" style="font-size: 20px"></span></h3>
 								</div>
 							</div>
 						</div>
