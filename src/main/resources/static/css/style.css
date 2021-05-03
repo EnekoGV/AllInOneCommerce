@@ -1372,6 +1372,9 @@ hr.vr{
 
 #fh5co-footer {
   background: #efefef;
+  width: 100%;
+  position: fixed;
+  bottom: 0;
 }
 #fh5co-footer .fh5co-footer-links {
   padding: 0;
