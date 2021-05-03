@@ -26,6 +26,7 @@ public class shopController {
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
     private final ShopOrderService shopOrderService;
+    private final CategoryService categoryService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -34,7 +35,7 @@ public class shopController {
     private boolean isOwner = false;
 
     @Autowired
-    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, ShopOrderService shopOrderService) {
+    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, ShopOrderService shopOrderService, CategoryService categoryService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -52,7 +53,19 @@ public class shopController {
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
         this.shopOrderService = shopOrderService;
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
 
     // Create Shop - There is no view here. Directly redirected to edition page.
     @RequestMapping(value = "/shop/create", method = RequestMethod.GET)
@@ -202,10 +215,12 @@ public class shopController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+
             Shop loggedShop = shopService.findActiveShopByOwnerId(loggedId);
             if (loggedShop != null){
                 modelMap.addAttribute("loggedShopId", loggedShop.getId());
             }
+
             if (isLogged){
                 List<Shop> favoriteShops = userService.findFavoriteActiveShops(loggedId);
                 modelMap.addAttribute("favoriteShops", favoriteShops);
@@ -347,21 +362,4 @@ public class shopController {
             return "redirect:/?notAllowed";
         }
     }
-
-    @RequestMapping(value = "/favorite", method = RequestMethod.POST)
-    public String markshopFavorite(@RequestParam(name = "mark") int mark, @RequestParam(name = "shopId") int shopId){
-
-        if (mark == 1){
-            userService.deleteFavoriteShop(loggedUser, shopService.findShopById(shopId));
-            System.out.println("Esto es una prueba de mark 1");
-        }else{
-            userService.addFavoriteShop(loggedUser, shopService.findShopById(shopId));
-            System.out.println("Esto es una prueba de mark 2");
-        }
-        return "redirect:/shop?shopId=" + shopId;
-    }
-
-
-
-
 }

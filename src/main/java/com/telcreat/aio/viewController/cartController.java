@@ -19,6 +19,7 @@ public class cartController {
     private final ShopOrderService shopOrderService;
     private final VariantService variantService;
     private final ShopService shopService;
+    private final CategoryService categoryService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -28,7 +29,7 @@ public class cartController {
     private int loggedCartId;
 
     @Autowired
-    public cartController(CartService cartService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, ShopService shopService) {
+    public cartController(CartService cartService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, ShopService shopService, CategoryService categoryService) {
         this.cartService = cartService;
 
         this.loggedUser = userService.getLoggedUser();
@@ -45,7 +46,20 @@ public class cartController {
                 isOwner = true;
             }
         }
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
+
 
     @RequestMapping(value = "/cart", method = RequestMethod.GET)
     public String viewCart(@RequestParam(name = "userId")int userId,

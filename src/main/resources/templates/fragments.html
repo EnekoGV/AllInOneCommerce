@@ -183,6 +183,22 @@
 <!--      <script src="/js/google_map.js"></script>-->
       <script src="/js/main.js"></script>                    <!-- Main -->
       <script src="/js/search_carousel.js"></script>
+      <script>
+          $(document).ready(function() {
+              setInterval(function() {
+                  var docHeight = $(window).height();
+                  var footerHeight = $('#fh5co-footer').height();
+                  var footerTop = $('#fh5co-footer').position().top + footerHeight;
+                  var marginTop = (docHeight - footerTop + 10);
+
+                  if (footerTop < docHeight)
+                      $('#fh5co-footer').css('margin-top', marginTop + 'px'); // padding of 30 on footer
+                  else
+                      $('#fh5co-footer').css('margin-top', '0px');
+                  // console.log("docheight: " + docHeight + "\n" + "footerheight: " + footerHeight + "\n" + "footertop: " + footerTop + "\n" + "new docheight: " + $(window).height() + "\n" + "margintop: " + marginTop);
+              }, 250);
+          });
+      </script>
   </div>
 </body>
 </html>
