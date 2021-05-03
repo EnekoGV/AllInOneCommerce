@@ -26,6 +26,7 @@ public class shopController {
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
     private final ShopOrderService shopOrderService;
+    private final CategoryService categoryService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -34,7 +35,7 @@ public class shopController {
     private boolean isOwner = false;
 
     @Autowired
-    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, ShopOrderService shopOrderService) {
+    public shopController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, ShopOrderService shopOrderService, CategoryService categoryService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -52,7 +53,19 @@ public class shopController {
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
         this.shopOrderService = shopOrderService;
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
 
     // Create Shop - There is no view here. Directly redirected to edition page.
     @RequestMapping(value = "/shop/create", method = RequestMethod.GET)

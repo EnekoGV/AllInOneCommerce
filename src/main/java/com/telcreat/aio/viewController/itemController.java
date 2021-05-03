@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
+
 @Data
 @RequestScope
 @Controller
@@ -52,6 +54,18 @@ public class itemController {
         this.variantService = variantService;
         this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
+
 
     @RequestMapping(value = "/item", method = RequestMethod.GET)
     public String viewItem(@RequestParam(name = "itemId") int itemId,
