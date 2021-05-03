@@ -32,7 +32,7 @@
             <div id="fh5co-about">
                 <div class="container">
                     <div class="row animate-box">
-                        <div class="col-md-6 col-md-offset-1 text-right fh5co-heading">
+                        <div class="col-md-6 col-md-offset-3 text-center fh5co-heading">
                             <h2>Produktua gehitu</h2>
                             <p th:if="${updateError}" style="color: red">Errorea gertatu da informazioa gordetzean. Ziurtatu sartutako informazioa egokia dela.</p>
                             <p th:if="${variantDeleteError}" style="color: red">Errorea gertatu da produktuaren aldaera ezabatzerakoan.</p>
@@ -41,15 +41,70 @@
                             <p th:if="${createSuccessful}" style="color: green">Produktua ondo sortu da!</p>
                         </div>
                     </div>
-
-                    <div class="row">
-                        <div class="col-md-6 animate-box">
+                    <div class="col-md-6 col-md-offset-3 animate-box">
+                        <form th:action="@{/item/edit/uploadPicture}" method="post" enctype="multipart/form-data">
+                            <!-- <div class="row text-center">
+                                <div class="product">
+                                    <img th:src="${itemPicture.picture.path}" alt="p" class="product-grid2">
+                                </div>
+                            </div>-->
                             <div class="row">
-                                <div class="col-md-12 text-center">
-                                    <h3>VARIANTEAK</h3>
+                                <div class="col-md-6" style="margin-top: 15px;">
+                                    <label>Irudia igo</label>
+                                    <input type="hidden" name="itemId" th:value="${itemForm.id}">
+                                    <input type="file" name="itemPicture" accept=".jpg, .jpeg, .png" class="btn btn-group-xs">
+                                </div>
+                                <div class="col-md-6 text-right" style="margin-top: 50px;">
+                                    <button type="submit" class=" btn btn-primary icon"><i class="icon-upload2"></i></button>
                                 </div>
                             </div>
+                        </form>
+                        <form th:action="@{/item/edit}" th:object="${itemForm}" method="post">
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label th:for="*{name}">Produktuaren izena</label>
+                                    <input type="hidden" th:field="*{id}" th:value="${itemForm.id}">
+                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Produktuaren izena">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label th:for="*{itemCategory}">Kategoria</label>
+                                    <select th:field="*{itemCategory}" class="form-control" required="required">
+                                        <option th:each="category : ${categoryList}" th:text="${category.name}" th:value="${category.id}"></option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label th:for="*{price}">Prezioa</label>
+                                    <input type="number" min="0" step="0.01" th:field="*{price}" class="form-control" placeholder="Prezioa">
+                                </div>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label th:for="*{shortDescription}">Deskripzio laburra</label>
+                                </div>
+                                <textarea th:field="*{shortDescription}" class="form-control" style="margin-left: 15px;" cols="54" rows="2"></textarea>
+                            </div>
+                            <div class="row form-group">
+                                <div class="col-md-12">
+                                    <label th:for="*{longDescription}">Deskripzio luzea</label>
+                                </div>
+                                <textarea th:field="*{longDescription}" class="form-control" style="margin-left: 15px;" cols="60" rows="4"></textarea>
+                            </div>
+                            <div class="form-group text-right">
+                                <input type="submit" value="Produktua igo" class="btn btn-primary">
+                            </div>
+                        </form>
 
+                    </div>
+
+                    <div class="row">
+                        <div class="col-md-6 col-md-offset-3 text-center fh5co-heading animate-box">
+                            <h2>ALDAGAIAK</h2>
+                        </div>
+                        <div class="col-md-6 col-md-offset-3 animate-box">
                             <div th:each="variant : ${variantList}">
                                 <div class="row">
                                     <div class="col-md-3 text-left animate-box">
@@ -84,35 +139,30 @@
                                     </div>
                                 </div>
                                 <div th:if="${editVariantNumber} == ${variant.id}" class="row">
-                                    <div class="col-md-3 text-left animate-box">
-                                        <div class="product">
-                                            <img th:src="${variant.picture.path}" alt="p" class="product-grid2">
-                                        </div>
-                                    </div>
-                                    <div class="col-md-9 text-left animate-box">
+                                    <div class="col-md-12 animate-box" style="margin-left: 20px;">
                                         <div class="product row">
                                             <form th:action="@{/variant/edit}" method="post">
                                                 <div class="row">
-                                                    <div class="col-md-6 desc">
+                                                    <div class="col-md-4 desc">
                                                         <input type="hidden" name="variantId" th:value="${variant.id}">
                                                         <input type="text" name="variantName" th:value="${variant.name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
                                                     </div>
-                                                    <div class="col-md-5">
-                                                        <input type="number" name="variantStock" th:value="${variant.stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
+                                                    <div class="col-md-4">
+                                                        <input type="number" name="variantStock" th:value="${variant.stock}" class="form-control" style="width: 40%; height: 50%;" placeholder="Stock">
                                                     </div>
-                                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                                    <div class="col-md-4 text-left">
                                                         <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
                                                     </div>
                                                 </div>
                                             </form>
                                             <form th:action="@{/variant/edit/uploadPicture}" method="post" enctype="multipart/form-data">
                                                 <div class="row">
-                                                    <div class="col-md-6" style="margin-top: 15px;">
+                                                    <div class="col-md-8" style="margin-top: 15px;margin-left: -20px;">
                                                         <input type="hidden" name="variantId" th:value="${variant.id}">
                                                         <input type="file" name="variantPicture" accept=".jpg, .jpeg, .png" class="btn btn-group-xs">
                                                     </div>
-                                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
-                                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
+                                                    <div class="col-md-4" style="margin-top: 15px;">
+                                                        <button type="submit" class=" btn btn-group-xs">Irudia igo</button>
                                                     </div>
                                                 </div>
                                             </form>
@@ -124,14 +174,16 @@
 
                             <form th:action="@{/variant/edit/create}" method="post" th:object="${variantForm}">
                                 <div class="row">
-                                    <div class="col-md-6 desc">
+                                    <div class="col-md-5 desc">
+                                        <label>Aldagaiaren izena</label>
                                         <input type="hidden" name="itemId" th:value="${item.id}">
                                         <input type="text" th:field="*{name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
                                     </div>
                                     <div class="col-md-5">
+                                        <label>Stock</label>
                                         <input type="number" th:field="*{stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
                                     </div>
-                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
+                                    <div class="col-md-2 text-right" style="margin-top: 30px">
                                         <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
                                     </div>
                                 </div>
@@ -139,57 +191,7 @@
                             <hr>
                         </div>
 
-                        <div class="col-md-5 col-md-offset-1 animate-box">
-                            <form th:action="@{/item/edit}" th:object="${itemForm}" method="post">
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label th:for="*{name}">Produktuaren izena</label>
-                                        <input type="hidden" th:field="*{id}" th:value="${itemForm.id}">
-                                        <input type="text" th:field="*{name}" class="form-control" placeholder="Produktuaren izena">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label th:for="*{itemCategory}">Kategoria</label>
-                                        <select th:field="*{itemCategory}" class="form-control" required="required">
-                                            <option th:each="category : ${categoryList}" th:text="${category.name}" th:value="${category.id}"></option>
-                                        </select>
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label th:for="*{price}">Prezioa</label>
-                                        <input type="number" min="0" step="0.01" th:field="*{price}" class="form-control" placeholder="Prezioa">
-                                    </div>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label th:for="*{shortDescription}">Deskripzio laburra</label>
-                                    </div>
-                                    <textarea th:field="*{shortDescription}" class="form-control" style="margin-left: 15px;" cols="54" rows="2"></textarea>
-                                </div>
-                                <div class="row form-group">
-                                    <div class="col-md-12">
-                                        <label th:for="*{longDescription}">Deskripzio luzea</label>
-                                    </div>
-                                    <textarea th:field="*{longDescription}" class="form-control" style="margin-left: 15px;" cols="60" rows="4"></textarea>
-                                </div>
-                                <div class="form-group text-right">
-                                    <input type="submit" value="Produktua igo" class="btn btn-primary">
-                                </div>
-                            </form>
-                            <form th:action="@{/item/edit/uploadPicture}" method="post" enctype="multipart/form-data">
-                                <div class="row">
-                                    <div class="col-md-6" style="margin-top: 15px;">
-                                        <input type="hidden" name="itemId" th:value="${itemForm.id}">
-                                        <input type="file" name="itemPicture" accept=".jpg, .jpeg, .png" class="btn btn-group-xs">
-                                    </div>
-                                    <div class="col-md-6 text-right" style="margin-top: 25px;">
-                                        <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
-                                    </div>
-                                </div>
-                            </form>
-                        </div>
+
                     </div>
                 </div>
             </div>
