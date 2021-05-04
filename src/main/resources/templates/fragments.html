@@ -74,12 +74,13 @@
                   </div>
                   <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2" style="margin-top: 40px">
                       <ul>
-                          <li class="shopping-cart"><a th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
+                          <li class="shopping-cart"><a th:if="${isLogged == true}" th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
                           <li class="has-dropdown">
                               <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profila</a>
                               <a th:if="${isLogged == false}" href="/auth">Saioa hasi</a>
                               <ul th:if="${isLogged == true}" class="dropdown">
                                   <li><a th:href="@{/user/myOrders(userId=${loggedUserId})}">Nire eskariak</a></li>
+                                  <li><a th:if="${isOwner == true}" th:href="@{/shop/myOrders(shopId=${loggedShopId})}">Nire dendaren eskariak</a></li>
                                   <li><a th:if="${isOwner == false}" href="/shop/create">Sortu denda</a></li>
                                   <li><a th:if="${isOwner == true}" th:href="@{/shop(shopId=${loggedShopId})}">Nire denda</a></li>
                                   <li><a th:href="@{/user/favoriteShops(userId=${loggedUserId})}">Denda Gogokoenak</a></li>
