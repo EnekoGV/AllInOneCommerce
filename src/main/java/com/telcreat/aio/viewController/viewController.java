@@ -89,10 +89,13 @@ public class viewController {
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
         Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        int shops = shopService.findAllShops().size();
+        int users = userService.findAllUsers().size();
+        int products = variantService.findAllVariants().size();
+
         if (shop != null){
             modelMap.addAttribute("loggedShopId",shop.getId());
         }
-
 
 
         ContactForm contactForm = new ContactForm();
@@ -107,6 +110,10 @@ public class viewController {
         modelMap.addAttribute("orderDirection", orderDirection);
         modelMap.addAttribute("search", search);
         modelMap.addAttribute("pageTitle", "AIO");
+
+        modelMap.addAttribute("shopKop", shops);
+        modelMap.addAttribute("userKop", users);
+        modelMap.addAttribute("prodKop", products);
 
         // Item Search - Item List based on Category and Name search
         // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch

@@ -40,8 +40,8 @@
       <nav class="fh5co-nav" role="navigation">
           <div class="container">
               <div class="row">
-                  <div class="col-md-3 col-xs-2">
-                      <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="45px"></img></a>
+                  <div class="col-md-3 col-xs-2" style="margin-top: 20px">
+                      <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="50px"></img></a>
                   </div>
                   <div class="col-md-6 col-xs-6 text-center menu-2">
                       <form th:action="@{/search}" method="get" th:object="${searchForm}">
@@ -72,7 +72,7 @@
                           </ul>
                       </form>
                   </div>
-                  <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2">
+                  <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2" style="margin-top: 40px">
                       <ul>
                           <li class="shopping-cart"><a th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
                           <li class="has-dropdown">
