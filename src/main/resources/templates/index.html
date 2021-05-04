@@ -313,7 +313,7 @@
 											<span class="icon">
 												<i class="icon-user"></i>
 											</span>
-										<span class="counter js-counter" data-from="0" data-to="50000" data-speed="5000"
+										<span class="counter js-counter" data-from="0" th:data-to="${userKop}" data-speed="100"
 											  data-refresh-interval="50">1</span>
 										<span class="counter-label">ERABILTZAILE</span>
 									</div>
@@ -323,7 +323,7 @@
 											<span class="icon">
 												<i class="icon-shop"></i>
 											</span>
-										<span class="counter js-counter" data-from="0" data-to="10000" data-speed="5000" data-refresh-interval="50">1</span>
+										<span class="counter js-counter" data-from="0" th:data-to="${shopKop}" data-speed="100" data-refresh-interval="50">1</span>
 										<span class="counter-label">DENDA</span>
 									</div>
 								</div>
@@ -332,7 +332,7 @@
 											<span class="icon">
 												<i class="icon-dropbox"></i>
 											</span>
-										<span class="counter js-counter" data-from="0" data-to="1000000" data-speed="5000"
+										<span class="counter js-counter" data-from="0" th:data-to="${prodKop}" data-speed="100"
 											  data-refresh-interval="50">1</span>
 										<span class="counter-label">PRODUKTU</span>
 									</div>
