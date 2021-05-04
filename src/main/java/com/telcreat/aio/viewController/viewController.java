@@ -132,7 +132,8 @@ public class viewController {
     // Product Search View
     @RequestMapping(value = "/search", method = RequestMethod.GET)
     public String viewSearch(@ModelAttribute(name = "searchForm") SearchForm searchForm,
-                             ModelMap modelMap) throws IOException, GeoIp2Exception {
+                             ModelMap modelMap,
+                             HttpServletRequest request) throws IOException, GeoIp2Exception {
 
         // DEFAULT INFORMATION IN ALL VIEWS
         modelMap.addAttribute("isLogged", isLogged);
@@ -150,8 +151,8 @@ public class viewController {
         modelMap.addAttribute("search", searchForm.getSearch());
         modelMap.addAttribute("pageTitle", "Bilaketa");
 
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(searchForm.getSearch(),  searchForm.getCategoryId(), searchForm.getOrderCriteriaId(), searchForm.getOrderDirection(), "1.1.1.1"));
-        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(searchForm.getSearch(), searchForm.getCategoryId(), "1.1.1.1"));
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(searchForm.getSearch(),  searchForm.getCategoryId(), searchForm.getOrderCriteriaId(), searchForm.getOrderDirection(), request.getRemoteAddr()));
+        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(searchForm.getSearch(), searchForm.getCategoryId(), request.getRemoteAddr()));
         // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
         return "search";
     }

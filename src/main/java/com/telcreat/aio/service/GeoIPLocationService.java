@@ -17,7 +17,7 @@ public class GeoIPLocationService {
 
         //RawDBDemoGeoIPLocationService ---> Constructor
     public GeoIPLocationService() throws IOException {
-        File database = new File("src/main/resources/GeoLite2-City.mmdb");
+        File database = new File("/usr/local/tomcat8/webapps/aio/WEB-INF/classes/GeoLite2-City.mmdb");
         dbReader = new DatabaseReader.Builder(database).build();
     }
 

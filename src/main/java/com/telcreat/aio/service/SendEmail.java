@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class SendEmail {
 
-    private final String default_URL = "http://localhost:8080";
+    private final String default_URL = "https://aio.telcreat.com";
 
         //send ---> Function used for sending mails.
     public void sendVerification(String email, VerificationToken verificationToken) {
