@@ -38,7 +38,7 @@
 								<div class="desc">
 									<h3><a th:text="${variant.item.name}+' ('+${variant.item.shop.name}+')'" th:href="@{/item(itemId=${variant.item.id})}"></a></h3>
 									<p th:text="${variant.name}" style="margin-bottom: 0%;"></p>
-									<p th:text="'Data: ' + ${order.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+									<p th:text="'Data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
 								</div>
 								<div class="desc text-right" style="margin-top: 20px;">
 									<button class="btn btn-primary" type="submit">Ordaindu</button>

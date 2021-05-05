@@ -39,7 +39,7 @@
                         <h3><a th:href="@{/item(itemId=${variant.variant.item.id})}" th:text="${variant.variant.item.name}"></a></h3>
                         <p th:text="${variant.variant.name}" style="margin-bottom: 0%;"></p>
                         <p th:text="'Kopurua: ' + ${variant.quantity}" style="margin-bottom: 0%;"></p>
-                        <p th:text="'Eskariaren data: ' + ${order.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+                        <p th:text="'Eskariaren data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
                     </div>
                 </div>
                 <br>
