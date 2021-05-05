@@ -33,13 +33,13 @@ public class  ShopOrder {
     private float price;
 
     public enum ShopOrderStatus{
-        DELIVERED,
-        ON_THE_WAY,
-        PREPARING,
-        READY_TO_DELIVER,
-        CANCELLED,
-        ACCEPTED,
-        PENDING
+        ENTREGATUTA,
+        BIDEAN,
+        PRESTATZEN,
+        PRESTATUTA,
+        EZEZTATUTA,
+        BAIEZTATUTA,
+        BAIEZTATZEARREN
     }
 
     private ShopOrderStatus shopOrderStatus;
