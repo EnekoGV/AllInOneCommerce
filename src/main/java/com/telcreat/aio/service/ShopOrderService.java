@@ -118,7 +118,7 @@ public class ShopOrderService {
             for (Shop tempShop : uniqueShopList){
                 ArrayList<Variant> shopVariantList = new ArrayList<>();
                 float orderPrice = 0;
-                ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<>(), 0, ShopOrder.ShopOrderStatus.BAIEZTATZEARREN);
+                ShopOrder tempShopOrder = new ShopOrder(tempShop, cart.getUser(), new ArrayList<>(), 0, ShopOrder.ShopOrderStatus.BAIEZTATZEKE);
                 for(int i=0; i<cart.getVariants().size(); i++){
                     if (cart.getVariants().get(i).getItem().getShop() == tempShop){ // Does current Variant belong to current Shop?
                         orderPrice = orderPrice + cart.getVariants().get(i).getItem().getPrice(); // Update order price locally
@@ -142,7 +142,7 @@ public class ShopOrderService {
     //AM - findPendingShopOrderById ---> Returns Active Order with status PENDING
     public ShopOrder findPendingShopOrderById(int shopOrderId){
         ShopOrder tempShopOrder = null;
-        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatus(shopOrderId, ShopOrder.ShopOrderStatus.BAIEZTATZEARREN);
+        Optional<ShopOrder> foundShopOrder = shopOrderRepo.findShopOrderByIdAndShopOrderStatus(shopOrderId, ShopOrder.ShopOrderStatus.BAIEZTATZEKE);
         if (foundShopOrder.isPresent()){
             tempShopOrder = foundShopOrder.get();
         }

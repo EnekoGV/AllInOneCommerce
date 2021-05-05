@@ -39,7 +39,7 @@ public class  ShopOrder {
         PRESTATUTA,
         EZEZTATUTA,
         BAIEZTATUTA,
-        BAIEZTATZEARREN
+        BAIEZTATZEKE
     }
 
     private ShopOrderStatus shopOrderStatus;
