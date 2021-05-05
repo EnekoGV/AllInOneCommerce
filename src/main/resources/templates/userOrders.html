@@ -30,10 +30,7 @@
 										<span th:if="${order.shopOrderStatus.name()}=='BIDEAN'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 14px;top: -69px;left: -1px;"></span>
 										<span th:if="${order.shopOrderStatus.name()}=='BAIEZTATZEKE'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -63px;left: -15px;"></span>
 										<span th:if="${order.shopOrderStatus.name()}=='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -65px;left: -11px;"></span>
-										<span th:if="${order.shopOrderStatus.name()}=='PRESTATZEN'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
-										<span th:if="${order.shopOrderStatus.name()}=='PRESTATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
-										<span th:if="${order.shopOrderStatus.name()}=='EZEZTATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
-										<span th:if="${order.shopOrderStatus.name()}=='BAIEZTATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
+										<span th:if="${order.shopOrderStatus.name()}!='BIDEAN' and ${order.shopOrderStatus.name()}!='BAIEZTATZEKE' and ${order.shopOrderStatus.name()}!='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
 									</span>
 								</div>
 							</div>
