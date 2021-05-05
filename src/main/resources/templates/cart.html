@@ -36,14 +36,23 @@
 																	th:value="${quant}" th:selected="${quant==item.quantity}"></option>
 														</select>
 													</div>
-													<div class="col-md-6">
+													<div class="col-md-6 text-right">
 														<button type="submit" class="btn btn-primary btn-outline" style="margin-top: 2px">Kopurua aldatu</button>
 													</div>
 												</div>
 											</form>
 										</div>
+										<div class="row">
+											<div class="col-md-12 text-right" style="margin-top: 15px">
+												<form action="">
+													<button type="submit" class="btn btn-danger"><i class="icon-cross"></i></button>
+												</form>
+											</div>
+
+										</div>
+
 										<div class="desc text-right" style="margin-top: 15px">
-											<span th:text="${item.variant.item.price}+'€'" class="price text-right bottom"></span>
+											<span th:text="${item.variant.item.price}+'€'" class="price text-right bottom" style="font-size: 25px"></span>
 										</div>
 									</div>
 								</div>
