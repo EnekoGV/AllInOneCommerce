@@ -74,7 +74,7 @@
                   </div>
                   <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2" style="margin-top: 40px">
                       <ul>
-                          <li class="shopping-cart"><a th:if="${isLogged == true}" th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small>0</small><i class="icon-shopping-cart"></i></span></a></li>
+                          <li class="shopping-cart"><a th:if="${isLogged == true}" th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small th:text="${cartItemNumber}"></small><i class="icon-shopping-cart"></i></span></a></li>
                           <li class="has-dropdown">
                               <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profila</a>
                               <a th:if="${isLogged == false}" href="/auth">Saioa hasi</a>
