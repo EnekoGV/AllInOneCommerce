@@ -63,7 +63,7 @@
 									<h3><a th:href="@{/item(itemId=${itemDistance.item.id})}"><p th:text="${itemDistance.item.name}"></p></a></h3>
 									<p th:text="${itemDistance.item.shortDescription}" style="margin-top: -20px"></p>
 									<h3><p th:if="${isLogged} == false" th:text="${itemDistance.item.shop.name}"></p></h3>
-									<h3><p th:if="${isLogged} == true" th:text="${itemDistance.item.shop.name}+' ('+${itemDistance.distance}+' km-tara)'"></p></h3>
+									<h3><p th:if="${isLogged} == true" th:text="${itemDistance.item.shop.name}+' ('+${#numbers.formatDecimal(itemDistance.distance, 0, 'POINT', 2, 'COMMA')}+' km-tara)'"></p></h3>
 									<p th:text="${itemDistance.item.shop.addressAddress}" style="margin-top: -15px"></p>
 									<p th:text="${itemDistance.item.shop.addressCity} + ', ' + ${itemDistance.item.shop.billingPostNumber}" style="margin-top: -20px"></p>
 
