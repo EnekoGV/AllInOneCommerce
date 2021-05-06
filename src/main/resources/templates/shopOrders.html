@@ -25,7 +25,7 @@
                     <div class="desc">
                         <h3><a th:text="'Eskaria: ' + ${orderItem.id}" th:href="@{/order(orderId=${orderItem.id})}"></a></h3>
                         <p th:text="'Produktu kopurua eskarian: ' + ${orderItem.variants.size()}" style="margin-bottom: 0%;"></p>
-                        <p th:text="'Data: ' + ${orderItem.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+                        <p th:text="'Data: ' + ${#temporals.format(orderItem.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
                     </div>
                 </div>
                 <div class="col-md-5 animate-box">

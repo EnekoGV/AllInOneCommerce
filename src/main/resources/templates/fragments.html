@@ -102,7 +102,7 @@
                   <div class="product">
                       <div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture.path} + ');'">
                           <a class="inner"  th:href="@{/shop(shopId=${shop.shop.id})}"></a>
-                          <div class="text-center" th:text="${shop.shop.name} + ' (' + ${shop.distance} + 'km)'"/>
+                          <div class="text-center" th:text="${shop.shop.name} + ' (' + ${#numbers.formatDecimal(shop.distance, 0, 'POINT', 2, 'COMMA')} + 'km)'"/>
 <!--                          <a th:href="@{/shop(shopId=${shop.shop.id})}" class="text-center info" style="margin-top: 40px" th:text="${shop.shop.addressAddress}"/>-->
 
                       </div>

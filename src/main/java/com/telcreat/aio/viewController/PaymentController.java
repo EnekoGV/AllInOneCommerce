@@ -111,7 +111,7 @@ public class PaymentController {
         try {
             Payment payment = paypalService.executePayment(paymentId, payerId);
             if(payment.getState().equals("approved") && shopOrder != null){
-                shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.ACCEPTED);
+                shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.BAIEZTATUTA);
                 ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
 
                 // Send notification email
