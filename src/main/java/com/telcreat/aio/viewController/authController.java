@@ -15,7 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"searchForm", "categories"})
+@RequestScope
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class authController {
 
     private final UserService userService;
@@ -49,6 +50,18 @@ public class authController {
     @ModelAttribute("categories")
     public List<Category> setUpSearchCategories(){
         return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
 
 
