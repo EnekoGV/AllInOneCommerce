@@ -12,7 +12,7 @@ import java.util.*;
 
 @Controller
 @RequestScope
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 
 public class cartController {
     private final CartService cartService;
@@ -57,6 +57,18 @@ public class cartController {
     @ModelAttribute("categories")
     public List<Category> setUpSearchCategories(){
         return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
 
 
@@ -109,11 +121,13 @@ public class cartController {
 
     @RequestMapping(value = "/cart/delete", method = RequestMethod.POST)
     public String deleteCartItem(@RequestParam(name = "variantId")int variantId,
-                                       @RequestParam(name = "cartId")int cartId){
+                                 @RequestParam(name = "cartId")int cartId,
+                                 ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
             cart.getVariants().removeIf(n -> (n.getId() == variantId));
             cartService.updateCart(cart);
+            modelMap.put("cartItemNumber", updateCartItemNumber());
             return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";
@@ -151,7 +165,8 @@ public class cartController {
     @RequestMapping(value = "/cart/update", method = RequestMethod.POST)
     public String updateItemQuantity(@RequestParam(name = "variantId")int variantId,
                                      @RequestParam(name = "cartId")int cartId,
-                                     @RequestParam(name = "quantity") int newQuantity){
+                                     @RequestParam(name = "quantity") int newQuantity,
+                                     ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == loggedUser.getId()){
             ArrayList<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
@@ -170,6 +185,7 @@ public class cartController {
             }
 
             cartService.updateCart(cart);
+            modelMap.put("cartItemNumber", updateCartItemNumber());
             return "redirect:/cart?userId="+loggedUser.getId();
         }else
             return "redirect:/";
@@ -185,6 +201,7 @@ public class cartController {
             if(variant.getStock() == Collections.frequency(cart.getVariants(),variant))
                 return "redirect:/cart?userId="+loggedId+"&stockOverflow=true";
             cartService.addToCart(cart,variant);
+            modelMap.put("cartItemNumber", updateCartItemNumber());
             return "redirect:/cart?userId="+loggedId;
         }else
             return "redirect:/";
@@ -192,7 +209,8 @@ public class cartController {
 
     @RequestMapping(value = "/cart/createOrder", method = RequestMethod.POST)
     public String createOrder(@ModelAttribute(name = "cart")int cartId,
-                              @RequestParam(name = "userId")int userId){
+                              @RequestParam(name = "userId")int userId,
+                              ModelMap modelMap){
         Cart cart = cartService.findCartById(cartId);
         if(cart != null && cart.getUser().getId() == userId && loggedId == userId){
             if (cart.getVariants().size() != 0){
@@ -200,10 +218,12 @@ public class cartController {
                 if(shopOrders == null) {
                     cart.setVariants(new ArrayList<>());
                     cartService.updateCart(cart);
+                    modelMap.put("cartItemNumber", updateCartItemNumber());
                     return "redirect:/?NotEnoughStock";
                 }else {
                     cart.setVariants(new ArrayList<>());
                     cartService.updateCart(cart);
+                    modelMap.put("cartItemNumber", updateCartItemNumber());
                     return "redirect:/user/myOrders?userId=" + userId;
                 }
             }

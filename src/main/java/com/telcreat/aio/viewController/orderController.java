@@ -18,7 +18,7 @@ import java.util.List;
 @Data
 @RequestScope
 @Controller
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class orderController {
 
     private final CartService cartService;
@@ -72,6 +72,18 @@ public class orderController {
     @ModelAttribute("categories")
     public List<Category> setUpSearchCategories(){
         return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
 
     // Search View
@@ -128,7 +140,7 @@ public class orderController {
             if (savedShopOrder != null){
 
                 // If owner cancels the order, Stock must be updated
-                if (shopOrder.getShopOrderStatus() == ShopOrder.ShopOrderStatus.CANCELLED){
+                if (shopOrder.getShopOrderStatus() == ShopOrder.ShopOrderStatus.EZEZTATUTA){
                     for (Variant tempVariant : shopOrder.getVariants()){
                         int tempStock = tempVariant.getStock();
                         tempVariant.setStock(tempStock + 1);
@@ -160,7 +172,7 @@ public class orderController {
         ShopOrder shopOrder = shopOrderService.findPendingShopOrderById(orderId); // Can only be cancelled when it's PENDING
 
         if (isLogged && shopOrder != null && (loggedId == shopOrder.getUser().getId() || loggedId == shopOrder.getShop().getOwner().getId())){
-            shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.CANCELLED);
+            shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.EZEZTATUTA);
             ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
 
             if (savedShopOrder != null){

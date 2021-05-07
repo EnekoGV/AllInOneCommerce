@@ -11,7 +11,7 @@
                 <div class="col-md-7 text-right fh5co-heading">
                     <h2 th:text="'ESKARIA: ' + ${order.id}"></h2>
                 </div>
-                <form th:if="${order.shopOrderStatus.name()} != 'DELIVERED' and ${order.shopOrderStatus.name()} != 'CANCELLED'" th:action="@{/order/edit/changeStatus}" method="post">
+                <form th:if="${order.shopOrderStatus.name()} != 'ENTREGATUTA' and ${order.shopOrderStatus.name()} != 'EZEZTATUTA'" th:action="@{/order/edit/changeStatus}" method="post">
                     <div class="col-md-3 text-right">
                         <input type="hidden" name="orderId" th:value="${order.id}">
                         <select th:field="${order.shopOrderStatus}" class="btn" style="font-size: 16px;">
@@ -27,7 +27,10 @@
                 <div class="col-md-2 col-md-offset-2 animate-box">
                     <div class="product-grid3" th:style="'background-image:url(' + ${variant.variant.picture.path} + ');'">
 						<span class="sale">
-							<span th:text="${order.shopOrderStatus.name()}" class="girau"></span>
+							<span th:if="${order.shopOrderStatus.name()}=='BIDEAN'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 14px;top: -69px;left: -1px;"></span>
+							<span th:if="${order.shopOrderStatus.name()}=='BAIEZTATZEKE'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -63px;left: -15px;"></span>
+							<span th:if="${order.shopOrderStatus.name()}=='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -65px;left: -11px;"></span>
+							<span th:if="${order.shopOrderStatus.name()}!='BIDEAN' and ${order.shopOrderStatus.name()}!='BAIEZTATZEKE' and ${order.shopOrderStatus.name()}!='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
 						</span>
                     </div>
                 </div>
@@ -36,7 +39,7 @@
                         <h3><a th:href="@{/item(itemId=${variant.variant.item.id})}" th:text="${variant.variant.item.name}"></a></h3>
                         <p th:text="${variant.variant.name}" style="margin-bottom: 0%;"></p>
                         <p th:text="'Kopurua: ' + ${variant.quantity}" style="margin-bottom: 0%;"></p>
-                        <p th:text="'Eskariaren data: ' + ${order.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+                        <p th:text="'Eskariaren data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
                     </div>
                 </div>
                 <br>

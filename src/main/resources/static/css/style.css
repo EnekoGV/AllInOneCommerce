@@ -955,9 +955,9 @@ hr.vr{
   position: absolute;
   background: transparent;
   font-weight: bold;
-  font-size: 13px;
-  top: -65px;
-  left: -8px;
+  font-size: 12px;
+  top: -68px;
+  left: -12px;
   padding: 10px;
   color: white;
   transform: rotate(-45deg);

@@ -12,13 +12,15 @@ import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 
 @Data
 @RequestScope
 @Controller
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class viewController {
 
     private final CartService cartService;
@@ -75,6 +77,18 @@ public class viewController {
         return categoryService.findAllCategories();
     }
 
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
+    }
+
     // Search View
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
@@ -89,10 +103,13 @@ public class viewController {
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
         Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        int shops = shopService.findAllShops().size();
+        int users = userService.findAllUsers().size();
+        int products = variantService.findAllVariants().size();
+
         if (shop != null){
             modelMap.addAttribute("loggedShopId",shop.getId());
         }
-
 
 
         ContactForm contactForm = new ContactForm();
@@ -107,6 +124,12 @@ public class viewController {
         modelMap.addAttribute("orderDirection", orderDirection);
         modelMap.addAttribute("search", search);
         modelMap.addAttribute("pageTitle", "AIO");
+
+        modelMap.addAttribute("shopKop", shops);
+        modelMap.addAttribute("userKop", users);
+        modelMap.addAttribute("prodKop", products);
+
+        modelMap.put("cartItemNumber", updateCartItemNumber());
 
         // Item Search - Item List based on Category and Name search
         // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch

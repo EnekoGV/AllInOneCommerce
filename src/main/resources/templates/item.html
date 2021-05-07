@@ -19,8 +19,7 @@
 				<div class="col-md-8 text-right">
 					<div class="display-t">
 						<div class="display-tc animate-box" data-animate-effect="fadeIn">
-							<h1 th:text="${item.shop.name}">
-							</h1>
+                            <a th:href="@{/shop(shopId=${item.shop.id})}"><h1 th:text="${item.shop.name}"></h1></a>
 						</div>
 					</div>
 				</div>
@@ -31,16 +30,16 @@
 	<div class="fh5co-product">
         <div class="container">
             <div class="row" >
-                <div class="col-md-6 col-md-offset-0 animate-box">
+                <div class="col-md-5 col-md-offset-1 animate-box" style="margin-top: 50px;">
                     <div class="owl-carousel owl-carousel-fullwidth product-carousel">
-                        <div class="item">
+                        <div class="item" style="height: auto;width: auto;max-height: 500px;max-width: 600px">
                             <div class="active text-center">
                                 <figure>
                                     <img th:src="${item.picture.path}" alt="user">
                                 </figure>
                             </div>
                         </div>
-                        <div th:each="variant : ${variantList}" class="item">
+                        <div th:each="variant : ${variantList}" class="item" style="height: auto;width: auto;max-height: 500px;max-width: 600px">
                             <div class="active text-center">
                                 <figure>
                                     <img th:src="${variant.picture.path}" alt="user">

@@ -1,32 +1,45 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.Category;
-import com.telcreat.aio.model.SearchForm;
-import com.telcreat.aio.model.User;
-import com.telcreat.aio.model.VerificationToken;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Controller
-@SessionAttributes({"searchForm", "categories"})
+@RequestScope
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class authController {
 
     private final UserService userService;
     private final VerificationTokenService verificationTokenService;
     private final CategoryService categoryService;
 
+    private final User loggedUser;
+    private boolean isLogged = false;
+    private int loggedId;
+
+    private final CartService cartService;
+
     @Autowired
-    public authController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
+    public authController(ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request, CartService cartService) {
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
         this.categoryService = categoryService;
+        this.cartService = cartService;
+        loggedUser = userService.getLoggedUser();
+        if(loggedUser != null){
+            isLogged = true;
+            loggedId = loggedUser.getId();
+        }
     }
 
     @ModelAttribute("searchForm")
@@ -37,6 +50,18 @@ public class authController {
     @ModelAttribute("categories")
     public List<Category> setUpSearchCategories(){
         return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
 
 
