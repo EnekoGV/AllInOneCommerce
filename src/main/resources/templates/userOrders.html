@@ -13,6 +13,9 @@
 							<h2>Egindako eskariak</h2>
 						</div>
 					</div>
+					<p th:if="${canceled}" style="color: green">Zure eskaria ondo ezabatu da</p>
+					<p th:if="${paymentFail}" style="color: green">Zure eskariaren ordainketa bertan behera utzi da</p>
+					<p th:if="${paymentConfirmation}" style="color: green">Zure eskariaren ordainketa arrakastatsua izan da</p>
 					<div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
 						<br/>
 						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/order/edit/cancel}" method="post">

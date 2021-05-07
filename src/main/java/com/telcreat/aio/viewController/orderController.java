@@ -187,7 +187,7 @@ public class orderController {
                 SendEmail sendEmail = new SendEmail();
                 sendEmail.sendOrderCancelledNotification(savedShopOrder);
 
-                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId();
+                return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId()+"&canceled=true";
             }
             else{
                 return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&orderUpdateError=true";

@@ -12,7 +12,7 @@
 							<h2>SASKIA</h2>
 						</div>
 					</div>
-
+					<p th:if="${stockOverflow}" style="color: green">Produktu honek ez du beharrezko stock-a</p>
 					<div th:if="${variantsAndQuantities.size() > 0}" th:each="item : ${variantsAndQuantities}" class="row">
 						<div class="col-md-6 col-md-offset-3">
 							<div class="row">

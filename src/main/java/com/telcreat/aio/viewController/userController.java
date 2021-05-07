@@ -254,6 +254,9 @@ public class userController {
     // List User's order list
     @RequestMapping(value = "/user/myOrders", method = RequestMethod.GET)
     public String viewUserOrders(@RequestParam(name = "userId") int userId,
+                                 @RequestParam(name = "canceled", required = false, defaultValue = "false")boolean canceled,
+                                 @RequestParam(name = "paymentConfirmation",required = false,defaultValue = "false")boolean paymentConfirmation,
+                                 @RequestParam(name = "paymentFail",required = false,defaultValue = "false")boolean paymentFail,
                                  ModelMap modelMap){
 
         if (isLogged && loggedId == userId){
@@ -263,6 +266,10 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("canceled", canceled);
+            modelMap.addAttribute("paymentFail", paymentFail);
+            modelMap.addAttribute("paymentConfirmation",paymentConfirmation);
+
             Shop shop = shopService.findActiveShopByOwnerId(loggedId);
             if (shop != null){
                 modelMap.addAttribute("loggedShopId",shop.getId());
