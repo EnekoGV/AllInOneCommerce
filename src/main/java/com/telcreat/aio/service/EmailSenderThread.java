@@ -23,11 +23,11 @@ public class EmailSenderThread implements Runnable{
     }
 
     public void sendEmail(String email, String subject, String messageText) {
-        final String sender = "aio@telcreat.com";
-        final String password = "Es8qYcGcpmvs";
+        final String sender = "info@aio.telcreat.com";
+        final String password = "ogt5BhrTZxHp";
 
         Properties props = new Properties();
-        props.put("mail.smtp.host", "mail.atreshost.com");
+        props.put("mail.smtp.host", "server.aresti.eus");
         props.put("mail.smtp.port", "465");
         props.put("mail.smtp.auth", "true");
         props.setProperty("mail.smtp.ssl.enable", "true");

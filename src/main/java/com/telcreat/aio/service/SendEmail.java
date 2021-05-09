@@ -12,7 +12,7 @@ import java.util.Properties;
 
 public class SendEmail {
 
-    private final String default_URL = "https://aio.telcreat.com";
+    private final String default_URL = "http://aio.telcreat.com:8080";
 
         //send ---> Function used for sending mails.
     public void sendVerification(String email, VerificationToken verificationToken) {
@@ -21,6 +21,9 @@ public class SendEmail {
         String userCodeLink = "\nEnter your code here: " + default_URL +  "/auth/verification?token=" + verificationToken.getToken();
         String userPasswordRecoveryLink = "\n\n\nIf you think there is something wrong, change your password: " + default_URL +  "/auth/recoverPassword?token=" + verificationToken.getToken() + "&code=" + verificationToken.getCode();
         String messageText = userCode + userCodeLink + userPasswordRecoveryLink;
+
+        /*EmailSenderThread emailSenderThread = new EmailSenderThread(email, subject, messageText);
+        emailSenderThread.run();*/
 
         Thread thread = new Thread(new EmailSenderThread(email, subject, messageText));
         thread.start();
