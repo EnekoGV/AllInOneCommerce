@@ -12,13 +12,15 @@ import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 @Data
 @Controller
 @RequestScope
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class userController {
 
 
@@ -28,15 +30,17 @@ public class userController {
     private final FileUploaderService fileUploaderService;
     private final ShopService shopService;
     private final ShopOrderService shopOrderService;
+    private final CategoryService categoryService;
+    private CartService cartService;
 
-    private User loggedUser;
+    private final User loggedUser;
     private boolean isLogged = false;
     private User.UserRole loggedRole = User.UserRole.CLIENT;
     private int loggedId;
     private boolean isOwner;
 
     @Autowired
-    public userController(CartService cartService, ItemService itemService, PictureService pictureService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request, ShopOrderService shopOrderService) {
+    public userController(CartService cartService, ItemService itemService, PictureService pictureService, UserService userService, VariantService variantService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request, ShopOrderService shopOrderService, CategoryService categoryService) {
         this.pictureService = pictureService;
         this.userService = userService;
         this.verificationTokenService = verificationTokenService;
@@ -53,7 +57,31 @@ public class userController {
                 isOwner = true;
             }
         }
+        this.categoryService = categoryService;
     }
+
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
+    }
+
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
+    }
+
 
 
     // View and edit profile
@@ -99,7 +127,7 @@ public class userController {
 
             return "editUser";
         }else{
-            return "redirect:/";
+            return "redirect:/?notAllowed";
         }
     }
 
@@ -226,6 +254,9 @@ public class userController {
     // List User's order list
     @RequestMapping(value = "/user/myOrders", method = RequestMethod.GET)
     public String viewUserOrders(@RequestParam(name = "userId") int userId,
+                                 @RequestParam(name = "canceled", required = false, defaultValue = "false")boolean canceled,
+                                 @RequestParam(name = "paymentConfirmation",required = false,defaultValue = "false")boolean paymentConfirmation,
+                                 @RequestParam(name = "paymentFail",required = false,defaultValue = "false")boolean paymentFail,
                                  ModelMap modelMap){
 
         if (isLogged && loggedId == userId){
@@ -235,6 +266,10 @@ public class userController {
             modelMap.addAttribute("loggedUserId", loggedId);
             modelMap.addAttribute("loggedUserRole", loggedRole);
             modelMap.addAttribute("isOwner", isOwner);
+            modelMap.addAttribute("canceled", canceled);
+            modelMap.addAttribute("paymentFail", paymentFail);
+            modelMap.addAttribute("paymentConfirmation",paymentConfirmation);
+
             Shop shop = shopService.findActiveShopByOwnerId(loggedId);
             if (shop != null){
                 modelMap.addAttribute("loggedShopId",shop.getId());

@@ -10,12 +10,14 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.annotation.RequestScope;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
 @Data
 @RequestScope
 @Controller
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class variantController {
 
     private final ItemService itemService;
@@ -25,6 +27,7 @@ public class variantController {
     private final FileUploaderService fileUploaderService;
     private final VariantService variantService;
     private final CategoryService categoryService;
+    private final CartService cartService;
 
     private User loggedUser;
     private boolean isLogged = false;
@@ -33,7 +36,7 @@ public class variantController {
     private boolean isOwner = false;
 
     @Autowired
-    public variantController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService) {
+    public variantController(ItemService itemService, PictureService pictureService, UserService userService, FileUploaderService fileUploaderService, ShopService shopService, VariantService variantService, CategoryService categoryService, CartService cartService) {
         this.itemService = itemService;
         this.pictureService = pictureService;
         this.userService = userService;
@@ -51,6 +54,7 @@ public class variantController {
         this.fileUploaderService = fileUploaderService;
         this.variantService = variantService;
         this.categoryService = categoryService;
+        this.cartService = cartService;
     }
 
     @ModelAttribute("searchForm")
@@ -61,6 +65,18 @@ public class variantController {
     @ModelAttribute("categories")
     public List<Category> setUpSearchCategories(){
         return categoryService.findAllCategories();
+    }
+
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
 
 

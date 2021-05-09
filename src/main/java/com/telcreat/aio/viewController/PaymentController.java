@@ -27,7 +27,7 @@ import org.springframework.web.context.annotation.RequestScope;
 
 @Controller
 @RequestScope
-@SessionAttributes({"searchForm", "categories"})
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class PaymentController {
 
     public static final String PAYPAL_SUCCESS_URL = "/payment/success";
@@ -99,7 +99,7 @@ public class PaymentController {
         ShopOrder shopOrder = shopOrderService.findShopOrderById(orderId);
 
         //noinspection SpringMVCViewInspection
-        return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&paymentConfirmation=false";
+        return "redirect:/user/myOrders?userId=" + shopOrder.getUser().getId() + "&paymentFail=true";
     }
 
     @RequestMapping(method = RequestMethod.GET, value =
@@ -111,7 +111,7 @@ public class PaymentController {
         try {
             Payment payment = paypalService.executePayment(paymentId, payerId);
             if(payment.getState().equals("approved") && shopOrder != null){
-                shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.ACCEPTED);
+                shopOrder.setShopOrderStatus(ShopOrder.ShopOrderStatus.BAIEZTATUTA);
                 ShopOrder savedShopOrder = shopOrderService.updateShopOrder(shopOrder);
 
                 // Send notification email

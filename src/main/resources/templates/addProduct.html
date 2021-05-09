@@ -22,7 +22,7 @@
                         <div class="col-md-8 text-right">
                             <div class="display-t">
                                 <div class="display-tc animate-box" data-animate-effect="fadeIn">
-                                    <h1 th:text="${item.shop.name}"></h1>
+                                    <a th:href="@{/shop(shopId=${item.shop.id})}"><h1 th:text="${item.shop.name}"></h1></a>
                                 </div>
                             </div>
                         </div>
@@ -43,11 +43,11 @@
                     </div>
                     <div class="col-md-6 col-md-offset-3 animate-box">
                         <form th:action="@{/item/edit/uploadPicture}" method="post" enctype="multipart/form-data">
-                            <!-- <div class="row text-center">
+                            <div class="row text-center">
                                 <div class="product">
-                                    <img th:src="${itemPicture.picture.path}" alt="p" class="product-grid2">
+                                    <img th:src="${item.picture.path}" alt="p" class="product-grid2">
                                 </div>
-                            </div>-->
+                            </div>
                             <div class="row">
                                 <div class="col-md-6" style="margin-top: 15px;">
                                     <label>Irudia igo</label>

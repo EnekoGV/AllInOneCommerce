@@ -13,13 +13,16 @@
 							<h2>Egindako eskariak</h2>
 						</div>
 					</div>
+					<p th:if="${canceled}" style="color: green">Zure eskaria ondo ezabatu da</p>
+					<p th:if="${paymentFail}" style="color: green">Zure eskariaren ordainketa bertan behera utzi da</p>
+					<p th:if="${paymentConfirmation}" style="color: green">Zure eskariaren ordainketa arrakastatsua izan da</p>
 					<div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
 						<br/>
-						<form th:if="${order.shopOrderStatus.name()} == 'PENDING'" th:action="@{/order/edit/cancel}" method="post">
+						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/order/edit/cancel}" method="post">
 							<input type="hidden" name="orderId" th:value="${order.id}">
 							<button type="submit">Eskaria deuseztatu</button>
 						</form>
-						<form th:if="${order.shopOrderStatus.name()} == 'PENDING'" th:action="@{/payment}" method="post">
+						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/payment}" method="post">
 							<input type="hidden" name="orderId" th:value="${order.id}">
 							<button type="submit">Eskaria ordaindu</button>
 						</form>
@@ -27,7 +30,10 @@
 							<div class="col-md-2 col-md-offset-2 animate-box">
 								<div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.picture.path} + ');'">
 									<span class="sale">
-										<span th:text="${order.shopOrderStatus.name()}" class="girau"></span>
+										<span th:if="${order.shopOrderStatus.name()}=='BIDEAN'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 14px;top: -69px;left: -1px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}=='BAIEZTATZEKE'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -63px;left: -15px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}=='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -65px;left: -11px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}!='BIDEAN' and ${order.shopOrderStatus.name()}!='BAIEZTATZEKE' and ${order.shopOrderStatus.name()}!='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
 									</span>
 								</div>
 							</div>
@@ -35,7 +41,7 @@
 								<div class="desc">
 									<h3><a th:text="${variant.item.name}+' ('+${variant.item.shop.name}+')'" th:href="@{/item(itemId=${variant.item.id})}"></a></h3>
 									<p th:text="${variant.name}" style="margin-bottom: 0%;"></p>
-									<p th:text="'Data: ' + ${order.orderingDateTime}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+									<p th:text="'Data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
 								</div>
 								<div class="desc text-right" style="margin-top: 20px;">
 									<button class="btn btn-primary" type="submit">Ordaindu</button>
