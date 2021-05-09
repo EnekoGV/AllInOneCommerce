@@ -20,7 +20,7 @@ public class FileUploaderService {
             return null; // Return null if there is no file
         }
 
-        String rootImageDirectory = "./src/main/resources/static"; // Set Image storage directory
+        String rootImageDirectory = "/usr/local/tomcat8/webapps/aio/WEB-INF/classes/static"; // Set Image storage directory
         //String userImageDirectory = "/user" + userId + "/"; // Set user's image directory
 
         // normalize the file path
