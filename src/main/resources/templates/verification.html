@@ -15,7 +15,7 @@
                                 <input type="hidden" name="token" th:value="${token}" required="required" class="form-control">
                                 <label for="code">Egiaztapen kode bat bidali da. Zure posta elektronikoko postontzia begiratu.</label>
                                 <input type="text" placeholder="Sartu egiaztapen kodea" name="code" id="code" required="required" class="form-control">
-                                <p th:if="${verificationError}" style="color: red">Kodea ez u balio. Saiatu berriz</p>
+                                <p th:if="${verificationError}" style="color: red">Kodeak ez du balio. Saiatu berriz</p>
                                 <div class="form-group text-right" style="margin-top: 25px">
                                     <button class="btn btn-primary" type="submit">Kontua egiaztatu</button>
                                 </div>
