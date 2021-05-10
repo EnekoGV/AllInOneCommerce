@@ -18,13 +18,14 @@
 					<p th:if="${paymentConfirmation}" style="color: green">Zure eskariaren ordainketa arrakastatsua izan da</p>
 					<div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
 						<br/>
+						<h2 th:text="'Eskari identifikatzailea: ' + ${order.id}"></h2>
 						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/order/edit/cancel}" method="post">
 							<input type="hidden" name="orderId" th:value="${order.id}">
-							<button type="submit">Eskaria deuseztatu</button>
+							<button type="submit" class="btn btn-danger">Eskaria deuseztatu</button>
 						</form>
 						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/payment}" method="post">
 							<input type="hidden" name="orderId" th:value="${order.id}">
-							<button type="submit">Eskaria ordaindu</button>
+							<button type="submit" class="btn btn-primary">Eskaria ordaindu</button>
 						</form>
 						<div th:each="variant : ${order.variants}" class="row product">
 							<div class="col-md-2 col-md-offset-2 animate-box">
@@ -43,10 +44,10 @@
 									<p th:text="${variant.name}" style="margin-bottom: 0%;"></p>
 									<p th:text="'Data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
 								</div>
-								<div class="desc text-right" style="margin-top: 20px;">
+								<!--<div class="desc text-right" style="margin-top: 20px;">
 									<button class="btn btn-primary" type="submit">Ordaindu</button>
 									<button class="btn btn-danger" type="submit">Deuseztatu</button>
-								</div>
+								</div>-->
 							</div>
 						</div>
 						<hr>
