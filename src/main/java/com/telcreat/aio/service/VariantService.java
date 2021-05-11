@@ -144,6 +144,10 @@ public class VariantService {
         }
         return control;
     }*/
+
+    public List<Variant> findVariantsByStatus(Variant.Status status){
+        return variantRepo.findVariantsByStatus(status);
+    }
 }
 
 

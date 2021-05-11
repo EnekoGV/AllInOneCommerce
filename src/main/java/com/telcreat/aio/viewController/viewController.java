@@ -103,9 +103,10 @@ public class viewController {
         modelMap.addAttribute("loggedUserRole", loggedRole);
         modelMap.addAttribute("isOwner", isOwner);
         Shop shop = shopService.findActiveShopByOwnerId(loggedId);
-        int shops = shopService.findAllShops().size();
+
+        int shops = shopService.findShopsByStatus(Shop.Status.ACTIVE).size();
         int users = userService.findAllUsers().size();
-        int products = variantService.findAllVariants().size();
+        int products = variantService.findVariantsByStatus(Variant.Status.ACTIVE).size();
 
         if (shop != null){
             modelMap.addAttribute("loggedShopId",shop.getId());
