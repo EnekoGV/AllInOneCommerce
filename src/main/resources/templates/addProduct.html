@@ -64,7 +64,7 @@
                                 <div class="col-md-12">
                                     <label th:for="*{name}">Produktuaren izena</label>
                                     <input type="hidden" th:field="*{id}" th:value="${itemForm.id}">
-                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Produktuaren izena">
+                                    <input type="text" th:field="*{name}" class="form-control" placeholder="Produktuaren izena" required="required">
                                 </div>
                             </div>
                             <div class="row form-group">
@@ -78,20 +78,20 @@
                             <div class="row form-group">
                                 <div class="col-md-12">
                                     <label th:for="*{price}">Prezioa</label>
-                                    <input type="number" min="0" step="0.01" th:field="*{price}" class="form-control" placeholder="Prezioa">
+                                    <input type="number" min="0.01" step="0.01" th:field="*{price}" class="form-control" placeholder="Prezioa" required="required">
                                 </div>
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-12">
                                     <label th:for="*{shortDescription}">Deskripzio laburra</label>
                                 </div>
-                                <textarea th:field="*{shortDescription}" class="form-control" style="margin-left: 15px;" cols="54" rows="2"></textarea>
+                                <textarea th:field="*{shortDescription}" class="form-control" style="margin-left: 15px;" cols="54" rows="2" required="required"></textarea>
                             </div>
                             <div class="row form-group">
                                 <div class="col-md-12">
                                     <label th:for="*{longDescription}">Deskripzio luzea</label>
                                 </div>
-                                <textarea th:field="*{longDescription}" class="form-control" style="margin-left: 15px;" cols="60" rows="4"></textarea>
+                                <textarea th:field="*{longDescription}" class="form-control" style="margin-left: 15px;" cols="60" rows="4" required="required"></textarea>
                             </div>
                             <div class="form-group text-right">
                                 <input type="submit" value="Produktua igo" class="btn btn-primary">
@@ -145,10 +145,10 @@
                                                 <div class="row">
                                                     <div class="col-md-4 desc">
                                                         <input type="hidden" name="variantId" th:value="${variant.id}">
-                                                        <input type="text" name="variantName" th:value="${variant.name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
+                                                        <input type="text" name="variantName" th:value="${variant.name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name" required="required">
                                                     </div>
                                                     <div class="col-md-4">
-                                                        <input type="number" name="variantStock" th:value="${variant.stock}" class="form-control" style="width: 40%; height: 50%;" placeholder="Stock">
+                                                        <input min="1" type="number" name="variantStock" th:value="${variant.stock}" class="form-control" style="width: 40%; height: 50%;" placeholder="Stock" required="required">
                                                     </div>
                                                     <div class="col-md-4 text-left">
                                                         <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
@@ -177,11 +177,11 @@
                                     <div class="col-md-5 desc">
                                         <label>Aldagaiaren izena</label>
                                         <input type="hidden" name="itemId" th:value="${item.id}">
-                                        <input type="text" th:field="*{name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name">
+                                        <input type="text" th:field="*{name}" class="form-control" style="width: 80%; height: 50%;" placeholder="Variant Name" required="required">
                                     </div>
                                     <div class="col-md-5">
                                         <label>Stock</label>
-                                        <input type="number" th:field="*{stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock">
+                                        <input min="1" type="number" th:field="*{stock}" class="form-control" style="width: 80%; height: 50%;" placeholder="Stock" required="required">
                                     </div>
                                     <div class="col-md-2 text-right" style="margin-top: 30px">
                                         <button type="submit" class=" btn btn-primary icon"><i class="icon-check2"></i></button>
