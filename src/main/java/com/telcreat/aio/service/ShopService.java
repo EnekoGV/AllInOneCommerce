@@ -145,7 +145,7 @@ public class ShopService {
     }
 
         // AM - findShopsByItemContainsName ---> Returns a list of Shops matching the searching criteria of the user.
-    private List<Shop> findShopsByItemContainsName(String serchName, int itemCategoryId){
+    public List<Shop> findShopsByItemContainsName(String serchName, int itemCategoryId){
         List<Item> items = itemService.findItemsContainsName(serchName, itemCategoryId);
         List<Shop> shops = new ArrayList<>();
         for(Item item:items) {
@@ -157,7 +157,7 @@ public class ShopService {
     }
 
         // AM - getShopDistance ---> Returns a list of shopDistance with object and its distance.
-    private List<ShopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
+    public List<ShopDistance> getShopDistance(List<Shop> shops, String ip) throws IOException, GeoIp2Exception {
         //GeoIPLocationService locationService = new GeoIPLocationService();
         GeoIP location = locationService.getLocation(ip);
         List<ShopDistance> shopsDistances = new ArrayList<>();
@@ -169,5 +169,9 @@ public class ShopService {
             shopsDistances.add(shopDistance);
         }
         return shopsDistances;
+    }
+
+    public List<Shop> findShopsByStatus(Shop.Status status){
+        return shopRepo.findShopsByStatus(status);
     }
 }

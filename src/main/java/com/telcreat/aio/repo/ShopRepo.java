@@ -14,5 +14,5 @@ public interface ShopRepo extends JpaRepository<Shop, Integer> {
     Optional<Shop> findShopByOwnerId(int OwnerId);
     Optional<Shop> findShopByIdAndStatus(int shopId, Shop.Status shopStatus);
     Optional<Shop> findShopByOwnerIdAndStatus(int ownerId, Shop.Status shopStatus);
-    List<Shop> findShopsByStatus(Shop.Status shopStatus);
+    List<Shop> findShopsByStatus(Shop.Status status);
 }
