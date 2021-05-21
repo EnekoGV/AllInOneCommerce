@@ -1,0 +1,56 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns="http://www.w3.org/1999/html">
+<head th:replace="fragments :: HTML_head"/>
+<body>
+<div class="fh5co-loader"></div>
+<div id="page">
+    <div th:replace="fragments :: header"/>
+
+    <div id="fh5co-product">
+        <div class="container">
+            <div class="row animate-box">
+                <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+                    <h2>Dendaren Eskariak</h2>
+                </div>
+            </div>
+            <div th:each="orderItem : ${orderList}" class="row product">
+                <div class="col-md-1 col-md-offset-2 animate-box">
+                    <div class="product-grid4 sale">
+						<span class="sale">
+							<span th:text="${orderItem.shopOrderStatus.name()}" class="girau"></span>
+						</span>
+                    </div>
+                </div>
+                <div class="col-md-3" style="margin-left: 40px;">
+                    <div class="desc">
+                        <h3><a th:text="'Eskaria: ' + ${orderItem.id}" th:href="@{/order(orderId=${orderItem.id})}"></a></h3>
+                        <p th:text="'Produktu kopurua eskarian: ' + ${orderItem.variants.size()}" style="margin-bottom: 0%;"></p>
+                        <p th:text="'Data: ' + ${#temporals.format(orderItem.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+                    </div>
+                </div>
+                <div class="col-md-5 animate-box">
+                    <div class="row">
+                        <div class="col-md-10 text-right">
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-10 text-right">
+                            <form th:action="@{/order(orderId=${orderItem.id})}" method="get">
+                                <input type="hidden" name="orderId" th:value="${orderItem.id}">
+                                <button type="submit" class="btn">Eskaria kudeatu</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <br>
+            </div>
+            <br>
+        </div>
+    </div>
+
+    <div th:replace="fragments :: footer"/>
+</div>
+<div th:replace="fragments :: Up_Button"/>
+<div th:replace="fragments :: final_scripts"/>
+</body>
+</html>

@@ -1,0 +1,63 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: HTML_head" />
+<body>
+<div class="fh5co-loader"></div>
+<div id="page">
+  <div th:replace="fragments :: header"/>
+
+  <div id="fh5co-contact">
+    <div class="container" style="margin-bottom: 20px">
+      <div class="row animate-box">
+        <div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+          <h2>Kontaktua</h2>
+          <p>Idatzi! Zalantzarik baduzu edo arazoren bat sortu bada, jar zaitez gurekin harremanetan.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-md-6 col-md-offset-3 animate-box">
+          <form  th:action="@{/contact}" method="post" th:object="${contactForm}">
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input th:field="*{name}" type="text"  placeholder="Sartu zure izena" required="required" class="form-control">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input th:field="*{lastName}" type="text"  placeholder="Sartu zure abizena" required="required" class="form-control">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input th:field="*{email}" type="email"  placeholder="Sartu zure posta elektronikoa" required="required" class="form-control">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12">
+                <input th:field="*{subject}" type="text"  placeholder="Sartu postaren gaia" required="required" class="form-control">
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12">
+                <textarea th:field="*{message}" class="form-control" placeholder="Sartu zure mezua" cols="60" rows="4"></textarea>
+              </div>
+            </div>
+            <div class="row form-group">
+              <div class="col-md-12">
+                <button type="submit" class="btn btn-primary btn-block">Mezua Bidali</button>
+              </div>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div th:replace="fragments :: footer"/>
+</div>
+<div th:replace="fragments :: Up_Button"/>
+<div th:replace="fragments :: final_scripts"/>
+</body>
+</html>

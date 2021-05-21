@@ -1,0 +1,102 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: HTML_head"/>
+<body>
+<div class="fh5co-loader"></div>
+<div id="page">
+    <div th:replace="fragments :: header"/>
+	<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${item.shop.backgroundPicture.path} + ');'">
+		<div class="overlay"></div>
+		<div class="container">
+			<div class="row">
+				<div class="col-md-1 text-left" data-animate-effect="fadeIn">
+					<div class="display-t">
+						<div class="display-tc animate-box" data-animate-effect="fadeIn">
+							<img th:src="${item.shop.picture.path}" class="shopimg" alt="shopphoto" style="object-fit: cover;">
+						</div>
+					</div>
+				</div>
+				<div class="col-md-8 text-right">
+					<div class="display-t">
+						<div class="display-tc animate-box" data-animate-effect="fadeIn">
+                            <a th:href="@{/shop(shopId=${item.shop.id})}"><h1 th:text="${item.shop.name}"></h1></a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<div class="fh5co-product">
+        <div class="container">
+            <div class="row" >
+                <div class="col-md-5 col-md-offset-1 animate-box" style="margin-top: 50px;">
+                    <div class="owl-carousel owl-carousel-fullwidth product-carousel">
+                        <div class="item" style="height: auto;width: auto;max-height: 500px;max-width: 600px">
+                            <div class="active text-center">
+                                <figure>
+                                    <img th:src="${item.picture.path}" alt="user">
+                                </figure>
+                            </div>
+                        </div>
+                        <div th:each="variant : ${variantList}" class="item" style="height: auto;width: auto;max-height: 500px;max-width: 600px">
+                            <div class="active text-center">
+                                <figure>
+                                    <img th:src="${variant.picture.path}" alt="user">
+                                </figure>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6 col-md-offset-0 animate-box">
+                    <div class="fh5co-tab-content tab-content active" data-tab-content="1"  style="margin-top: 50px">
+                        <div class="col-md-10 col-md-offset-1">
+                            <h2 th:text="${item.name}"></h2>
+                            <p th:text="${item.price}+'€'"  class="price"></p>
+                            <p th:text="${item.shortDescription}"></p>
+                            <p th:text="${item.longDescription}"></p>
+                            <div class="row">
+                                <div class="text-right">
+                                    <form th:action="@{/cart/addToCart(cartId=${cartId},userId=${loggedUserId})}" method="post">
+                                        <div class="row">
+                                            <div class="col-md-7">
+
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="text-right">
+                                                    <select name="variantId" class="form-control">
+                                                        <option th:each="variant : ${variantList}" th:text="${variant.name}"
+                                                                th:value="${variant.id}"></option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                        <div class="row" style="margin-top: 20px">
+                                            <div class="col-md-7">
+
+                                            </div>
+                                            <div class="col-md-5">
+                                                <div class="text-right">
+                                                    <button type="submit" class="btn btn-primary">Sartu saskira</button>
+                                                </div>
+                                            </div>
+
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+
+        <div th:replace="fragments :: footer"/>
+    </div>
+    <div th:replace="fragments :: Up_Button"/>
+    <div th:replace="fragments :: final_scripts"/>
+</body>
+</html>
+

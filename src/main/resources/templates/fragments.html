@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="HTML_head">
+  <!--SiteTitle & Logo-->
+  <title> [[${pageTitle}]] - All In One Commerce</title> <! Add title, this is what appears in the browser tab --->
+  <link rel="shortcut icon" href="/images/logo.png" />
+  <!--Metadata--->
+  <!--Configuration--->
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta http-equiv=”Content-Type” content=”text/html; charset=iso-8859-2″>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <!--Description--->
+  <meta name="author" content="Telcreat Company"/>
+  <meta name="description" content="Basque Country online market place for local trade"/>
+  <meta name="keywords" content="Telcreat, AllInOneCommerce, Basque Country, Pais Vasco, Euskal Herria, small Bussiness, local, market, culture, EHU"/>
+
+  <!--Links - StyleSheets--->
+  <link rel="stylesheet" href="/css/animate.css">                <!-- Animate.css -->
+  <link rel="stylesheet" href="/css/icomoon.css">                <!-- Icomoon Icon Fonts-->
+  <link rel="stylesheet" href="/css/bootstrap.css">              <!-- Bootstrap  -->
+  <link rel="stylesheet" href="/css/flexslider.css">             <!-- Flexslider  -->
+  <link rel="stylesheet" href="/css/owl.carousel.min.css">       <!-- Owl Carousel  -->
+  <link rel="stylesheet" href="/css/owl.theme.default.min.css">  <!-- Owl Carousel  -->
+  <link rel="stylesheet" href="/css/style.css">                  <!-- Theme style  -->
+  <link rel="stylesheet" href="/css/search_carousel.css">        <!-- Search Carousel -->
+
+
+  <!--Scripts--->
+  <script src="/js/modernizr-2.6.2.min.js"></script><!-- Modernizr JS - Modernizr es una librería JavaScript que nos permite conocer la compatibilidad del navegador con tecnologías HTML5 y CSS3, lo que nos permitirá desarrollar sitios web que se adapten a las capacidades cada navegador.-->
+  <!-- FOR IE9 below -->
+  <!--[if lt IE 9]>
+  <script src="/js/respond.min.js"></script>
+  <![endif]-->
+</head>
+<body>
+
+<!-- Header of the proyect where all the searching logic is one--->
+  <header th:fragment="header">
+      <nav class="fh5co-nav" role="navigation">
+          <div class="container">
+              <div class="row">
+                  <div class="col-md-3 col-xs-2" style="margin-top: 20px">
+                      <a href="/"><img id="fh5co-logo" src="/images/logo.png" alt="logo" height="50px"></img></a>
+                  </div>
+                  <div class="col-md-6 col-xs-6 text-center menu-2">
+                      <form th:action="@{/search}" method="get" th:object="${searchForm}">
+                          <ul>
+                              <li class="search">
+                                  <div class="input-group">
+                                      <input type="text" placeholder="Bilatu..." th:field="*{search}" th:value="${searchForm.search}">
+                                      <span class="input-group-btn">
+                                        <button class="btn btn-primary" type="submit"><i class="icon-search"></i></button>
+                                      </span>
+                                  </div>
+                              </li>
+                              <li>
+                                  <select th:field="*{categoryId}" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Edozein</option>
+                                      <option th:each="category : ${categories}" th:text="${category.name}"
+                                              th:value="${category.id}"></option>
+                                  </select>
+                                  <select th:field="*{orderCriteriaId}" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Distantzia</option>
+                                      <option value="1">Prezioa</option>
+                                  </select>
+                                  <select th:field="*{orderDirection}" class="btn btn-toolbar" style="font-size: 12px;">
+                                      <option value="0">Goranzkoa</option>
+                                      <option value="1">Beheranzkoa</option>
+                                  </select>
+                              </li>
+                          </ul>
+                      </form>
+                  </div>
+                  <div class="col-md-3 col-xs-4 text-right hidden-xs menu-2" style="margin-top: 40px">
+                      <ul>
+                          <li class="shopping-cart"><a th:if="${isLogged == true}" th:href="@{/cart(userId=${loggedUserId})}" class="cart"><span><small th:text="${cartItemNumber}"></small><i class="icon-shopping-cart"></i></span></a></li>
+                          <li class="has-dropdown">
+                              <a th:if="${isLogged == true}" th:href="@{/user(userId=${loggedUserId})}">Profila</a>
+                              <a th:if="${isLogged == false}" href="/auth">Saioa hasi</a>
+                              <ul th:if="${isLogged == true}" class="dropdown">
+                                  <li><a th:href="@{/user/myOrders(userId=${loggedUserId})}">Nire eskariak</a></li>
+                                  <li><a th:if="${isOwner == true}" th:href="@{/shop/myOrders(shopId=${loggedShopId})}">Nire dendaren eskariak</a></li>
+                                  <li><a th:if="${isOwner == false}" href="/shop/create">Sortu denda</a></li>
+                                  <li><a th:if="${isOwner == true}" th:href="@{/shop(shopId=${loggedShopId})}">Nire denda</a></li>
+                                  <li><a th:href="@{/user/favoriteShops(userId=${loggedUserId})}">Denda Gogokoenak</a></li>
+                                  <li><a href="/logout">Saioa itxi</a></li>
+                              </ul>
+                          </li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </nav>
+  </header>
+
+<!-- Shop carousel section of the search view --->
+  <div th:if="${itemSearch.size() > 0}" class="carousel-container" th:fragment="shop_carousel">
+      <div class="carousel-inners">
+          <div class="track">
+              <div class="card-container animate-box" th:each="shop : ${shopSearch}">
+                  <div class="product">
+                      <div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture.path} + ');'">
+                          <a class="inner"  th:href="@{/shop(shopId=${shop.shop.id})}"></a>
+                          <div class="text-center" th:text="${shop.shop.name} + ' (' + ${#numbers.formatDecimal(shop.distance, 0, 'POINT', 2, 'COMMA')} + 'km)'"/>
+<!--                          <a th:href="@{/shop(shopId=${shop.shop.id})}" class="text-center info" style="margin-top: 40px" th:text="${shop.shop.addressAddress}"/>-->
+
+                      </div>
+                  </div>
+              </div>
+          </div>
+      </div>
+      <div th:if="${shopSearch.size() > 3}" class="navs">
+          <button class="prevs">
+              <i class="material-icons" style="margin-top: 9px">
+                  keyboard_arrow_left
+              </i>
+          </button>
+          <button class="nexts">
+              <i class="material-icons" style="margin-top: 9px">
+                  keyboard_arrow_right
+              </i>
+          </button>
+      </div>
+  </div>
+
+
+  <footer id="fh5co-footer" role="contentinfo" th:fragment="footer">
+      <div class="container">
+          <div class="row copyright" style="margin-bottom: 10px;">
+              <div class="col-md-6 col-md-offset-3 text-center">
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="/cookie-politika">Cookie-Politika</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="/pribatutasun-politika">Pribatutasun-Politika</a></li>
+                      </ul>
+                  </div>
+                  <div class="col-md-4">
+                      <ul class="fh5co-footer-links">
+                          <li><a href="/kontaktua">Kontaktua</a></li>
+                      </ul>
+                  </div>
+              </div>
+          </div>
+          <div class="row copyright">
+              <div class="col-md-12 text-center">
+                  <p>
+                      <small class="block">&copy; 2021 AllInOneCommerce. All Rights Reserved.</small>
+                      <small class="block">Designed by
+                        <a href="https://telcreat.com/" target="_blank">TelcreaT Company</a>
+                      </small>
+                  </p>
+              </div>
+          </div>
+          <div class="row copyright">
+              <div class="col-md-12 text-center">
+                  <a href="index.html">
+                    <img id="fh5co-logo" src="/images/logo.png" alt="logo" height="40px" style="opacity: 80%;"/>
+                  </a>
+              </div>
+          </div>
+      </div>
+  </footer>
+
+  <div class="gototop js-top" th:fragment="Up_Button">
+      <a href="#" class="js-gotop"><i class="icon-arrow-up"></i></a>
+  </div>
+
+  <div th:fragment="final_scripts">
+      <!--Scripts - Some of them have to be in the body to improve rendering. Otherwise it can be blocking--->
+      <script src="/js/jquery.min.js"></script>                <!-- jQuery -->
+      <script src="/js/jquery.easing.1.3.js"></script>        <!-- jQuery Easing -->
+      <script src="/js/bootstrap.min.js"></script>            <!-- Bootstrap -->
+      <script src="/js/jquery.waypoints.min.js"></script>    <!-- Waypoints -->
+      <script src="/js/owl.carousel.min.js"></script>        <!-- Carousel -->
+      <script src="/js/jquery.countTo.js"></script>            <!-- countTo -->
+      <script src="/js/jquery.flexslider-min.js"></script>    <!-- Flexslider -->
+<!--      <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCefOgb1ZWqYtj7raVSmN4PL2WkTrc-KyA&sensor=false"></script>-->
+<!--      &lt;!&ndash; Google Map &ndash;&gt;-->
+<!--      <script src="/js/google_map.js"></script>-->
+      <script src="/js/main.js"></script>                    <!-- Main -->
+      <script src="/js/search_carousel.js"></script>
+      <script>
+          $(document).ready(function() {
+              setInterval(function() {
+                  var docHeight = $(window).height();
+                  var footerHeight = $('#fh5co-footer').height();
+                  var footerTop = $('#fh5co-footer').position().top + footerHeight;
+                  var marginTop = (docHeight - footerTop + 10);
+
+                  if (footerTop < docHeight)
+                      $('#fh5co-footer').css('margin-top', marginTop + 'px'); // padding of 30 on footer
+                  else
+                      $('#fh5co-footer').css('margin-top', '0px');
+                  // console.log("docheight: " + docHeight + "\n" + "footerheight: " + footerHeight + "\n" + "footertop: " + footerTop + "\n" + "new docheight: " + $(window).height() + "\n" + "margintop: " + marginTop);
+              }, 250);
+          });
+      </script>
+  </div>
+</body>
+</html>

@@ -26,10 +26,12 @@ public class Item {
     @ManyToOne
     private Category itemCategory;
 
-    @OneToMany
-    private List<Picture> picture; // Revisar la relación dónde va
+    @OneToOne
+    private Picture picture;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String shortDescription;
+    @Column(columnDefinition = "LONGTEXT")
     private String longDescription;
     private Float price;
     private String name;
@@ -42,4 +44,14 @@ public class Item {
 
     private Status status;
 
+    public Item(Shop shop, Category itemCategory, Picture picture, String shortDescription, String longDescription, Float price, String name, Status status) {
+        this.shop = shop;
+        this.itemCategory = itemCategory;
+        this.picture = picture;
+        this.shortDescription = shortDescription;
+        this.longDescription = longDescription;
+        this.price = price;
+        this.name = name;
+        this.status = status;
+    }
 }

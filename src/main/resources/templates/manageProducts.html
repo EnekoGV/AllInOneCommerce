@@ -1,0 +1,81 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:replace="fragments :: HTML_head" />
+<body>
+<div class="fh5co-loader"></div>
+<div id="page">
+    <div th:replace="fragments :: header"/>
+    <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${shop.backgroundPicture.path} + ');'">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row">
+                <div class="col-md-1 text-left" data-animate-effect="fadeIn">
+                    <div class="display-t">
+                        <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                            <img th:src="${shop.picture.path}" class="shopimg" alt="shopphoto" style="object-fit: cover;">
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-8 text-right">
+                    <div class="display-t">
+                        <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                            <a th:href="@{/shop(shopId=${shop.id})}"><h1 th:text="${shop.name}"></h1></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+    <div id="fh5co-about">
+        <div class="container" style="margin-top: -50px;">
+            <div class="row animate-box">
+                <div class="col-md-12 text-center fh5co-heading">
+                    <h2>Dendako produktuak</h2>
+                </div>
+            </div>
+            <div class="row">
+                <div th:each="item : ${itemList}" class="col-md-12 animate-box">
+                    <div class="row">
+                        <div class="col-md-3 text-right animate-box">
+                            <div class="product">
+                                <img th:src="${item.picture.path}" alt="p" class="product-grid2">
+                            </div>
+                        </div>
+                        <div class="col-md-3 text-left animate-box">
+                            <div class="product">
+                                <div class="desc">
+                                    <h3 th:text="${item.name}"></h3>
+                                </div>
+                                <div class="row">
+                                    <div th:each="variant : ${variantList}" th:if="${variant.item.id == item.id}" class="col-md-4">
+                                        <label th:text="${variant.name}"></label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="container" style="margin-top: 15px;">
+                            <div class="col-md-6 text-center animate-box">
+                                <form th:action="@{/item/edit}" method="get">
+                                    <input type="hidden" name="itemId" th:value="${item.id}">
+                                    <button type="submit" class=" btn btn-primary icon"><i class="icon-edit"></i></button>
+                                </form>
+                                <form th:action="@{/item/edit/delete}" method="post">
+                                    <input type="hidden" name="itemId" th:value="${item.id}">
+                                    <button type="submit" class="btn btn-danger icon"><i class="icon-cross"></i></button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div th:replace="fragments :: footer"/>
+</div>
+<div th:replace="fragments :: Up_Button"/>
+<div th:replace="fragments :: final_scripts"/>
+</body>
+</html>
+

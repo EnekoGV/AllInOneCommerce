@@ -1,13 +1,124 @@
-<!DOCTYPE html>
+<!DOCTYPE HTML>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head>
-    <meta charset="UTF-8">
-    <title>Index Test</title>
-</head>
-<body>
+	<head th:replace="fragments :: HTML_head" />
+	<body>
+		
+		<div class="fh5co-loader"></div>
+		<div id="page">
+			<div th:replace="fragments :: header"/>
 
-<p th:text="${categoryId}"></p>
-<p th:text="${itemName}"></p>
+			<div  id="fh5co-product">
+				<div class="container" style="margin-top: -110px; margin-bottom: -50px">
+					<div class="row animate-box">
+						<div class="col-md-12 text-center" style="margin-bottom: 20px">
+							<span th:text="'Bilaketaren emaitza: ' + ${search}"></span>
+						</div>
+					</div>
+				</div>
+				<div th:if="${itemSearch.size() > 0}" class="container text-center animate-box" style="margin-bottom: -50px">
+					<h2>Dendak</h2>
+				</div>
+				<div class="col-md-12 text-center" style="margin-top: -200px" th:replace="fragments :: shop_carousel"/>
+				<div th:if="${itemSearch.size() > 0}" class="col-md-12 text-center animate-box" style="font-size: 24px; font-weight: bold; margin-bottom: 0px">
+					<h2>Produktuak</h2>
+				</div>
+				<!--<div class="container">
+					<div class="row" style="margin-top: 100px">
+						<div th:each="shop : ${shopSearch}" class="col-md-3 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" th:style="'background-image:url(' + ${shop.shop.picture.path} + ');'">
+									<div class="inner">
+										<p>
+											<a th:href="@{/shop(shopId=${shop.shop.id})}" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+								<div class="desc">
+									<h3><a th:href="@{/shop(shopId=${shop.shop.id})}"></a></h3>
+									<span th:text="${shop.shop.addressAddress}"></span>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>-->
 
-</body>
+
+				<div th:if="${itemSearch.size() > 0}" class="container" style="margin-top: 0px;">
+					<div th:each="itemDistance : ${itemSearch}" class="row text-center">
+						<div class="col-md-4 text-center animate-box">
+							<div class="product">
+								<div class="product-grid" th:style="'background-image:url(' + ${itemDistance.item.picture.path} + ');'">
+									<div class="inner">
+										<p>
+											<a th:href="@{/item(itemId=${itemDistance.item.id})}" class="icon"><i class="icon-eye"></i></a>
+										</p>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-5 animate-box">
+							<div class="product">
+								<div class="desc text-left" style="margin-top: 70px; margin-left: 20px">
+									<h3><a th:href="@{/item(itemId=${itemDistance.item.id})}"><p th:text="${itemDistance.item.name}"></p></a></h3>
+									<p th:text="${itemDistance.item.shortDescription}" style="margin-top: -20px"></p>
+									<h3><p th:if="${isLogged} == false" th:text="${itemDistance.item.shop.name}"></p></h3>
+									<h3><p th:if="${isLogged} == true" th:text="${itemDistance.item.shop.name}+' ('+${#numbers.formatDecimal(itemDistance.distance, 0, 'POINT', 2, 'COMMA')}+' km-tara)'"></p></h3>
+									<p th:text="${itemDistance.item.shop.addressAddress}" style="margin-top: -15px"></p>
+									<p th:text="${itemDistance.item.shop.addressCity} + ', ' + ${itemDistance.item.shop.billingPostNumber}" style="margin-top: -20px"></p>
+
+								</div>
+							</div>
+						</div>
+						<div class="col-md-3 animate-box">
+							<div class="product">
+								<div class="desc text-center" style="margin-top: 100px">
+									<p th:if="${isLogged} == false" th:text="'Logea zaitez produktuaren prezioa eta distantzia ezagutzeko.'" style="color: #f80000;margin-top: 10px"></p>
+									<h3><span th:if="${isLogged} == true" th:text="${itemDistance.item.price} + '€'" class="price" style="font-size: 20px"></span></h3>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div th:if="${itemSearch.size() <= 0}" class="container text-center animate-box" style="margin-top: 150px; margin-bottom: 150px">
+					<h2 style="color: #c9302c">Ooopss! :(</h2>
+					<p style="color: #c9302c">
+						Barkatu, ez da emaitzarik lortu. Probatu bilaketa desberdin bat edo aldatu aukeratutako bilaketa-iragazkiak.
+					</p>
+				</div>
+			</div>
+
+<!-- Newsletter section --->
+			<!--<div id="fh5co-started">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Newsletter</h2>
+							<p>Just stay tune for our latest Product. Now you can subscribe</p>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2">
+							<form class="form-inline">
+								<div class="col-md-6 col-sm-6">
+									<div class="form-group">
+										<label for="email" class="sr-only">Email</label>
+										<input type="email" class="form-control" id="email" placeholder="Email">
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-6">
+									<button type="submit" class="btn btn-default btn-block">Subscribe</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+-->
+			<div th:replace="fragments :: footer"/>
+		</div>
+		<div th:replace="fragments :: Up_Button"/>
+		<div th:replace="fragments :: final_scripts"/>
+	</body>
 </html>
+

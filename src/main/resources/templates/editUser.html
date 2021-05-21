@@ -1,0 +1,130 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments :: HTML_head" />
+	<body>
+		<div class="fh5co-loader"></div>
+		<div id="page">
+			<div th:replace="fragments :: header"/>
+			<div id="fh5co-about">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-6 col-md-offset-3 animate-box" data-animate-effect="fadeIn">
+							<div class="fh5co-staff">
+								<img th:src="${userAvatar}" alt="perfilphoto" style="object-fit: cover;" class="shopimg">
+								<form th:action="@{/user/uploadPicture}" method="post" enctype="multipart/form-data">
+									<input type="hidden" name="userId" id="userIdPicture" th:value="${userForm.id}">
+									<div class="row">
+										<div class="col-md-8">
+											<input type="file" name="userPicture" id="userPicture" accept=".jpg, .jpeg, .png" class="btn btn-sm">
+										</div>
+										<div class="col-md-4">
+											<button type="submit" class="btn btn-group-xs">Irudia aldatu</button>
+										</div>
+									</div>
+								</form>
+								<h3 th:text="${userForm.name}"></h3>
+								<p th:if="${updateError}" style="color: red">Errorea gertatu da informazioa gordetzean. Ziurtatu sartutako informazioa egokia dela.</p>
+								<p th:if="${updateSuccessful}" style="color: green">Informazioa ondo gorde da.</p>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-6 col-md-offset-3 animate-box">
+							<form th:action="@{/user}" th:object="${userForm}" method="post">
+							<div class="row form-group">
+									<div class="col-md-6">
+										<label>First Name</label>
+										<input type="hidden" th:field="*{id}" th:value="${userForm.id}">
+										<input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="First Name">
+									</div>
+									<div class="col-md-6">
+										<label>Last Name</label>
+										<input type="text" th:field="*{lastName}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Last Name">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-12">
+										<label>Alias</label>
+										<input type="text" th:field="*{alias}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Alias">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-12">
+										<label>Birthday</label>
+											<input type="date" th:field="*{birthDay}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="BirthDay">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-12">
+										<label>Email</label>
+										<input type="email" th:field="*{email}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Email">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-12">
+										<label>Address</label>
+										<input type="text" th:field="*{addressStreet}" th:disabled="${edit == false}" class="form-control" placeholder="Street">
+									</div>
+								</div>
+
+								<div class="row form-group">
+									<div class="col-md-4">
+										<input type="text" th:field="*{addressNumber}" th:disabled="${edit == false}" class="form-control" placeholder="Number">
+									</div>
+									<div class="col-md-4">
+										<input type="text" th:field="*{addressFlat}" th:disabled="${edit == false}" class="form-control" placeholder="Floor">
+									</div>
+									<div class="col-md-4">
+										<input type="text" th:field="*{addressDoor}" th:disabled="${edit == false}" class="form-control" placeholder="Door">
+									</div>
+								</div>
+								<div class="row form-group">
+									<div class="col-md-4">
+										<label>City</label>
+										<input type="text" th:field="*{addressCity}" th:disabled="${edit == false}" class="form-control" placeholder="City">
+									</div>
+									<div class="col-md-4">
+										<label>Postcode</label>
+										<input type="text" th:field="*{postCode}" th:disabled="${edit == false}" class="form-control" placeholder="Post Code">
+									</div>
+									<div class="col-md-4">
+										<label>Region</label>
+										<input type="text" th:field="*{addressRegion}" th:disabled="${edit == false}" class="form-control" placeholder="Region">
+									</div>
+								</div>
+								<div class="row form-group">
+
+									<div class="col-md-12">
+										<label>Country</label>
+										<input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}" class="form-control" placeholder="Country">
+									</div>
+								</div>
+								<div class="form-group text-right" style="margin-top: 20px">
+									<input th:if="${edit == true}" type="submit" value="Update profile" class="btn btn-primary">
+								</div>
+							</form>
+							<div class="form-group text-right" style="margin-top: 20px">
+								<form th:action="@{/user}" method="get">
+									<input type="hidden" id="userId" name="userId" th:value="${userForm.id}">
+									<input type="hidden" id="edit" name="edit" th:value="${!edit}">
+									<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
+									<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
+								</form>
+							</div>
+							<div class="form-group text-right" style="margin-top: 20px">
+								<form th:action="@{/user/changePassword}" method="get">
+									<input type="hidden" id="userIdPassword" name="userId" th:value="${userForm.id}">
+									<button type="submit" class="btn btn-danger">Pasahitza aldatu</button>
+								</form>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div th:replace="fragments :: footer"/>
+		</div>
+		<div th:replace="fragments :: Up_Button"/>
+		<div th:replace="fragments :: final_scripts"/>
+	</body>
+</html>
+

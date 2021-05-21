@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+    <head th:replace="fragments :: HTML_head" />
+    <body>
+        <div class="fh5co-loader"></div>
+        <div id="page">
+            <div th:replace="fragments :: header"/>
+
+            <div id="fh5co-contact">
+                <div class="container" style="margin-bottom: 85px">
+                    <div class="row form-group">
+                        <h3 class="text-center" style="margin-bottom: 40px">Beharrezko egiaztapena</h3>
+                        <div class="col-md-6 col-md-offset-3 animate-box">
+                            <form th:action="@{/auth/verification}" method="post">
+                                <input type="hidden" name="token" th:value="${token}" required="required" class="form-control">
+                                <label for="code">Egiaztapen kode bat bidali da. Zure posta elektronikoko postontzia begiratu.</label>
+                                <input type="text" placeholder="Sartu egiaztapen kodea" name="code" id="code" required="required" class="form-control">
+                                <p th:if="${verificationError}" style="color: red">Kodeak ez du balio. Saiatu berriz</p>
+                                <div class="form-group text-right" style="margin-top: 25px">
+                                    <button class="btn btn-primary" type="submit">Kontua egiaztatu</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div th:replace="fragments :: footer"/>
+        </div>
+        <div th:replace="fragments :: Up_Button"/>
+        <div th:replace="fragments :: final_scripts"/>
+    </body>
+</html>

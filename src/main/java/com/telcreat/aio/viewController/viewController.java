@@ -1,16 +1,26 @@
 package com.telcreat.aio.viewController;
 
-import com.telcreat.aio.model.User;
+import com.maxmind.geoip2.exception.GeoIp2Exception;
+import com.telcreat.aio.model.*;
 import com.telcreat.aio.service.*;
+import lombok.Data;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.annotation.RequestScope;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+
+
+@Data
+@RequestScope
 @Controller
+@SessionAttributes({"searchForm", "categories", "cartItemNumber"})
 public class viewController {
 
     private final CartService cartService;
@@ -20,10 +30,19 @@ public class viewController {
     private final UserService userService;
     private final VariantService variantService;
     private final CategoryService categoryService;
+    private final VerificationTokenService verificationTokenService;
+    private final FileUploaderService fileUploaderService;
+    private final ShopService shopService;
+    private final HttpServletRequest request;
 
+    private User loggedUser;
+    private boolean isLogged = false;
+    private User.UserRole loggedRole = User.UserRole.CLIENT;
+    private int loggedId;
+    private boolean isOwner;
 
     @Autowired
-    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService) {
+    public viewController(CartService cartService, ItemService itemService, PictureService pictureService, ShopOrderService shopOrderService, UserService userService, VariantService variantService, CategoryService categoryService, VerificationTokenService verificationTokenService, FileUploaderService fileUploaderService, ShopService shopService, HttpServletRequest request) {
         this.cartService = cartService;
         this.itemService = itemService;
         this.pictureService = pictureService;
@@ -31,54 +50,190 @@ public class viewController {
         this.userService = userService;
         this.variantService = variantService;
         this.categoryService = categoryService;
+        this.verificationTokenService = verificationTokenService;
+        this.fileUploaderService = fileUploaderService;
+        this.shopService = shopService;
+        this.request = request;
+
+        loggedUser = userService.getLoggedUser();
+        if (loggedUser != null){
+            isLogged = true;
+            loggedId = loggedUser.getId();
+            loggedRole = loggedUser.getUserRole();
+            if (loggedRole == User.UserRole.OWNER){
+                isOwner = true;
+            }
+        }
     }
 
-    //Register and Login page
 
-    @RequestMapping(value = "/auth" , method = RequestMethod.GET)
-    public String registerView(ModelMap modelMap){
-
-        User login = new User();
-        User signup = new User();
-        modelMap.addAttribute("login", login);
-        modelMap.addAttribute("signup", signup);
-
-        return "auth";
+    @ModelAttribute("searchForm")
+    public SearchForm setUpSearchForm(){
+        return new SearchForm();
     }
 
-    @RequestMapping(value = "/auth/login", method = RequestMethod.POST)//Cuando se usa POST no podemos enviar el html sinmas porque ya estas usando la URL para mandar la info y si no usas redirect esa URL no cambia.
-    public String receiveLogin(@ModelAttribute User user, ModelMap modelMap){
-        //Login Service
-        return "redirect:/";
+    @ModelAttribute("categories")
+    public List<Category> setUpSearchCategories(){
+        return categoryService.findAllCategories();
     }
 
-    @RequestMapping(value = "/auth/register", method = RequestMethod.POST)
-    public String receiveRegister(@ModelAttribute User user, ModelMap modelMap){
-        if(userService.createUser(user) != null)
-            modelMap.clear();
-        else
-            return "redirect:/fail";
-        return "redirect:/";
+    @ModelAttribute("cartItemNumber")
+    public int updateCartItemNumber(){
+        if (isLogged){
+            Cart cart = cartService.findCartByUserId(loggedId);
+            List<Variant> uniqueVariantList = new ArrayList<>(new HashSet<>(cart.getVariants()));
+            return uniqueVariantList.size();
+        }
+        else{
+            return 0;
+        }
     }
-
 
     // Search View
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public String searchView(@RequestParam(name = "categoryId", required = false, defaultValue = "0") Integer categoryId,
-                           @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
-                           @RequestParam(name = "search", required = false, defaultValue = "") String itemName,
-                           ModelMap modelMap){
-        // Debug
-        //modelMap.addAttribute("categoryId", categoryId);
-        //modelMap.addAttribute("itemName", itemName);
+                             @RequestParam(name = "orderCriteriaId", required = false, defaultValue = "0") Integer orderCriteriaId,
+                             @RequestParam(name = "orderDirection", required = false, defaultValue = "0") Integer orderDirection,
+                             @RequestParam(name = "search", required = false, defaultValue = "") String search,
+                             ModelMap modelMap) throws IOException, GeoIp2Exception {
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+
+        int shops = shopService.findShopsByStatus(Shop.Status.ACTIVE).size();
+        int users = userService.findAllUsers().size();
+        int products = variantService.findVariantsByStatus(Variant.Status.ACTIVE).size();
+
+        if (shop != null){
+            modelMap.addAttribute("loggedShopId",shop.getId());
+        }
+
+
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
+
+        // Get remote IP debug
+        // modelMap.addAttribute("clientIP", request.getRemoteAddr());
+        // FIND CLIENTS IP ADDRESS
+
+        modelMap.addAttribute("categoryId", categoryId);
+        modelMap.addAttribute("orderCriteriaId", orderCriteriaId);
+        modelMap.addAttribute("orderDirection", orderDirection);
+        modelMap.addAttribute("search", search);
+        modelMap.addAttribute("pageTitle", "AIO");
+
+        modelMap.addAttribute("shopKop", shops);
+        modelMap.addAttribute("userKop", users);
+        modelMap.addAttribute("prodKop", products);
+
+        modelMap.put("cartItemNumber", updateCartItemNumber());
 
         // Item Search - Item List based on Category and Name search
-        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(itemName, orderCriteriaId, categoryId));
-        modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
 
-        // SHOP LIST IS PENDING
-
-
-        return "search"; // Return Search search.html view
+        return "index"; // Return Search search.html view
     }
+    @RequestMapping(value = "/contact", method = RequestMethod.POST)
+    public String contactForm(@ModelAttribute(name = "contactForm") ContactForm contactForm, ModelMap modelMap){
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+
+        // Send notification email
+        SendEmail sendEmail = new SendEmail();
+        sendEmail.sendContactMailToUser(contactForm);
+        sendEmail.sendContactMail(contactForm);
+
+        return "redirect:/";
+    }
+
+    // Product Search View
+    @RequestMapping(value = "/search", method = RequestMethod.GET)
+    public String viewSearch(@ModelAttribute(name = "searchForm") SearchForm searchForm,
+                             ModelMap modelMap) throws IOException, GeoIp2Exception {
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        Shop shop = shopService.findActiveShopByOwnerId(loggedId);
+        if (shop != null){
+            modelMap.addAttribute("loggedShopId",shop.getId());
+        }
+
+        modelMap.addAttribute("categoryId", searchForm.getCategoryId());
+        modelMap.addAttribute("orderCriteriaId", searchForm.getOrderCriteriaId());
+        modelMap.addAttribute("orderDirection", searchForm.getOrderDirection());
+        modelMap.addAttribute("search", searchForm.getSearch());
+        modelMap.addAttribute("pageTitle", "Bilaketa");
+
+        modelMap.addAttribute("itemSearch", itemService.findItemsContainsNameOrdered(searchForm.getSearch(),  searchForm.getCategoryId(), searchForm.getOrderCriteriaId(), searchForm.getOrderDirection(), "1.1.1.1"));
+        modelMap.addAttribute("shopSearch", shopService.orderedShopByItemContainsName(searchForm.getSearch(), searchForm.getCategoryId(), "1.1.1.1"));
+        // modelMap.addAttribute("categories", categoryService.findAllCategories()); // Category List for ItemSearch
+        return "search";
+    }
+
+    @RequestMapping(value = "/cookie-politika", method = RequestMethod.GET)
+    public String viewCookiak(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "CookiePolitika");
+
+        return "cookie-politika";
+    }
+
+    @RequestMapping(value = "/pribatutasun-politika", method = RequestMethod.GET)
+    public String viewPribatutasuna(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "PribatutasunPolitika");
+
+        return "pribatutasun-politika";
+    }
+
+    @RequestMapping(value = "/kontaktua", method = RequestMethod.GET)
+    public String viewKontaktua(ModelMap modelMap){
+
+        // DEFAULT INFORMATION IN ALL VIEWS
+        modelMap.addAttribute("isLogged", isLogged);
+        modelMap.addAttribute("loggedUserId", loggedId);
+        modelMap.addAttribute("loggedUserRole", loggedRole);
+        modelMap.addAttribute("isOwner", isOwner);
+        // modelMap.addAttribute("categories", categoryService.findAllCategories());
+        modelMap.addAttribute("pageTitle", "Kontaktua");
+
+        ContactForm contactForm = new ContactForm();
+        modelMap.addAttribute("contactForm", contactForm);
+
+        return "kontaktua";
+    }
+
+
+
+
+    // CheckOut View
+    // Comment: it's not necessary to obtain any cart Id
+
+    @RequestMapping(value = "/checkout", method = RequestMethod.GET)
+    public String viewCheckout(@RequestParam() ModelMap modelMap){
+        return "checkout";
+    }
+
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+  <head th:replace="fragments :: HTML_head" />
+  <body>
+    <div class="fh5co-loader"></div>
+    <div id="page">
+      <div th:replace="fragments :: header"/>
+
+      <div th:each="shop : ${favoriteShops}">
+        <header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${shop.backgroundPicture.path} + ');'" style="margin-bottom: 30px">
+          <!--<div class="overlay" style="margin-bottom: 30px"></div>-->
+          <div class="container" >
+            <div class="row">
+              <div class="col-md-1 text-left" data-animate-effect="fadeIn">
+                <div class="display-t">
+                  <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                    <img th:src="${shop.picture.path}" class="shopimg" alt="shopphoto" style="object-fit: cover;">
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-8 text-right">
+                <div class="display-t">
+                  <div class="display-tc animate-box" data-animate-effect="fadeIn">
+                    <a th:href="@{/shop(shopId=${shop.id})}"></a><h1 th:text="${shop.name}"></h1>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-3">
+                <div class="feature-center animate-box" data-animate-effect="fadeIn">
+                  <div class="icon" style="margin-top: 130px; margin-right: -20px;">
+                    <a th:href="@{/unmarkfavorite(shopId=${shop.id})}">
+                      <i class="icon-star2"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </header>
+      </div>
+      <div th:if="${favoriteShops.size() <= 0}" class="container text-center animate-box" style="margin-top: 100px; margin-bottom: 150px">
+        <p>
+          Orain arte ez duzu denda gogokoenak aukeratu. Sartu denda baten profilera eta markatu bertan dagoen izarra.
+        </p>
+      </div>
+      <div th:replace="fragments :: footer"/>
+    </div>
+    <div th:replace="fragments :: Up_Button"/>
+    <div th:replace="fragments :: final_scripts"/>
+  </body>
+</html>

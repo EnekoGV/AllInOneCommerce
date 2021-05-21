@@ -1,0 +1,177 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments :: HTML_head" />
+
+	<body>
+	<div class="fh5co-loader"></div>
+	<div id="page">
+		<div th:replace="fragments :: header"/>
+		<header id="fh5co-header" class="fh5co-cover fh5co-cover-sm2" role="banner" th:style="'background-image:url(' + ${shopBackgroundPicture} + ');'">
+			<div class="overlay"></div>
+			<div class="container">
+				<div class="row">
+					<div class="col-md-1 text-left" data-animate-effect="fadeIn">
+						<div class="display-t">
+							<div class="display-tc animate-box" data-animate-effect="fadeIn">
+								<img th:src="${shopPicture}" class="shopimg" alt="shopphoto" style="object-fit: cover;">
+
+							</div>
+						</div>
+					</div>
+					<div class="col-md-8 text-right">
+						<div class="display-t">
+							<div class="display-tc animate-box" data-animate-effect="fadeIn">
+								<a th:href="@{/shop(shopId=${shopForm.id})}"><h1 th:text="${shopForm.name}"></h1></a>
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</header>
+		<div id="fh5co-about">
+			<div class="container">
+				<div class="row animate-box">
+					<div class="col-md-6 col-md-offset-3 text-center fh5co-heading">
+						<h2>Dendaren Profila</h2>
+					</div>
+				</div>
+				<div class="row">
+					<div class="col-md-6 col-md-offset-3 animate-box">
+						<p th:if="${addressError}" style="color: red">Dendaren helbidea ez da egokia. Saia zaitez berriro ere.</p>
+						<p th:if="${updateError}" style="color: red">Errorea gertatu da informazioa gordetzean. Ziurtatu sartutako informazioa egokia dela.</p>
+						<p th:if="${updateSuccessful}" style="color: green">Informazioa ondo gorde da.</p>
+						<p th:if="${createSuccessful}" style="color: green">Denda ondo sortu da!</p>
+						<form th:action="@{/shop/edit}" method="post" th:object="${shopForm}">
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label th:for="*{name}">Dendaren izena</label>
+									<input type="hidden" th:field="*{id}" th:value="${shopForm.id}"/>
+									<input type="text" th:field="*{name}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Shop name">
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label th:for="*{description}">Deskribapen laburra</label>
+									<textarea th:field="*{description}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Short description"></textarea>
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label th:for="*{addressAddress}">Helbidea</label>
+									<input type="text" th:field="*{addressAddress}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Address">
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-4">
+									<label th:for="*{addressCity}">Herria</label>
+									<input type="text" th:field="*{addressCity}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="City">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{addressPostNumber}">Posta Kodea</label>
+									<input type="number" th:field="*{addressPostNumber}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="PostCode">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{addressCountry}">Herrialdea</label>
+									<input type="text" th:field="*{addressCountry}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Country">
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label th:for="*{addressTelNumber}">Telefono zenbakia</label>
+									<input type="text" th:field="*{addressTelNumber}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Telephone number">
+								</div>
+							</div>
+							<h2>Billing information</h2>
+							<div class="row form-group">
+								<div class="col-md-4">
+									<label th:for="*{billingName}">Billing name</label>
+									<input type="text" th:field="*{billingName}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing name">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{billingSurname}">Billing surname</label>
+									<input type="text" th:field="*{billingSurname}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing surname">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{billingTelNumber}">Telefono zenbakia</label>
+									<input type="text" th:field="*{billingTelNumber}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing telephone number">
+								</div>
+							</div>
+
+							<div class="row form-group">
+								<div class="col-md-12">
+									<label th:for="*{billingAddress}">Helbidea</label>
+									<input type="text" th:field="*{billingAddress}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing address">
+								</div>
+							</div>
+							<div class="row form-group">
+								<div class="col-md-4">
+									<label th:for="*{billingCity}">Herria</label>
+									<input type="text" th:field="*{billingCity}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing city">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{billingPostNumber}">Posta Kodea</label>
+									<input type="number" th:field="*{billingPostNumber}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing postcode">
+								</div>
+								<div class="col-md-4">
+									<label th:for="*{billingCountry}">Herrialdea</label>
+									<input type="text" th:field="*{billingCountry}" th:disabled="${edit == false}" required="required" class="form-control" placeholder="Billing country">
+								</div>
+							</div>
+							<div class="form-group text-right" style="margin-top: 20px">
+								<input th:if="${edit} == true" type="submit" value="Update profile" class="btn btn-primary">
+							</div>
+						</form>
+						<div class="form-group text-right" style="margin-top: 20px">
+							<form th:action="@{/shop/edit}" method="get">
+								<input type="hidden" id="shopId" name="shopId" th:value="${shopForm.id}">
+								<input type="hidden" id="edit" name="edit" th:value="${!edit}">
+								<button th:if="${!edit}" type="submit" class="btn btn-primary">Enable edition</button>
+								<button th:if="${edit}" type="submit" class="btn btn-primary">Disable edition</button>
+							</form>
+						</div>
+						<form th:action="@{/shop/edit/uploadPicture}" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="shopId" th:value="${shopForm.id}">
+							<input type="hidden" name="type" value="0">
+							<label>Aldatu irudia</label>
+							<div class="row">
+								<div class="col-md-8" style="margin-top: 8px">
+									<input type="file" name="shopPicture" accept=".jpg, .jpeg, .png">
+								</div>
+								<div class="col-md-4 text-right">
+									<button type="submit" class="btn btn-group-xs">Aldatu irudia</button>
+								</div>
+							</div>
+						</form><br/>
+						<form th:action="@{/shop/edit/uploadPicture}" method="post" enctype="multipart/form-data">
+							<input type="hidden" name="shopId" th:value="${shopForm.id}">
+							<input type="hidden" name="type" value="1">
+							<label>Aldatu banner-a</label>
+							<div class="row">
+								<div class="col-md-8" style="margin-top: 8px">
+									<input type="file" name="shopPicture" accept=".jpg, .jpeg, .png">
+								</div>
+								<div class="col-md-4 text-right">
+									<button type="submit" class="btn btn-group-xs">Aldatu banner-a</button>
+								</div>
+							</div>
+						</form>
+						<br>
+						<br>
+						<div class="form-group text-right">
+							<form th:action="@{/shop/edit/delete}" method="post">
+								<input type="hidden" name="shopId" th:value="${shopForm.id}">
+								<button type="submit" class="btn btn-danger">Delete Shop</button>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div th:replace="fragments :: footer"/>
+	</div>
+	<div th:replace="fragments :: Up_Button"/>
+	<div th:replace="fragments :: final_scripts"/>
+	</body>
+</html>
+

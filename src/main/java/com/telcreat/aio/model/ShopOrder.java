@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class ShopOrder {
+public class  ShopOrder {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,13 +33,13 @@ public class ShopOrder {
     private float price;
 
     public enum ShopOrderStatus{
-        DELIVERED,
-        ON_THE_WAY,
-        PREPARING,
-        READY_TO_DELIVER,
-        CANCELLED,
-        ACCEPTED,
-        PENDING
+        ENTREGATUTA,
+        BIDEAN,
+        PRESTATZEN,
+        PRESTATUTA,
+        EZEZTATUTA,
+        BAIEZTATUTA,
+        BAIEZTATZEKE
     }
 
     private ShopOrderStatus shopOrderStatus;

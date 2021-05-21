@@ -1,0 +1,94 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+	<head th:replace="fragments :: HTML_head" />
+	<body>
+		<div class="fh5co-loader"></div>
+		<div id="page">
+			<div th:replace="fragments :: header"/>
+
+			<div id="fh5co-product">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Egindako eskariak</h2>
+						</div>
+					</div>
+					<p th:if="${canceled}" style="color: green">Zure eskaria ondo ezabatu da</p>
+					<p th:if="${paymentFail}" style="color: green">Zure eskariaren ordainketa bertan behera utzi da</p>
+					<p th:if="${paymentConfirmation}" style="color: green">Zure eskariaren ordainketa arrakastatsua izan da</p>
+					<div th:if="${orderList.size() > 0}" th:each="order : ${orderList}">
+						<br/>
+						<h2 th:text="'Eskari identifikatzailea: ' + ${order.id}"></h2>
+						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/order/edit/cancel}" method="post">
+							<input type="hidden" name="orderId" th:value="${order.id}">
+							<button type="submit" class="btn btn-danger">Eskaria deuseztatu</button>
+						</form>
+						<form th:if="${order.shopOrderStatus.name()} == 'BAIEZTATZEKE'" th:action="@{/payment}" method="post">
+							<input type="hidden" name="orderId" th:value="${order.id}">
+							<button type="submit" class="btn btn-primary">Eskaria ordaindu</button>
+						</form>
+						<div th:each="variant : ${order.variants}" class="row product">
+							<div class="col-md-2 col-md-offset-2 animate-box">
+								<div class="product-grid3 sale" th:style="'background-image:url(' + ${variant.picture.path} + ');'">
+									<span class="sale">
+										<span th:if="${order.shopOrderStatus.name()}=='BIDEAN'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 14px;top: -69px;left: -1px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}=='BAIEZTATZEKE'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -63px;left: -15px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}=='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau" style="font-size: 11px;top: -65px;left: -11px;"></span>
+										<span th:if="${order.shopOrderStatus.name()}!='BIDEAN' and ${order.shopOrderStatus.name()}!='BAIEZTATZEKE' and ${order.shopOrderStatus.name()}!='ENTREGATUTA'" th:text="${order.shopOrderStatus.name()}" class="girau"></span>
+									</span>
+								</div>
+							</div>
+							<div class="col-md-6 text-left animate-box">
+								<div class="desc">
+									<h3><a th:text="${variant.item.name}+' ('+${variant.item.shop.name}+')'" th:href="@{/item(itemId=${variant.item.id})}"></a></h3>
+									<p th:text="${variant.name}" style="margin-bottom: 0%;"></p>
+									<p th:text="'Data: ' + ${#temporals.format(order.orderingDateTime, 'dd-MM-yyyy HH:mm')}" style="margin-top: 0%;margin-bottom: 0%;"></p>
+								</div>
+								<!--<div class="desc text-right" style="margin-top: 20px;">
+									<button class="btn btn-primary" type="submit">Ordaindu</button>
+									<button class="btn btn-danger" type="submit">Deuseztatu</button>
+								</div>-->
+							</div>
+						</div>
+						<hr>
+					</div>
+					<div th:if="${orderList.size() <= 0}" class="container text-center animate-box" style="margin-top: 100px; margin-bottom: 150px">
+						<p>
+							Orain arte ez duzu eskaririk egin. Erabili goiko bilatzailea zure lehenengo produktuen eskariak egiteko.
+						</p>
+					</div>
+				</div>
+			</div>
+
+<!--			<div id="fh5co-started">
+				<div class="container">
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2 text-center fh5co-heading">
+							<h2>Newsletter</h2>
+							<p>Just stay tune for our latest Product. Now you can subscribe</p>
+						</div>
+					</div>
+					<div class="row animate-box">
+						<div class="col-md-8 col-md-offset-2">
+							<form class="form-inline">
+								<div class="col-md-6 col-sm-6">
+									<div class="form-group">
+										<label for="email" class="sr-only">Email</label>
+										<input type="email" class="form-control" id="email" placeholder="Email">
+									</div>
+								</div>
+								<div class="col-md-6 col-sm-6">
+									<button type="submit" class="btn btn-default btn-block">Subscribe</button>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>-->
+			<div th:replace="fragments :: footer"/>
+		</div>
+		<div th:replace="fragments :: Up_Button"/>
+		<div th:replace="fragments :: final_scripts"/>
+	</body>
+</html>
+
